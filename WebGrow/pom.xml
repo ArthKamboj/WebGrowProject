@@ -95,6 +95,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>WebGrow</finalName>
     </build>
 
 </project>
