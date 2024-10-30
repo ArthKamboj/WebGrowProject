@@ -2,6 +2,7 @@ package com.example.webgrow.Service;
 
 import com.example.webgrow.request.AuthenticateRequest;
 import com.example.webgrow.request.RegisterRequest;
+import com.example.webgrow.request.ValidatePasswordRequest;
 import com.example.webgrow.response.AuthenticateResponse;
 import com.example.webgrow.user.*;
 import jakarta.mail.MessagingException;
@@ -31,11 +32,7 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
 
-//        repository.save(user);
-//        var jwtToken = jwtService.generateToken(user);
-//        return AuthenticateResponse.builder()
-//                .token(jwtToken)
-//                .build();
+
         String otp= generateotp();
         user.setOtp(otp);
         repository.save(user);
@@ -80,5 +77,26 @@ public class AuthenticationService {
             throw new RuntimeException("Invalid OTP provided.");
         }
 
+    }
+
+    public String forgotPassword(String email) throws MessagingException {
+        var user = repository.findByEmail(email).orElseThrow();
+        String otp= generateotp();
+        user.setOtp(otp);
+        repository.save(user);
+        sendVerificationEmail(user.getEmail(),otp);
+        return ("OTP sent to "+user.getEmail());
+    }
+
+    public String verifyForgotPassword(ValidatePasswordRequest request) {
+        var user=repository.findByEmail(request.getEmail()).orElseThrow();
+        if(user.getOtp().equals(request.getOtp()) && request.getNewPassword().equals(request.getConfirmPassword()) ){
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            repository.save(user);
+            return ("Password changed successfully");
+        }
+        else {
+            throw new RuntimeException("Invalid OTP provided.");
+        }
     }
 }
