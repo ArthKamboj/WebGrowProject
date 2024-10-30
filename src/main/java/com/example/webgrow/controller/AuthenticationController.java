@@ -3,16 +3,15 @@ package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.AuthenticationService;
 import com.example.webgrow.request.AuthenticateRequest;
+import com.example.webgrow.request.ForgetPasswordRequest;
 import com.example.webgrow.request.RegisterRequest;
+import com.example.webgrow.request.ValidatePasswordRequest;
 import com.example.webgrow.response.AuthenticateResponse;
 import com.example.webgrow.user.OtpValidate;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -36,5 +35,20 @@ public class AuthenticationController {
             @RequestBody OtpValidate request
     ){
         return ResponseEntity.ok(service.validate(request));
+    }
+
+
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(
+            @RequestBody ForgetPasswordRequest request
+    ) throws MessagingException {
+        return ResponseEntity.ok(service.forgotPassword(request.getEmail()));
+    }
+    @PutMapping("/verify-otp")
+    public ResponseEntity<String> verify(
+            @RequestBody ValidatePasswordRequest otp
+    ){
+        return ResponseEntity.ok(service.verifyForgotPassword(otp));
     }
 }
