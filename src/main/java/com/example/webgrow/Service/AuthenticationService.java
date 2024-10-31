@@ -1,6 +1,7 @@
 package com.example.webgrow.Service;
 
 import com.example.webgrow.request.AuthenticateRequest;
+import com.example.webgrow.request.HostRegisterRequest;
 import com.example.webgrow.request.RegisterRequest;
 import com.example.webgrow.request.ValidatePasswordRequest;
 import com.example.webgrow.response.AuthenticateResponse;
@@ -18,6 +19,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository repository;
+    private final HostRepository hostRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -28,6 +30,7 @@ public class AuthenticationService {
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
                 .email(request.getEmail())
+                .mobile(request.getMobile())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
@@ -39,6 +42,25 @@ public class AuthenticationService {
         sendVerificationEmail(user.getEmail(),otp);
 
         return ("OTP sent to "+user.getEmail());
+    }
+
+    public String hostRegister(HostRegisterRequest request) throws MessagingException {
+        var host = Host.builder()
+                .firstName(request.getFirstname())
+                .lastName(request.getLastname())
+                .email(request.getEmail())
+                .mobile(request.getMobile())
+                .organization(request.getOrganization())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.HOST)
+                .build();
+
+        String otp= generateotp();
+        host.setOtp(otp);
+        hostRepository.save(host);
+        sendVerificationEmail(host.getEmail(),otp);
+
+        return ("OTP sent to "+host.getEmail());
     }
 
     private String generateotp(){

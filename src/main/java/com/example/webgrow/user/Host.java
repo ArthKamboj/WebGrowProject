@@ -26,8 +26,9 @@ public class Host implements UserDetails {
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
+    private String mobile;
     private String organization;
+    private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
     private String otp;
