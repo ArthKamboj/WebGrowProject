@@ -42,7 +42,7 @@ public class AuthenticationService {
 
     private String generateOtp() {
         Random random = new Random();
-        int otpValue = 100000 + random.nextInt(900000);
+        int otpValue = 1000 + random.nextInt(9000);
         return String.valueOf(otpValue);
     }
 
