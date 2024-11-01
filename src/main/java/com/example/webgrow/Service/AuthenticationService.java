@@ -23,7 +23,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
-    public String register(RegisterRequest request) throws MessagingException {
+    public DTOClass register(RegisterRequest request) throws MessagingException {
         var user = User.builder()
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
@@ -32,24 +32,24 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
 
-
-        String otp= generateotp();
+        String otp = generateOtp();
         user.setOtp(otp);
         repository.save(user);
-        sendVerificationEmail(user.getEmail(),otp);
+        sendVerificationEmail(user.getEmail(), otp);
 
-        return ("OTP sent to "+user.getEmail());
+        return new DTOClass("OTP sent to " + user.getEmail());
     }
 
-    private String generateotp(){
-        Random random=new Random();
-        int otpvalue= 100000+random.nextInt(900000);
-        return String.valueOf(otpvalue);
+    private String generateOtp() {
+        Random random = new Random();
+        int otpValue = 100000 + random.nextInt(900000);
+        return String.valueOf(otpValue);
     }
-    private void sendVerificationEmail(String Email,String otp) throws MessagingException {
-        String subject="Verification mail";
-        String body="Your verification code is "+otp;
-        emailService.sendEmail(Email,subject,body);
+
+    private void sendVerificationEmail(String email, String otp) throws MessagingException {
+        String subject = "Verification mail";
+        String body = "Your verification code is " + otp;
+        emailService.sendEmail(email, subject, body);
     }
 
     public AuthenticateResponse authenticate(AuthenticateRequest request) {
@@ -67,36 +67,34 @@ public class AuthenticationService {
     }
 
     public AuthenticateResponse validate(OtpValidate request) {
-        var user=repository.findByEmail(request.getEmail()).orElseThrow();
-        if(user.getOtp().equals(request.getOtp())){
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        if (user.getOtp().equals(request.getOtp())) {
             var jwtToken = jwtService.generateToken(user);
             return AuthenticateResponse.builder()
                     .token(jwtToken)
                     .build();
-        }else {
+        } else {
             throw new RuntimeException("Invalid OTP provided.");
         }
-
     }
 
-    public String forgotPassword(String email) throws MessagingException {
+    public DTOClass forgotPassword(String email) throws MessagingException {
         var user = repository.findByEmail(email).orElseThrow();
-        String otp= generateotp();
+        String otp = generateOtp();
         user.setOtp(otp);
         repository.save(user);
-        sendVerificationEmail(user.getEmail(),otp);
-        return ("OTP sent to "+user.getEmail());
+        sendVerificationEmail(user.getEmail(), otp);
+        return new DTOClass("OTP sent to " + user.getEmail());
     }
 
-    public String verifyForgotPassword(ValidatePasswordRequest request) {
-        var user=repository.findByEmail(request.getEmail()).orElseThrow();
-        if(user.getOtp().equals(request.getOtp()) && request.getNewPassword().equals(request.getConfirmPassword()) ){
+    public DTOClass verifyForgotPassword(ValidatePasswordRequest request) {
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        if (user.getOtp().equals(request.getOtp()) && request.getNewPassword().equals(request.getConfirmPassword())) {
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             repository.save(user);
-            return ("Password changed successfully");
-        }
-        else {
-            throw new RuntimeException("Invalid OTP provided.");
+            return new DTOClass("Password changed successfully");
+        } else {
+            throw new RuntimeException("Invalid OTP or password mismatch.");
         }
     }
 }

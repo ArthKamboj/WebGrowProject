@@ -1,5 +1,6 @@
 package com.example.webgrow.demo;
 
+import com.example.webgrow.user.DTOClass;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 @NoArgsConstructor
 public class DemoController {
     @GetMapping
-    public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("Hello From Secured Endpoint!");
+    public ResponseEntity<DTOClass> sayHello() {
+        DTOClass dtoclass = new DTOClass("Hello From Secured Endpoint !");
+        return ResponseEntity.ok(dtoclass);
     }
 }
