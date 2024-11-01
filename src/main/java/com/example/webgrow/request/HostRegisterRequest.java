@@ -15,6 +15,7 @@ public class HostRegisterRequest {
     private String email;
     private String mobile;
     private String organization;
+    private String designation;
     private String password;
 }
 

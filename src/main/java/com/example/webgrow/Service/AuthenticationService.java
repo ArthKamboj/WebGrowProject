@@ -56,6 +56,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .mobile(request.getMobile())
                 .organization(request.getOrganization())
+                .designation(request.getDesignation())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.HOST)
                 .build();
