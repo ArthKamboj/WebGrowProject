@@ -43,6 +43,12 @@ public class AuthenticationService {
         return new DTOClass("OTP sent to " + user.getEmail());
     }
 
+    private String generateOtp() {
+        Random random=new Random();
+        int otpvalue= 1000+random.nextInt(9000);
+        return String.valueOf(otpvalue);
+    }
+
 
     public String hostRegister(HostRegisterRequest request) throws MessagingException {
         var host = Host.builder()
