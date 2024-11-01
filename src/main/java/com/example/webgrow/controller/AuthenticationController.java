@@ -24,21 +24,22 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.register(request));
     }
 
-    @PostMapping("register-host")
-    public ResponseEntity<String> registerHost (
+    @PostMapping("/register-host")
+    public ResponseEntity<DTOClass> registerHost(
             @RequestBody HostRegisterRequest request
     ) throws MessagingException {
         return ResponseEntity.ok(service.hostRegister(request));
     }
+
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticateResponse> authenticate(
+    public ResponseEntity<DTOClass> authenticate(
             @RequestBody AuthenticateRequest request
     ) {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<AuthenticateResponse> validate(
+    public ResponseEntity<DTOClass> validate(
             @RequestBody OtpValidate request
     ) {
         return ResponseEntity.ok(service.validate(request));
