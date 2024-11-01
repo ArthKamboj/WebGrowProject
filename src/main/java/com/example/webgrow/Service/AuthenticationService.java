@@ -108,12 +108,8 @@ public class AuthenticationService {
 
     public DTOClass verifyForgotPassword(ValidatePasswordRequest request) {
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
-        if (user.getOtp().equals(request.getOtp()) && request.getNewPassword().equals(request.getConfirmPassword())) {
-            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-            repository.save(user);
-            return new DTOClass("Password changed successfully", "SUCCESS", null);
-        } else {
-            return new DTOClass("Invalid OTP or password mismatch", "FAILURE", null);
-        }
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        repository.save(user);
+        return new DTOClass("Password changed successfully", "SUCCESS", null);
     }
 }
