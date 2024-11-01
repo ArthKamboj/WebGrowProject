@@ -14,11 +14,12 @@ import java.util.List;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name= "_user")
-public class User implements UserDetails {
+@Table(name = "_host")
+public class Host implements UserDetails {
+
     @Id
     @GeneratedValue
     private Integer id;
@@ -26,23 +27,26 @@ public class User implements UserDetails {
     private String lastName;
     private String email;
     private String mobile;
+    private String organization;
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
     private String otp;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return email;
     }
 
     @Override
-    public String getUsername() {
-        return email;
+    public String getPassword() {
+        return password;
     }
 
     @Override

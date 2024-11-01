@@ -2,10 +2,7 @@ package com.example.webgrow.controller;
 
 
 import com.example.webgrow.Service.AuthenticationService;
-import com.example.webgrow.request.AuthenticateRequest;
-import com.example.webgrow.request.ForgetPasswordRequest;
-import com.example.webgrow.request.RegisterRequest;
-import com.example.webgrow.request.ValidatePasswordRequest;
+import com.example.webgrow.request.*;
 import com.example.webgrow.response.AuthenticateResponse;
 import com.example.webgrow.user.OtpValidate;
 import jakarta.mail.MessagingException;
@@ -24,6 +21,12 @@ public class AuthenticationController {
             @RequestBody RegisterRequest request
     ) throws MessagingException {
         return ResponseEntity.ok(service.register(request));
+    }
+    @PostMapping("register-host")
+    public ResponseEntity<String> registerHost (
+            @RequestBody HostRegisterRequest request
+    ) throws MessagingException {
+        return ResponseEntity.ok(service.hostRegister(request));
     }
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticateResponse> authenticate (
