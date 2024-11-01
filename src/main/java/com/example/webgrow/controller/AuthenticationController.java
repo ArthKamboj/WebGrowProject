@@ -1,9 +1,9 @@
 package com.example.webgrow.controller;
 
-
 import com.example.webgrow.Service.AuthenticationService;
 import com.example.webgrow.request.*;
 import com.example.webgrow.response.AuthenticateResponse;
+import com.example.webgrow.user.DTOClass;
 import com.example.webgrow.user.OtpValidate;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService service;
+
     @PostMapping("/register")
-    public ResponseEntity<String> register (
+    public ResponseEntity<DTOClass> register(
             @RequestBody RegisterRequest request
     ) throws MessagingException {
         return ResponseEntity.ok(service.register(request));
     }
+
     @PostMapping("register-host")
     public ResponseEntity<String> registerHost (
             @RequestBody HostRegisterRequest request
@@ -29,30 +31,30 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.hostRegister(request));
     }
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticateResponse> authenticate (
+    public ResponseEntity<AuthenticateResponse> authenticate(
             @RequestBody AuthenticateRequest request
     ) {
         return ResponseEntity.ok(service.authenticate(request));
     }
+
     @PostMapping("/validate")
     public ResponseEntity<AuthenticateResponse> validate(
             @RequestBody OtpValidate request
-    ){
+    ) {
         return ResponseEntity.ok(service.validate(request));
     }
 
-
-
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(
+    public ResponseEntity<DTOClass> forgotPassword(
             @RequestBody ForgetPasswordRequest request
     ) throws MessagingException {
         return ResponseEntity.ok(service.forgotPassword(request.getEmail()));
     }
+
     @PutMapping("/verify-otp")
-    public ResponseEntity<String> verify(
-            @RequestBody ValidatePasswordRequest otp
-    ){
-        return ResponseEntity.ok(service.verifyForgotPassword(otp));
+    public ResponseEntity<DTOClass> verify(
+            @RequestBody ValidatePasswordRequest request
+    ) {
+        return ResponseEntity.ok(service.verifyForgotPassword(request));
     }
 }

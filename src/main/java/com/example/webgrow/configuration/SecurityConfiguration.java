@@ -35,7 +35,5 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-    // dao authentication provider`
-    // authentication manager
 
 }
