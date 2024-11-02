@@ -1,9 +1,6 @@
 package com.example.webgrow.Service;
 
-import com.example.webgrow.request.AuthenticateRequest;
-import com.example.webgrow.request.HostRegisterRequest;
-import com.example.webgrow.request.RegisterRequest;
-import com.example.webgrow.request.ValidatePasswordRequest;
+import com.example.webgrow.request.*;
 import com.example.webgrow.response.AuthenticateResponse;
 import com.example.webgrow.user.*;
 import jakarta.mail.MessagingException;
@@ -111,5 +108,16 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         repository.save(user);
         return new DTOClass("Password changed successfully", "SUCCESS", null);
+    }
+
+    public DTOClass validateHostOtp(ValidateHost request) {
+        var host = hostRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Host not found"));
+
+        if (host.getOtp().equals(request.getOtp())) {
+            return new DTOClass("Host OTP validated successfully", "SUCCESS", null);
+        } else {
+            return new DTOClass("Invalid OTP provided", "FAILURE", null);
+        }
     }
 }

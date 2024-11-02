@@ -16,7 +16,6 @@ public class DTOClass {
         this.data = data;
     }
 
-    // Getters and setters
     public String getMessage() {
         return message;
     }

@@ -58,4 +58,11 @@ public class AuthenticationController {
     ) {
         return ResponseEntity.ok(service.verifyForgotPassword(request));
     }
+
+    @PostMapping("/validate-host")
+    public ResponseEntity<DTOClass> validateHost(
+            @RequestBody ValidateHost request
+    ) {
+        return ResponseEntity.ok(service.validateHostOtp(request));
+    }
 }
