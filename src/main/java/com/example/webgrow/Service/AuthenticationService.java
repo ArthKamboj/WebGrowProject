@@ -115,7 +115,8 @@ public class AuthenticationService {
                 .orElseThrow(() -> new IllegalArgumentException("Host not found"));
 
         if (host.getOtp().equals(request.getOtp())) {
-            return new DTOClass("Host OTP validated successfully", "SUCCESS", null);
+            var jwtToken = jwtService.generateToken(host);
+            return new DTOClass("Host OTP validated successfully", "SUCCESS", new AuthenticateResponse(jwtToken));
         } else {
             return new DTOClass("Invalid OTP provided", "FAILURE", null);
         }
