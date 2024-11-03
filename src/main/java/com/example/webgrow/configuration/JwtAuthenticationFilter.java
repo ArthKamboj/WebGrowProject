@@ -22,6 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final UserDetailsService hostDetailsService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -29,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         final String requestPath = request.getServletPath();
-        if (requestPath.equals("/api/v1/auth/register") || requestPath.equals("/api/v1/auth/validate") || requestPath.equals("/api/v1/auth/register-host")) {
+        if (requestPath.equals("/api/v1/auth/register") || requestPath.equals("/api/v1/auth/validate") || requestPath.equals("/api/v1/auth/register-host") || requestPath.equals("/api/v1/auth/validate-host")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,8 +45,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
+
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            UserDetails userDetails;
+
+            if (requestPath.startsWith("/api/v1/auth/register-host")) {
+                userDetails = this.hostDetailsService.loadUserByUsername(userEmail);
+            } else {
+                userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            }
+
             if(jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken  = new UsernamePasswordAuthenticationToken(
                         userDetails,
