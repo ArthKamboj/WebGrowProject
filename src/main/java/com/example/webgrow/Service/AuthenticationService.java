@@ -31,6 +31,7 @@ public class AuthenticationService {
             user.setLastName(request.getLastname());
             user.setEmail(request.getEmail());
             user.setMobile(request.getMobile());
+            user.setVerified(false);
             user.setPassword(passwordEncoder.encode(password));
             String otp = generateOtp();
             user.setOtp(otp);
@@ -43,6 +44,7 @@ public class AuthenticationService {
                     .lastName(request.getLastname())
                     .email(request.getEmail())
                     .mobile(request.getMobile())
+                    .verified(false)
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(Role.USER)
                     .build();
@@ -72,6 +74,7 @@ public class AuthenticationService {
             host.setLastName(request.getLastname());
             host.setEmail(request.getEmail());
             host.setMobile(request.getMobile());
+            host.setVerified(false);
             host.setOrganization(request.getOrganization());
             host.setDesignation(request.getDesignation());
             host.setPassword(passwordEncoder.encode(password));
@@ -88,6 +91,7 @@ public class AuthenticationService {
                     .mobile(request.getMobile())
                     .organization(request.getOrganization())
                     .designation(request.getDesignation())
+                    .verified(false)
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role(Role.HOST)
                     .build();
@@ -108,13 +112,16 @@ public class AuthenticationService {
     }
 
     public DTOClass authenticate(AuthenticateRequest request) {
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        if (!user.isVerified()) {
+            return new DTOClass("Invalid email or password", "ERROR", null);
+        }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return new DTOClass("Authentication successful", "SUCCESS", new AuthenticateResponse(jwtToken));
     }
@@ -123,6 +130,8 @@ public class AuthenticationService {
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
         if (user.getOtp().equals(request.getOtp())) {
             var jwtToken = jwtService.generateToken(user);
+            user.setVerified(true);
+            repository.save(user);
             return new DTOClass("OTP validated successfully", "SUCCESS", new AuthenticateResponse(jwtToken));
         } else {
             return new DTOClass("Invalid OTP provided", "FAILURE", null);

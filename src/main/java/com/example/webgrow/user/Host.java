@@ -33,6 +33,7 @@ public class Host implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
     private String otp;
+    private boolean verified;
 
 
     @Override

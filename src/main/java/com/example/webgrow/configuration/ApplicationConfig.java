@@ -43,10 +43,10 @@ public class ApplicationConfig {
 
 //    @Bean
 //    public AuthenticationProvider hostAuthenticationProvider() {
-//        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-//        authProvider.setUserDetailsService(hostDetailsService());
-//        authProvider.setPasswordEncoder(passwordEncoder());
-//        return authProvider;
+//        DaoAuthenticationProvider hostAuthProvider = new DaoAuthenticationProvider();
+//        hostAuthProvider.setUserDetailsService(hostDetailsService());
+//        hostAuthProvider.setPasswordEncoder(passwordEncoder());
+//        return hostAuthProvider;
 //    }
 
     @Bean
