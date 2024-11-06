@@ -24,13 +24,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.register(request));
     }
 
-    @PostMapping("/register-host")
-    public ResponseEntity<DTOClass> registerHost(
-            @RequestBody HostRegisterRequest request
-    ) throws MessagingException {
-        return ResponseEntity.ok(service.hostRegister(request));
-    }
-
     @PostMapping("/authenticate")
     public ResponseEntity<DTOClass> authenticate(
             @RequestBody AuthenticateRequest request
@@ -57,12 +50,5 @@ public class AuthenticationController {
             @RequestBody ValidatePasswordRequest request
     ) {
         return ResponseEntity.ok(service.verifyForgotPassword(request));
-    }
-
-    @PostMapping("/validate-host")
-    public ResponseEntity<DTOClass> validateHost(
-            @RequestBody ValidateHost request
-    ) {
-        return ResponseEntity.ok(service.validateHostOtp(request));
     }
 }

@@ -15,7 +15,6 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository repository;
-    private final HostRepository hostRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -34,7 +33,9 @@ public class AuthenticationService {
             user.setVerified(false);
             user.setPassword(passwordEncoder.encode(password));
             String otp = generateOtp();
-            user.setOtp(otp);
+            user.setRole(Role.valueOf(request.getRole().toUpperCase()));
+            user.setDesignation(request.getDesignation());
+            user.setOrganization(request.getOrganization());
             repository.save(user);
             sendVerificationEmail(user.getEmail(), otp);
             return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
@@ -46,7 +47,7 @@ public class AuthenticationService {
                     .mobile(request.getMobile())
                     .verified(false)
                     .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.USER)
+                    .role(Role.valueOf(request.getRole().toUpperCase()))
                     .build();
 
 
@@ -65,45 +66,7 @@ public class AuthenticationService {
         return String.valueOf(otpValue);
     }
 
-    public DTOClass hostRegister(HostRegisterRequest request) throws MessagingException {
-        String contact = request.getEmail();
-        if (hostRepository.existsByEmail(contact)) {
-            String password = request.getPassword();
-            var host = hostRepository.findByEmail(contact).orElseThrow();
-            host.setFirstName(request.getFirstname());
-            host.setLastName(request.getLastname());
-            host.setEmail(request.getEmail());
-            host.setMobile(request.getMobile());
-            host.setVerified(false);
-            host.setOrganization(request.getOrganization());
-            host.setDesignation(request.getDesignation());
-            host.setPassword(passwordEncoder.encode(password));
-            String otp = generateOtp();
-            host.setOtp(otp);
-            hostRepository.save(host);
-            sendVerificationEmail(host.getEmail(), otp);
-            return new DTOClass("OTP sent to " + host.getEmail(), "SUCCESS", null);
-        } else {
-            var host = Host.builder()
-                    .firstName(request.getFirstname())
-                    .lastName(request.getLastname())
-                    .email(request.getEmail())
-                    .mobile(request.getMobile())
-                    .organization(request.getOrganization())
-                    .designation(request.getDesignation())
-                    .verified(false)
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.HOST)
-                    .build();
 
-            String otp = generateOtp();
-            host.setOtp(otp);
-            hostRepository.save(host);
-            sendVerificationEmail(host.getEmail(), otp);
-
-            return new DTOClass("OTP sent to " + host.getEmail(), "SUCCESS", null);
-        }
-    }
 
     private void sendVerificationEmail(String email, String otp) throws MessagingException {
         String subject = "Verification mail";
@@ -148,21 +111,13 @@ public class AuthenticationService {
             return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
         }
         else {
-            var user = hostRepository.findByEmail(email).orElseThrow();
-            String otp = generateOtp();
-            user.setOtp(otp);
-            hostRepository.save(user);
-            sendVerificationEmail(email, otp);
-            return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
-        }
-//            return new DTOClass("Invalid OTP provided", "FAILURE", null);
-//            var user = repository.existsByEmail(email)? repository.findByEmail(email).orElseThrow() : hostRepository.findByEmail(email).orElseThrow();
+//            var user = hostRepository.findByEmail(email).orElseThrow();
 //            String otp = generateOtp();
 //            user.setOtp(otp);
-//            repository.save(user);
-//            sendVerificationEmail(user.getEmail(), otp);
-//            return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
-//        }
+//            hostRepository.save(user);
+//            sendVerificationEmail(email, otp);
+            return new DTOClass("NO USER WITH GIVEN EMAIL FOUND " , "FAILURE", null);
+        }
     }
 
     public DTOClass verifyForgotPassword(ValidatePasswordRequest request) {
@@ -173,22 +128,10 @@ public class AuthenticationService {
             return new DTOClass("Password changed successfully", "SUCCESS", null);
         }
         else {
-            var user = hostRepository.findByEmail(request.getEmail()).orElseThrow();
-            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-            hostRepository.save(user);
-            return new DTOClass("Password changed successfully", "SUCCESS", null);
-        }
-    }
-
-    public DTOClass validateHostOtp(ValidateHost request) {
-        var host = hostRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Host not found"));
-
-        if (host.getOtp().equals(request.getOtp())) {
-            var jwtToken = jwtService.generateToken(host);
-            return new DTOClass("Host OTP validated successfully", "SUCCESS", new AuthenticateResponse(jwtToken));
-        } else {
-            return new DTOClass("Invalid OTP provided", "FAILURE", null);
+//            var user = hostRepository.findByEmail(request.getEmail()).orElseThrow();
+//            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+//            hostRepository.save(user);
+            return new DTOClass("NO USER EXIST WITH THE GIVEN EMAIL", "FAILURE", null);
         }
     }
 }
