@@ -26,11 +26,13 @@ public class AuthenticationService {
         if (repository.existsByEmail(contact)) {
             String password = request.getPassword();
             var user = repository.findByEmail(contact).orElseThrow();
+            if (user.isVerified()) { return new DTOClass("User Already Exists", "ERROR", null); }
             user.setFirstName(request.getFirstname());
             user.setLastName(request.getLastname());
             user.setEmail(request.getEmail());
             user.setMobile(request.getMobile());
             user.setVerified(false);
+            user.setEnabled(false);
             user.setPassword(passwordEncoder.encode(password));
             String otp = generateOtp();
             user.setRole(Role.valueOf(request.getRole().toUpperCase()));
@@ -77,8 +79,11 @@ public class AuthenticationService {
     public DTOClass authenticate(AuthenticateRequest request) {
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
         if (!user.isVerified()) {
-            return new DTOClass("Invalid email or password", "ERROR", null);
+            return new DTOClass("Invalid email", "ERROR", null);
         }
+//        else if(user.getPassword().equals(request.getPassword())){
+//            return new DTOClass("Invalid password", "ERROR", null);
+//        }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -120,12 +125,29 @@ public class AuthenticationService {
         }
     }
 
+    public DTOClass verifyForgotPswrdOtp(ForgotPswrdOtpRequest request) throws MessagingException {
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        if (user.getOtp().equals(request.getOtp())) {
+            user.setEnabled(true);
+            repository.save(user);
+            return new DTOClass("OTP validated successfully", "SUCCESS", null);
+        } else {
+            return new DTOClass("Invalid OTP provided", "FAILURE", null);
+        }
+    }
+
     public DTOClass verifyForgotPassword(ValidatePasswordRequest request) {
         if (repository.existsByEmail(request.getEmail())) {
             var user = repository.findByEmail(request.getEmail()).orElseThrow();
-            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-            repository.save(user);
-            return new DTOClass("Password changed successfully", "SUCCESS", null);
+            if(user.isEnabled()) {
+                user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+                user.setEnabled(false);
+                repository.save(user);
+                return new DTOClass("Password changed successfully", "SUCCESS", null);
+            }
+            else {
+                return new DTOClass("Email not verified through otp", "FAILURE", null);
+            }
         }
         else {
 //            var user = hostRepository.findByEmail(request.getEmail()).orElseThrow();

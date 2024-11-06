@@ -33,6 +33,7 @@ public class User implements UserDetails {
     private String designation;
     private String organization;
     private boolean verified;
+    private boolean enabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -47,6 +47,13 @@ public class AuthenticationController {
 
     @PutMapping("/verify-otp")
     public ResponseEntity<DTOClass> verify(
+            @RequestBody ForgotPswrdOtpRequest request
+    ) throws MessagingException {
+        return ResponseEntity.ok(service.verifyForgotPswrdOtp(request));
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<DTOClass> changePassword(
             @RequestBody ValidatePasswordRequest request
     ) {
         return ResponseEntity.ok(service.verifyForgotPassword(request));
