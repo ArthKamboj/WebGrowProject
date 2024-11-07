@@ -38,6 +38,7 @@ public class AuthenticationService {
             user.setRole(Role.valueOf(request.getRole().toUpperCase()));
             user.setDesignation(request.getDesignation());
             user.setOrganization(request.getOrganization());
+            user.setOtp(otp);
             repository.save(user);
             sendVerificationEmail(user.getEmail(), otp);
             return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
