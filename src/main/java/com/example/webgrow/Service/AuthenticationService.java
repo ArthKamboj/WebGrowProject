@@ -43,6 +43,17 @@ public class AuthenticationService {
             sendVerificationEmail(user.getEmail(), otp);
             return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
         } else {
+
+            if (request.getPassword().length() < 8) {
+                return new DTOClass("Password must be at least 8 characters", "ERROR", null);
+            }
+            if (request.getFirstname() == null) {
+                return new DTOClass("First name is required", "ERROR", null);
+            }
+            if (request.getEmail() == null) {
+                return new DTOClass("Email is required", "ERROR", null);
+            }
+
             var user = User.builder()
                     .firstName(request.getFirstname())
                     .lastName(request.getLastname())
