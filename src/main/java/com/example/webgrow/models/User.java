@@ -1,4 +1,4 @@
-package com.example.webgrow.user;
+package com.example.webgrow.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

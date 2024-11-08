@@ -1,4 +1,4 @@
-package com.example.webgrow.user;
+package com.example.webgrow.payload.response;
 
 
 import lombok.AllArgsConstructor;
@@ -7,10 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class OtpValidate {
-    private String email;
-    private String otp;
+public class ResponseMessage {
+    private String message;
 }

@@ -1,4 +1,4 @@
-package com.example.webgrow.request;
+package com.example.webgrow.payload.request;
 
 import lombok.*;
 

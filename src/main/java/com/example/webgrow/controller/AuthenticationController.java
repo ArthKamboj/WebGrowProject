@@ -1,10 +1,9 @@
 package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.AuthenticationService;
-import com.example.webgrow.request.*;
-import com.example.webgrow.response.AuthenticateResponse;
-import com.example.webgrow.user.DTOClass;
-import com.example.webgrow.user.OtpValidate;
+import com.example.webgrow.payload.request.*;
+import com.example.webgrow.models.DTOClass;
+import com.example.webgrow.models.OtpValidate;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

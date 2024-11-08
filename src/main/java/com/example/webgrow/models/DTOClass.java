@@ -1,4 +1,4 @@
-package com.example.webgrow.user;
+package com.example.webgrow.models;
 
 public class DTOClass {
     private String message;

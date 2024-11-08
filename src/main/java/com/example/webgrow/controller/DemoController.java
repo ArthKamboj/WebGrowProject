@@ -1,6 +1,6 @@
-package com.example.webgrow.demo;
+package com.example.webgrow.controller;
 
-import com.example.webgrow.user.DTOClass;
+import com.example.webgrow.models.DTOClass;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
