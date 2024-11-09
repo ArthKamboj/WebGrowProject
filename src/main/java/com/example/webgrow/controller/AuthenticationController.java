@@ -1,17 +1,15 @@
 package com.example.webgrow.controller;
 
-
 import com.example.webgrow.Service.AuthenticationService;
-import com.example.webgrow.request.AuthenticateRequest;
-import com.example.webgrow.request.ForgetPasswordRequest;
-import com.example.webgrow.request.RegisterRequest;
-import com.example.webgrow.request.ValidatePasswordRequest;
-import com.example.webgrow.response.AuthenticateResponse;
-import com.example.webgrow.user.OtpValidate;
+import com.example.webgrow.payload.request.*;
+import com.example.webgrow.models.DTOClass;
+import com.example.webgrow.payload.request.OtpValidate;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
 @CrossOrigin
 @RestController
@@ -19,37 +17,46 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService service;
+
     @PostMapping("/register")
-    public ResponseEntity<String> register (
-            @RequestBody RegisterRequest request
+    public ResponseEntity<DTOClass> register(
+            @Valid @RequestBody RegisterRequest request
     ) throws MessagingException {
         return ResponseEntity.ok(service.register(request));
     }
+
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticateResponse> authenticate (
+    public ResponseEntity<DTOClass> authenticate(
             @RequestBody AuthenticateRequest request
     ) {
         return ResponseEntity.ok(service.authenticate(request));
     }
+
     @PostMapping("/validate")
-    public ResponseEntity<AuthenticateResponse> validate(
+    public ResponseEntity<DTOClass> validate(
             @RequestBody OtpValidate request
-    ){
+    ) {
         return ResponseEntity.ok(service.validate(request));
     }
 
-
-
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(
+    public ResponseEntity<DTOClass> forgotPassword(
             @RequestBody ForgetPasswordRequest request
     ) throws MessagingException {
         return ResponseEntity.ok(service.forgotPassword(request.getEmail()));
     }
-    @PutMapping("/verify-otp")
-    public ResponseEntity<String> verify(
-            @RequestBody ValidatePasswordRequest otp
-    ){
-        return ResponseEntity.ok(service.verifyForgotPassword(otp));
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<DTOClass> verify(
+            @RequestBody ForgotPasswordOtpRequest request
+    ) throws MessagingException {
+        return ResponseEntity.ok(service.verifyForgotPasswordOtp(request));
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<DTOClass> changePassword(
+            @Valid @RequestBody ValidatePasswordRequest request
+    ) {
+        return ResponseEntity.ok(service.verifyForgotPassword(request));
     }
 }

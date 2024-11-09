@@ -1,4 +1,4 @@
-package com.example.webgrow.request;
+package com.example.webgrow.payload.request;
 
 
 import lombok.AllArgsConstructor;
@@ -7,13 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ValidatePasswordRequest {
-
+@Builder
+public class OtpValidate {
     private String email;
     private String otp;
-    private String newPassword;
-    private String confirmPassword;
 }

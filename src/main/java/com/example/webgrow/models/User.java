@@ -1,4 +1,4 @@
-package com.example.webgrow.user;
+package com.example.webgrow.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,10 +25,16 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     private String email;
+    private String mobile;
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
     private String otp;
+    private String designation;
+    private String organization;
+    private boolean verified;
+    private boolean enabled;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -61,6 +67,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return verified;
     }
 }

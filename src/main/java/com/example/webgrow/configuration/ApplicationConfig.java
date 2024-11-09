@@ -1,6 +1,6 @@
 package com.example.webgrow.configuration;
 
-import com.example.webgrow.user.UserRepository;
+import com.example.webgrow.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +24,7 @@ public class ApplicationConfig {
         return username -> repository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -31,6 +32,14 @@ public class ApplicationConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
+//    @Bean
+//    public AuthenticationProvider hostAuthenticationProvider() {
+//        DaoAuthenticationProvider hostAuthProvider = new DaoAuthenticationProvider();
+//        hostAuthProvider.setUserDetailsService(hostDetailsService());
+//        hostAuthProvider.setPasswordEncoder(passwordEncoder());
+//        return hostAuthProvider;
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
