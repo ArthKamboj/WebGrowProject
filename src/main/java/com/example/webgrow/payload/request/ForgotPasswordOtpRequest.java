@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForgotPswrdOtpRequest {
+public class ForgotPasswordOtpRequest {
 
     private String email;
     private String otp;

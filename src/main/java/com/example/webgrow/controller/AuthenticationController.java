@@ -3,11 +3,13 @@ package com.example.webgrow.controller;
 import com.example.webgrow.Service.AuthenticationService;
 import com.example.webgrow.payload.request.*;
 import com.example.webgrow.models.DTOClass;
-import com.example.webgrow.models.OtpValidate;
+import com.example.webgrow.payload.request.OtpValidate;
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
 
 @CrossOrigin
 @RestController
@@ -18,7 +20,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<DTOClass> register(
-            @RequestBody RegisterRequest request
+            @Valid @RequestBody RegisterRequest request
     ) throws MessagingException {
         return ResponseEntity.ok(service.register(request));
     }
@@ -44,16 +46,16 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.forgotPassword(request.getEmail()));
     }
 
-    @PutMapping("/verify-otp")
+    @PostMapping("/verify-otp")
     public ResponseEntity<DTOClass> verify(
-            @RequestBody ForgotPswrdOtpRequest request
+            @RequestBody ForgotPasswordOtpRequest request
     ) throws MessagingException {
-        return ResponseEntity.ok(service.verifyForgotPswrdOtp(request));
+        return ResponseEntity.ok(service.verifyForgotPasswordOtp(request));
     }
 
     @PutMapping("/change-password")
     public ResponseEntity<DTOClass> changePassword(
-            @RequestBody ValidatePasswordRequest request
+            @Valid @RequestBody ValidatePasswordRequest request
     ) {
         return ResponseEntity.ok(service.verifyForgotPassword(request));
     }

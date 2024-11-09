@@ -1,4 +1,4 @@
-package com.example.webgrow.models;
+package com.example.webgrow.payload.request;
 
 
 import lombok.AllArgsConstructor;

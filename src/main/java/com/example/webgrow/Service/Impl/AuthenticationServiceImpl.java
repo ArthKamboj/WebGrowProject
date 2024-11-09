@@ -4,10 +4,7 @@ import com.example.webgrow.Service.AuthenticationService;
 import com.example.webgrow.Service.EmailService;
 import com.example.webgrow.Service.JwtService;
 import com.example.webgrow.models.*;
-import com.example.webgrow.payload.request.AuthenticateRequest;
-import com.example.webgrow.payload.request.ForgotPswrdOtpRequest;
-import com.example.webgrow.payload.request.RegisterRequest;
-import com.example.webgrow.payload.request.ValidatePasswordRequest;
+import com.example.webgrow.payload.request.*;
 import com.example.webgrow.payload.response.AuthenticateResponse;
 import com.example.webgrow.repository.UserRepository;
 import jakarta.mail.MessagingException;
@@ -55,17 +52,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
             return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
         } else {
-
-            if (request.getPassword().length() < 8) {
-                return new DTOClass("Password must be at least 8 characters", "ERROR", null);
-            }
-            if (request.getFirstname() == null) {
-                return new DTOClass("First name is required", "ERROR", null);
-            }
-            if (request.getEmail() == null) {
-                return new DTOClass("Email is required", "ERROR", null);
-            }
-
             var user = User.builder()
                     .firstName(request.getFirstname())
                     .lastName(request.getLastname())
@@ -154,7 +140,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    public DTOClass verifyForgotPswrdOtp(ForgotPswrdOtpRequest request) throws MessagingException {
+    public DTOClass verifyForgotPasswordOtp(ForgotPasswordOtpRequest request) {
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
         if (user.getOtp().equals(request.getOtp())) {
             user.setEnabled(true);

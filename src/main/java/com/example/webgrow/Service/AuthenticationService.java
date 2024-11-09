@@ -1,11 +1,11 @@
 package com.example.webgrow.Service;
 
 import com.example.webgrow.payload.request.AuthenticateRequest;
-import com.example.webgrow.payload.request.ForgotPswrdOtpRequest;
+import com.example.webgrow.payload.request.ForgotPasswordOtpRequest;
 import com.example.webgrow.payload.request.RegisterRequest;
 import com.example.webgrow.payload.request.ValidatePasswordRequest;
 import com.example.webgrow.models.DTOClass;
-import com.example.webgrow.models.OtpValidate;
+import com.example.webgrow.payload.request.OtpValidate;
 import jakarta.mail.MessagingException;
 
 public interface AuthenticationService {
@@ -13,7 +13,7 @@ public interface AuthenticationService {
     DTOClass authenticate(AuthenticateRequest request);
     DTOClass validate(OtpValidate request);
     DTOClass forgotPassword(String email) throws MessagingException;
-    DTOClass verifyForgotPswrdOtp(ForgotPswrdOtpRequest request) throws MessagingException;
+    DTOClass verifyForgotPasswordOtp(ForgotPasswordOtpRequest request) throws MessagingException;
     DTOClass verifyForgotPassword(ValidatePasswordRequest request);
 
 }
