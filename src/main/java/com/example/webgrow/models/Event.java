@@ -22,5 +22,5 @@ public class Event {
     private String time;
     @ManyToOne
     @JoinColumn(name = "host_id",nullable = false)
-    private Host host;
+    private User host;
 }

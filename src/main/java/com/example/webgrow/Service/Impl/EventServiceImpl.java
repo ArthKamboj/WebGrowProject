@@ -29,9 +29,9 @@ public class EventServiceImpl implements EventService {
         event.setLocation(eventRequest.getLocation());
         event.setDate(eventRequest.getDate());
         event.setTime(eventRequest.getTime());
-//        event.setHost(host);
+        event.setHost(host);
         eventRepository.save(event);
-        return new DTOClass("Event Created Successfully","SUCCESS",null)
+        return new DTOClass("Event Created Successfully","SUCCESS",null);
     }
 
     @Override
@@ -61,8 +61,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public DTOClass getEventList(String hostEmail) {
-        Host host = UserRepository.findByEmail(hostEmail).orElseThrow();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        User host = userRepository.findByEmail(hostEmail).orElseThrow();
         List<EventResponse> events = eventRepository.findByHostId(host.getId()).stream()
                 .map(event -> {
                     EventResponse eventResponse = new EventResponse();

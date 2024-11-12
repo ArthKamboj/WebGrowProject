@@ -9,4 +9,5 @@ public class EventRequest {
     private String location;
     private String date;
     private String time;
+    private Long hostId;
 }
