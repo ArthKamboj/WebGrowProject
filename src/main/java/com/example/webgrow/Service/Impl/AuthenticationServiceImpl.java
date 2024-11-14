@@ -4,6 +4,7 @@ import com.example.webgrow.Service.AuthenticationService;
 import com.example.webgrow.Service.EmailService;
 import com.example.webgrow.Service.JwtService;
 import com.example.webgrow.models.*;
+import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.*;
 import com.example.webgrow.payload.response.AuthenticateResponse;
 import com.example.webgrow.repository.UserRepository;

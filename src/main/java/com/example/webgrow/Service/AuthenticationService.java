@@ -4,7 +4,7 @@ import com.example.webgrow.payload.request.AuthenticateRequest;
 import com.example.webgrow.payload.request.ForgotPasswordOtpRequest;
 import com.example.webgrow.payload.request.RegisterRequest;
 import com.example.webgrow.payload.request.ValidatePasswordRequest;
-import com.example.webgrow.models.DTOClass;
+import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.OtpValidate;
 import jakarta.mail.MessagingException;
 
