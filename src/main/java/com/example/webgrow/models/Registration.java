@@ -17,13 +17,13 @@ import java.time.LocalDateTime;
 public class Registration {
 
     @Id
-    @GeneratedValue
-    private Integer id;
-    @OneToOne
-    @JoinColumn(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer registration_id;
+    @ManyToOne
+    @JoinColumn(name = "participant_id", nullable = false)
     private User participant;
     @ManyToOne
-    @JoinColumn(name = "event_id")
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
     private LocalDateTime registrationDate = LocalDateTime.now();
@@ -31,11 +31,5 @@ public class Registration {
     public Registration(User participant, Event event) {
         this.participant = participant;
         this.event = event;
-    }
-
-    public Registration(Integer id, Long eventId) {
-
-        this.id = id;
-        this.event = Event.builder().id(eventId).build();
     }
 }

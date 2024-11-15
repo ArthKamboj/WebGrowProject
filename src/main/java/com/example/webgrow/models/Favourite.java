@@ -1,10 +1,7 @@
 package com.example.webgrow.models;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,14 +16,13 @@ import lombok.NoArgsConstructor;
 public class Favourite {
 
     @Id
-    @GeneratedValue
-    private Integer id;
-    private long participantId;
-    private long eventId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer favId;
+    @ManyToOne
+    @JoinColumn(name = "participant_id", nullable = false)
+    private User participant;
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false)
+    private Event event;
 
-    public Favourite(Integer id, Long eventId) {
-
-        this.id = id;
-        this.eventId = eventId;
-    }
 }

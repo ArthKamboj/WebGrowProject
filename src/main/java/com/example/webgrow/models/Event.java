@@ -15,12 +15,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "eventParticipant")
+@Table(name = "event_participant")
 public class Event {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
     private String description;
     private LocalDateTime date;
