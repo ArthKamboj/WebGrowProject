@@ -19,4 +19,5 @@ public class EventDTO {
     private LocalDateTime date;
     private String location;
     private String category;
+    private int capacity;
 }

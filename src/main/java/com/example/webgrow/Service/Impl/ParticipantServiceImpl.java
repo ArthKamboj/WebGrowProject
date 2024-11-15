@@ -25,63 +25,126 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     private final EventRepository eventRepository;
     private final RegistrationRepository registrationRepository;
-    private final FavouriteRepository favoriteRepository;
+    private final FavouriteRepository favouriteRepository;
     private final UserRepository userRepository;
 
+
+    // 1. Get All Events
     public List<EventDTO> getAllEvents(String search, String category, String location) {
         return eventRepository.findEvents(search, category, location)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
-    private EventDTO convertToDTO(Event event) {
-        return new EventDTO(event.getId(), event.getTitle(), event.getDescription(),
-                event.getDate(), event.getLocation(), event.getCategory());
-    }
 
-    public void registerForEvent(Long eventId, Integer Id) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
-        Registration registration = new Registration(Id, eventId);
-        registrationRepository.save(registration);
-    }
-
-    public List<EventDTO> getRegisteredEvents(Integer Id) {
-        return registrationRepository.findByParticipantId(Id)
+    // 2. Get Registered Events
+    public List<EventDTO> getRegisteredEvents(Integer participantId) {
+        return registrationRepository.findByParticipantId(participantId)
                 .stream()
                 .map(registration -> convertToDTO(registration.getEvent()))
                 .collect(Collectors.toList());
     }
 
-    public void markEventAsFavorite(Long eventId, Integer Id) {
-        Favourite favorite = new Favourite(Id, eventId);
-        favoriteRepository.save(favorite);
-    }
-
-    public void unmarkEventAsFavorite(Long eventId, Integer Id) {
-        favoriteRepository.deleteByIdAndEventId(Id, eventId);
-    }
-
-    public UserDTO getProfile(Integer Id) {
-        return userRepository.findById(Id)
-                .map(this::convertToUserDTO)
+    // 3. Register for an Event
+    public String registerForEvent(Integer participantId, Long eventId) {
+        User participant = userRepository.findById(participantId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        Registration registration = new Registration(participant, event);
+        registrationRepository.save(registration);
+
+        return "Successfully registered for the event";
     }
 
-//    public void updateProfile(Integer Id, UserDTO userDTO) {
-//        User user = userRepository.findById(Id)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//        user.setFirstName(userDTO.getName());
-//        user.setEmail(userDTO.getEmail());
-//        userRepository.save(user);
-//    }
-//
-//    private EventDTO convertToDTO(Event event) {
-//        return new EventDTO(event.getId(), event.getTitle(), event.getDescription(),
-//                event.getDate(), event.getLocation(), event.getCategory());
-//    }
+    // 4. Add to Favourites
+    public String addToFavourites(Integer participantId, Long eventId) {
+        User participant = userRepository.findById(participantId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
 
-    private UserDTO convertToUserDTO(User user) {
-        return new UserDTO(user.getId(), user.getFirstName(), user.getEmail());
+        Favourite favourite = new Favourite(null, participant, event);
+        favouriteRepository.save(favourite);
+
+        return "Event added to favourites";
+    }
+
+    // 5. Get Favourite Events
+    public List<EventDTO> getFavouriteEvents(Integer participantId) {
+        return favouriteRepository.findByParticipantId(participantId)
+                .stream()
+                .map(favourite -> convertToDTO(favourite.getEvent()))
+                .collect(Collectors.toList());
+    }
+
+    // 6. Unregister from an Event
+    public String unregisterFromEvent(Integer participantId, Long eventId) {
+        Registration registration = registrationRepository
+                .findByParticipantIdAndEventId(participantId, eventId)
+                .orElseThrow(() -> new RuntimeException("Registration not found"));
+
+        registrationRepository.delete(registration);
+
+        return "Successfully unregistered from the event";
+    }
+
+    // 7. Unmark an Event as Favourite
+    public String unmarkAsFavourite(Integer participantId, Long eventId) {
+        Favourite favourite = favouriteRepository
+                .findByParticipantIdAndEventId(participantId, eventId)
+                .orElseThrow(() -> new RuntimeException("Favourite not found"));
+
+        favouriteRepository.delete(favourite);
+
+        return "Event successfully removed from favourites";
+    }
+
+    // 8. Get Participant Profile
+    public User getParticipantProfile(Integer participantId) {
+        return userRepository.findById(participantId)
+                .orElseThrow(() -> new RuntimeException("Participant not found"));
+    }
+
+    // 9. Update Participant Profile
+    public void updateParticipantProfile(Integer participantId, User updatedProfile) {
+        User existingUser = userRepository.findById(participantId)
+                .orElseThrow(() -> new RuntimeException("Participant not found"));
+
+        // Update fields
+        if (updatedProfile.getFirstName() != null) {
+            existingUser.setFirstName(updatedProfile.getFirstName());
+        }
+        if (updatedProfile.getLastName() != null) {
+            existingUser.setLastName(updatedProfile.getLastName());
+        }
+        if (updatedProfile.getEmail() != null) {
+            existingUser.setEmail(updatedProfile.getEmail());
+        }
+        if (updatedProfile.getMobile() != null) {
+            existingUser.setMobile(updatedProfile.getMobile());
+        }
+        if (updatedProfile.getDesignation() != null) {
+            existingUser.setDesignation(updatedProfile.getDesignation());
+        }
+        if (updatedProfile.getOrganization() != null) {
+            existingUser.setOrganization(updatedProfile.getOrganization());
+        }
+
+        userRepository.save(existingUser);
+    }
+
+    // Helper Method to Convert Event to EventDTO
+    private EventDTO convertToDTO(Event event) {
+        return EventDTO.builder()
+                .id(event.getId())
+                .title(event.getTitle())
+                .description(event.getDescription())
+                .date(event.getDate())
+                .location(event.getLocation())
+                .category(event.getCategory())
+                .capacity(event.getCapacity())
+                .build();
     }
 }

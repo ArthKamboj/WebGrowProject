@@ -1,9 +1,9 @@
 package com.example.webgrow.Service;
 
+import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.EventDTO;
 import com.example.webgrow.payload.dto.UserDTO;
-import jdk.jfr.Event;
 
 import java.util.List;
 
@@ -11,19 +11,20 @@ public interface ParticipantService {
 
     public List<EventDTO> getAllEvents(String search, String category, String location);
 
-    public void registerForEvent(Long eventId, Integer Id);
+    public String registerForEvent(Integer participantId, Long eventId);
 
-    public List<EventDTO> getRegisteredEvents(Integer Id);
+    public List<EventDTO> getRegisteredEvents(Integer participantId);
 
-    public void markEventAsFavorite(Long eventId, Integer Id);
+    public String addToFavourites(Integer participantId, Long eventId);
 
-    public void unmarkEventAsFavorite(Long eventId, Integer Id);
+    public List<EventDTO> getFavouriteEvents(Integer participantId);
 
-    public UserDTO getProfile(Integer Id);
+    public String unregisterFromEvent(Integer participantId, Long eventId);
 
-//    public void updateProfile(Integer Id, UserDTO userDTO);
-//
-//    private EventDTO convertToDTO(Event event) { return null; }
+    public String unmarkAsFavourite(Integer participantId, Long eventId);
 
-    private UserDTO convertToUserDTO(User user) { return null; }
+    public User getParticipantProfile(Integer participantId);
+
+    public void updateParticipantProfile(Integer participantId, User updatedProfile);
+
 }
