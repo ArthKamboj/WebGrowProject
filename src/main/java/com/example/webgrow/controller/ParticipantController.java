@@ -4,6 +4,7 @@ package com.example.webgrow.controller;
 import com.example.webgrow.Service.ParticipantService;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.EventDTO;
+import com.example.webgrow.payload.dto.NotificationDTO;
 import com.example.webgrow.payload.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -83,6 +84,13 @@ public class ParticipantController {
     public ResponseEntity<String> updateProfile(@RequestParam Integer participantId, @RequestBody User updatedProfile) {
         participantService.updateParticipantProfile(participantId, updatedProfile);
         return ResponseEntity.ok("Profile updated successfully");
+    }
+
+    // 10. Get notifications
+    @GetMapping("/notifications")
+    public ResponseEntity<List<NotificationDTO>> getNotifications(@RequestParam Integer participantId) {
+        List<NotificationDTO> notifications = participantService.getNotifications(participantId);
+        return ResponseEntity.ok(notifications);
     }
 
 

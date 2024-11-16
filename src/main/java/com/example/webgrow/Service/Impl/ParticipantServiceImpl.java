@@ -1,17 +1,12 @@
 package com.example.webgrow.Service.Impl;
 
 import com.example.webgrow.Service.ParticipantService;
-import com.example.webgrow.models.Event;
-import com.example.webgrow.models.Favourite;
-import com.example.webgrow.models.Registration;
-import com.example.webgrow.models.User;
+import com.example.webgrow.models.*;
 import com.example.webgrow.models.Registration;
 import com.example.webgrow.payload.dto.EventDTO;
+import com.example.webgrow.payload.dto.NotificationDTO;
 import com.example.webgrow.payload.dto.UserDTO;
-import com.example.webgrow.repository.EventRepository;
-import com.example.webgrow.repository.FavouriteRepository;
-import com.example.webgrow.repository.RegistrationRepository;
-import com.example.webgrow.repository.UserRepository;
+import com.example.webgrow.repository.*;
 import com.example.webgrow.repository.RegistrationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +22,8 @@ public class ParticipantServiceImpl implements ParticipantService {
     private final RegistrationRepository registrationRepository;
     private final FavouriteRepository favouriteRepository;
     private final UserRepository userRepository;
+    private final NotificationRepository notificationRepository;
+
 
 
     // 1. Get All Events
@@ -133,6 +130,23 @@ public class ParticipantServiceImpl implements ParticipantService {
         }
 
         userRepository.save(existingUser);
+    }
+
+    public List<NotificationDTO> getNotifications(Integer participantId) {
+        List<Notification> notifications = notificationRepository.findByParticipantId(participantId);
+        return notifications.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private NotificationDTO convertToDTO(Notification notification) {
+        return NotificationDTO.builder()
+                .id(notification.getId())
+                .participant_id(notification.getParticipant().getId())
+                .message(notification.getMessage())
+                .timestamp(notification.getTimestamp())
+                .read(notification.isRead())
+                .build();
     }
 
     // Helper Method to Convert Event to EventDTO

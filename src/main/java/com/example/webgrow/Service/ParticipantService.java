@@ -3,6 +3,7 @@ package com.example.webgrow.Service;
 import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.EventDTO;
+import com.example.webgrow.payload.dto.NotificationDTO;
 import com.example.webgrow.payload.dto.UserDTO;
 
 import java.util.List;
@@ -26,5 +27,7 @@ public interface ParticipantService {
     public User getParticipantProfile(Integer participantId);
 
     public void updateParticipantProfile(Integer participantId, User updatedProfile);
+
+    public List<NotificationDTO> getNotifications(Integer participantId);
 
 }

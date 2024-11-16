@@ -13,7 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "registration")
+@Table(
+        name = "registration",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"participant_id","event_id"})
+)
 public class Registration {
 
     @Id
