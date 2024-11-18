@@ -12,22 +12,21 @@ public interface ParticipantService {
 
     public List<EventDTO> getAllEvents(String search, String category, String location);
 
-    public String registerForEvent(Integer participantId, Long eventId);
+    public String registerForEvent(String email, Long eventId);
 
-    public List<EventDTO> getRegisteredEvents(Integer participantId);
+    public List<EventDTO> getRegisteredEvents(String email);
 
-    public String addToFavourites(Integer participantId, Long eventId);
+    public String addToFavourites(String email, Long eventId);
 
-    public List<EventDTO> getFavouriteEvents(Integer participantId);
+    public List<EventDTO> getFavouriteEvents(String email);
 
-    public String unregisterFromEvent(Integer participantId, Long eventId);
+    public String unregisterFromEvent(String email, Long eventId);
 
-    public String unmarkAsFavourite(Integer participantId, Long eventId);
+    public String unmarkAsFavourite(String email, Long eventId);
 
-    public User getParticipantProfile(Integer participantId);
+    public UserDTO getParticipantProfile(String email);
 
-    public void updateParticipantProfile(Integer participantId, User updatedProfile);
+    public void updateParticipantProfile(String email, User updatedProfile);
 
-    public List<NotificationDTO> getNotifications(Integer participantId);
-
+    public List<NotificationDTO> getNotifications(String email);
 }

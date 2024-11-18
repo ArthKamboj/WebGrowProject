@@ -52,11 +52,6 @@ public class JwtService {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
-//    public boolean isHostToken(String token) {
-//        String role = extractClaim(token, claims -> claims.get("role", String.class));
-//        return "HOST".equals(role);
-//    }
-
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }

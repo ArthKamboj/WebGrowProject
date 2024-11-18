@@ -2,12 +2,11 @@ package com.example.webgrow.Service.Impl;
 
 import com.example.webgrow.Service.ParticipantService;
 import com.example.webgrow.models.*;
-import com.example.webgrow.models.Registration;
 import com.example.webgrow.payload.dto.EventDTO;
 import com.example.webgrow.payload.dto.NotificationDTO;
 import com.example.webgrow.payload.dto.UserDTO;
 import com.example.webgrow.repository.*;
-import com.example.webgrow.repository.RegistrationRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +23,13 @@ public class ParticipantServiceImpl implements ParticipantService {
     private final UserRepository userRepository;
     private final NotificationRepository notificationRepository;
 
-
+    private User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    }
 
     // 1. Get All Events
+    @Override
     public List<EventDTO> getAllEvents(String search, String category, String location) {
         return eventRepository.findEvents(search, category, location)
                 .stream()
@@ -35,51 +38,60 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     // 2. Get Registered Events
-    public List<EventDTO> getRegisteredEvents(Integer participantId) {
-        return registrationRepository.findByParticipantId(participantId)
+    @Override
+    public List<EventDTO> getRegisteredEvents(String email) {
+        User user = getUserByEmail(email);
+        return registrationRepository.findByParticipantId(user.getId())
                 .stream()
                 .map(registration -> convertToDTO(registration.getEvent()))
                 .collect(Collectors.toList());
     }
 
     // 3. Register for an Event
-    public String registerForEvent(Integer participantId, Long eventId) {
-        User participant = userRepository.findById(participantId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    @Override
+    @Transactional
+    public String registerForEvent(String email, Long eventId) {
+        User user = getUserByEmail(email);
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
-        Registration registration = new Registration(participant, event);
+        Registration registration = new Registration(user, event);
         registrationRepository.save(registration);
 
         return "Successfully registered for the event";
     }
 
     // 4. Add to Favourites
-    public String addToFavourites(Integer participantId, Long eventId) {
-        User participant = userRepository.findById(participantId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    @Override
+    @Transactional
+    public String addToFavourites(String email, Long eventId) {
+        User user = getUserByEmail(email);
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
-        Favourite favourite = new Favourite(null, participant, event);
+        Favourite favourite = new Favourite(null, user, event);
         favouriteRepository.save(favourite);
 
         return "Event added to favourites";
     }
 
     // 5. Get Favourite Events
-    public List<EventDTO> getFavouriteEvents(Integer participantId) {
-        return favouriteRepository.findByParticipantId(participantId)
+    @Override
+    public List<EventDTO> getFavouriteEvents(String email) {
+        User user = getUserByEmail(email);
+        return favouriteRepository.findByParticipantId(user.getId())
                 .stream()
                 .map(favourite -> convertToDTO(favourite.getEvent()))
                 .collect(Collectors.toList());
     }
 
     // 6. Unregister from an Event
-    public String unregisterFromEvent(Integer participantId, Long eventId) {
+    @Override
+    @Transactional
+    public String unregisterFromEvent(String email, Long eventId) {
+        User user = getUserByEmail(email);
         Registration registration = registrationRepository
-                .findByParticipantIdAndEventId(participantId, eventId)
+                .findByParticipantIdAndEventId(user.getId(), eventId)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
 
         registrationRepository.delete(registration);
@@ -88,9 +100,12 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     // 7. Unmark an Event as Favourite
-    public String unmarkAsFavourite(Integer participantId, Long eventId) {
+    @Override
+    @Transactional
+    public String unmarkAsFavourite(String email, Long eventId) {
+        User user = getUserByEmail(email);
         Favourite favourite = favouriteRepository
-                .findByParticipantIdAndEventId(participantId, eventId)
+                .findByParticipantIdAndEventId(user.getId(), eventId)
                 .orElseThrow(() -> new RuntimeException("Favourite not found"));
 
         favouriteRepository.delete(favourite);
@@ -99,42 +114,39 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     // 8. Get Participant Profile
-    public User getParticipantProfile(Integer participantId) {
-        return userRepository.findById(participantId)
-                .orElseThrow(() -> new RuntimeException("Participant not found"));
+    @Override
+    public UserDTO getParticipantProfile(String email) {
+        User user = getUserByEmail(email);
+        return UserDTO.from(user);
     }
 
     // 9. Update Participant Profile
-    public void updateParticipantProfile(Integer participantId, User updatedProfile) {
-        User existingUser = userRepository.findById(participantId)
-                .orElseThrow(() -> new RuntimeException("Participant not found"));
+    @Override
+    @Transactional
+    public void updateParticipantProfile(String email, User updatedProfile) {
+        User user = getUserByEmail(email);
 
-        // Update fields
         if (updatedProfile.getFirstName() != null) {
-            existingUser.setFirstName(updatedProfile.getFirstName());
+            user.setFirstName(updatedProfile.getFirstName());
         }
         if (updatedProfile.getLastName() != null) {
-            existingUser.setLastName(updatedProfile.getLastName());
-        }
-        if (updatedProfile.getEmail() != null) {
-            existingUser.setEmail(updatedProfile.getEmail());
+            user.setLastName(updatedProfile.getLastName());
         }
         if (updatedProfile.getMobile() != null) {
-            existingUser.setMobile(updatedProfile.getMobile());
+            user.setMobile(updatedProfile.getMobile());
         }
-        if (updatedProfile.getDesignation() != null) {
-            existingUser.setDesignation(updatedProfile.getDesignation());
-        }
-        if (updatedProfile.getOrganization() != null) {
-            existingUser.setOrganization(updatedProfile.getOrganization());
-        }
+        System.out.println("Updated user details: " + user);
 
-        userRepository.save(existingUser);
+
+        userRepository.save(user);
     }
 
-    public List<NotificationDTO> getNotifications(Integer participantId) {
-        List<Notification> notifications = notificationRepository.findByParticipantId(participantId);
-        return notifications.stream()
+    // 10. Get Notifications
+    @Override
+    public List<NotificationDTO> getNotifications(String email) {
+        User user = getUserByEmail(email);
+        return notificationRepository.findByParticipantId(user.getId())
+                .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -149,7 +161,6 @@ public class ParticipantServiceImpl implements ParticipantService {
                 .build();
     }
 
-    // Helper Method to Convert Event to EventDTO
     private EventDTO convertToDTO(Event event) {
         return EventDTO.builder()
                 .id(event.getId())
