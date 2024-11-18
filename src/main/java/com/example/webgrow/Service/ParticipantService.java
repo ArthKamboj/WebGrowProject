@@ -28,5 +28,5 @@ public interface ParticipantService {
 
     public void updateParticipantProfile(String email, User updatedProfile);
 
-    public List<NotificationDTO> getNotifications(String email);
+    public List<NotificationDTO> getNotifications(String email, int page, int size);
 }

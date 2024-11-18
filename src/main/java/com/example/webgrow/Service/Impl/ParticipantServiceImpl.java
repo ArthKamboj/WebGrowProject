@@ -8,6 +8,9 @@ import com.example.webgrow.payload.dto.UserDTO;
 import com.example.webgrow.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -143,10 +146,12 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     // 10. Get Notifications
     @Override
-    public List<NotificationDTO> getNotifications(String email) {
+    public List<NotificationDTO> getNotifications(String email, int page, int size) {
         User user = getUserByEmail(email);
-        return notificationRepository.findByParticipantId(user.getId())
-                .stream()
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Notification> notificationPage = notificationRepository.findByParticipantId(user.getId(), pageable);
+
+        return notificationPage.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }

@@ -87,9 +87,15 @@ public class ParticipantController {
     }
 
     // 10. Get Notifications
-    @GetMapping("/notifications")
-    public ResponseEntity<List<NotificationDTO>> getNotifications(@AuthenticationPrincipal String email) {
-        List<NotificationDTO> notifications = participantService.getNotifications(email);
+    @GetMapping("/notifications/{page}/{size}")
+    public ResponseEntity<List<NotificationDTO>> getNotifications(@AuthenticationPrincipal String email,
+                                                                  @PathVariable(required = false) Integer page,
+                                                                  @PathVariable(required = false) Integer size)
+    {
+        int defaultPage = (page != null) ? page : 0;
+        int defaultSize = (size != null) ? size : 10;
+
+        List<NotificationDTO> notifications = participantService.getNotifications(email, defaultPage, defaultSize);
         return ResponseEntity.ok(notifications);
     }
 }
