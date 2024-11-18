@@ -4,10 +4,7 @@ import com.example.webgrow.Service.EventService;
 import com.example.webgrow.models.DTOClass;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.EventRequest;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +21,6 @@ public class EventController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
         String email = currentUser.getEmail();
-        eventService.createEvent(eventRequest, email);
         DTOClass response = eventService.createEvent(eventRequest,email);
         return ResponseEntity.ok(response);
     }
