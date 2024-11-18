@@ -1,6 +1,7 @@
 package com.example.webgrow.Service.Impl;
 
 import com.example.webgrow.Service.EventService;
+import com.example.webgrow.Service.JwtService;
 import com.example.webgrow.models.DTOClass;
 import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
@@ -11,6 +12,7 @@ import com.example.webgrow.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,16 +21,23 @@ import java.util.stream.Collectors;
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @Override
-    public DTOClass createEvent(EventRequest eventRequest, String hostEmail) {
-        User host = userRepository.findByEmail(hostEmail).orElseThrow();
+    public DTOClass  createEvent(EventRequest eventRequest, String email) {
+//        final String authHeader = request.getHeader("Authorization");
+//        final String jwt;
+//        final String hostEmail;
+//        jwt = authHeader.substring(7);
+//        hostEmail = jwtService.extractUsername(jwt);
+        User host = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Host with email " + email + " not found"));
+
         Event event = new Event();
         event.setTitle(eventRequest.getTitle());
         event.setDescription(eventRequest.getDescription());
         event.setLocation(eventRequest.getLocation());
-        event.setDate(eventRequest.getDate());
-        event.setTime(eventRequest.getTime());
+        event.setTime(LocalDateTime.now());
         event.setHost(host);
         eventRepository.save(event);
         return new DTOClass("Event Created Successfully","SUCCESS",null);
@@ -43,8 +52,7 @@ public class EventServiceImpl implements EventService {
         event.setTitle(eventRequest.getTitle());
         event.setDescription(eventRequest.getDescription());
         event.setLocation(eventRequest.getLocation());
-        event.setDate(eventRequest.getDate());
-        event.setTime(eventRequest.getTime());
+        event.setTime(LocalDateTime.now());
         eventRepository.save(event);
         return new DTOClass("Event Updated Successfully","SUCCESS",null);
     }
@@ -69,8 +77,7 @@ public class EventServiceImpl implements EventService {
                     eventResponse.setTitle(event.getTitle());
                     eventResponse.setDescription(event.getDescription());
                     eventResponse.setLocation(event.getLocation());
-                    eventResponse.setDate(event.getDate());
-                    eventResponse.setTime(event.getTime());
+                    eventResponse.setTime(LocalDateTime.now());
                     eventResponse.setHostEmail(event.getHost().getEmail());
                     return eventResponse;
                         }
@@ -87,7 +94,6 @@ public class EventServiceImpl implements EventService {
         response.setTitle(event.getTitle());
         response.setDescription(event.getDescription());
         response.setLocation(event.getLocation());
-        response.setDate(event.getDate());
         response.setTime(event.getTime());
         response.setHostEmail(event.getHost().getEmail());
         return new DTOClass("Event details retrieved successfully", "SUCCESS", response);

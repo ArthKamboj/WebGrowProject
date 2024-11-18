@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name="events")
 @Data
@@ -17,9 +18,8 @@ public class Event {
     private Long id;
     private String title;
     private String description;
-    private String date;
     private String location;
-    private String time;
+    private LocalDateTime time;
     @ManyToOne
     @JoinColumn(name = "host_id",nullable = false)
     private User host;

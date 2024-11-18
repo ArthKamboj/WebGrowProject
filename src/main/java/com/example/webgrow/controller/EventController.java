@@ -2,48 +2,63 @@ package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.EventService;
 import com.example.webgrow.models.DTOClass;
+import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.EventRequest;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/events")
-@CrossOrigin
 @RequiredArgsConstructor
 public class EventController {
     private final EventService eventService;
+
     @PostMapping("/create")
-    public ResponseEntity<DTOClass> createEvent(@RequestBody EventRequest eventRequest,
-                                                @RequestParam String hostEmail) {
-        DTOClass response = eventService.createEvent(eventRequest, hostEmail);
+    public ResponseEntity<DTOClass> createEvent(@RequestBody EventRequest eventRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+        eventService.createEvent(eventRequest, email);
+        DTOClass response = eventService.createEvent(eventRequest,email);
         return ResponseEntity.ok(response);
     }
 
+
     @PutMapping("/update/{id}")
-    public ResponseEntity<DTOClass> updateEvent(@RequestBody EventRequest eventRequest,
-                                                @PathVariable Long id,
-                                                @RequestParam String hostEmail ) {
-        DTOClass response = eventService.updateEvent(id,eventRequest,hostEmail);
+    public ResponseEntity<DTOClass> updateEvent(@RequestBody EventRequest eventRequest, @PathVariable("id") long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+        DTOClass response = eventService.updateEvent(id,eventRequest,email);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<DTOClass> deleteEvent(@PathVariable Long id,
-                                                @RequestParam String hostEmail) {
-        DTOClass response = eventService.deleteEvent(id,hostEmail);
+    public ResponseEntity<DTOClass> deleteEvent(@PathVariable ("id") long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+        DTOClass response = eventService.deleteEvent(id,email);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<DTOClass> getAllEvents(@RequestParam String hostEmail) {
-        DTOClass response = eventService.getEventList(hostEmail);
+    public ResponseEntity<DTOClass> getAllEvents() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+        DTOClass response = eventService.getEventList(email);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DTOClass> getEvent(@PathVariable Long id) {
+    public ResponseEntity<DTOClass> getEvent(@PathVariable ("id") long id) {
         DTOClass response = eventService.getEventDetails(id);
         return ResponseEntity.ok(response);
     }
