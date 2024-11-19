@@ -11,6 +11,8 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Random;
@@ -23,6 +25,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
+    private final UserRepository userRepository;
 
     public DTOClass register(RegisterRequest request) {
 
@@ -171,4 +174,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return new DTOClass("NO USER EXIST WITH THE GIVEN EMAIL", "FAILURE", null);
         }
     }
+    public DTOClass getUserByEmail(String email) {
+        var user = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        HostDTO hostDTO = new HostDTO(
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getMobile(),
+                user.getRole().name(),
+                user.isVerified(),
+                user.isEnabled()
+        );
+        return new DTOClass("User Fetched Successfully","SUCCESS", hostDTO);
+    }
+
+    @Override
+    public DTOClass updateUserDetails(UpdateProfileRequest request) throws MessagingException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+        var user=repository.findByEmail(email).orElseThrow(()->new RuntimeException("User not found with email: " + email));
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setMobile(request.getMobile());
+        user.setDesignation(request.getDesignation());
+        user.setOrganization(request.getOrganization());
+        userRepository.save(user);
+        return new DTOClass("Profile updated successfully", "SUCCESS", null);
+    }
+
+
 }
