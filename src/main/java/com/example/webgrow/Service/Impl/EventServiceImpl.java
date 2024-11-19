@@ -1,7 +1,6 @@
 package com.example.webgrow.Service.Impl;
 
 import com.example.webgrow.Service.EventService;
-import com.example.webgrow.Service.JwtService;
 import com.example.webgrow.models.DTOClass;
 import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
@@ -21,15 +20,9 @@ import java.util.stream.Collectors;
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final JwtService jwtService;
 
     @Override
     public DTOClass  createEvent(EventRequest eventRequest, String email) {
-//        final String authHeader = request.getHeader("Authorization");
-//        final String jwt;
-//        final String hostEmail;
-//        jwt = authHeader.substring(7);
-//        hostEmail = jwtService.extractUsername(jwt);
         User host = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Host with email " + email + " not found"));
 
@@ -39,6 +32,11 @@ public class EventServiceImpl implements EventService {
         event.setLocation(eventRequest.getLocation());
         event.setTime(LocalDateTime.now());
         event.setHost(host);
+        event.setImageUrl(eventRequest.getImageUrl());
+        event.setMode(eventRequest.getMode());
+        event.setParticipationType(eventRequest.getParticipationType());
+        event.setDuration(eventRequest.getDuration());
+        event.setParticipantNumber(eventRequest.getParticipationNumber());
         eventRepository.save(event);
         return new DTOClass("Event Created Successfully","SUCCESS",null);
     }
@@ -98,4 +96,5 @@ public class EventServiceImpl implements EventService {
         response.setHostEmail(event.getHost().getEmail());
         return new DTOClass("Event details retrieved successfully", "SUCCESS", response);
     }
+
 }

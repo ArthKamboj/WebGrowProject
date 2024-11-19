@@ -62,10 +62,16 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.verifyForgotPassword(request));
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/user/profile")
     public ResponseEntity<DTOClass> getProfile() throws MessagingException {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         DTOClass user=service.getUserByEmail(email);
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/user/updateprofile")
+    public ResponseEntity<DTOClass> updateUserDetails(@RequestBody UpdateProfileRequest request) throws MessagingException {
+        DTOClass user=service.updateUserDetails(request);
         return ResponseEntity.ok(user);
     }
 }
