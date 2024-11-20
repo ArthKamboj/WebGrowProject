@@ -1,7 +1,7 @@
 package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.EventService;
-import com.example.webgrow.models.DTOClass;
+import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.EventRequest;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,9 @@ public class EventController {
     @PostMapping("/create")
     public ResponseEntity<DTOClass> createEvent(@RequestBody EventRequest eventRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        String email = currentUser.getEmail();
+//
+        String email = authentication.getName();
+//        String email = currentUser.getEmail();
         DTOClass response = eventService.createEvent(eventRequest,email);
         return ResponseEntity.ok(response);
     }
@@ -29,8 +30,8 @@ public class EventController {
     @PutMapping("/update/{id}")
     public ResponseEntity<DTOClass> updateEvent(@RequestBody EventRequest eventRequest, @PathVariable("id") long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        String email = currentUser.getEmail();
+//        User currentUser = (User) authentication.getPrincipal();
+        String email = authentication.getName();
         DTOClass response = eventService.updateEvent(id,eventRequest,email);
         return ResponseEntity.ok(response);
     }
@@ -38,8 +39,8 @@ public class EventController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<DTOClass> deleteEvent(@PathVariable ("id") long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        String email = currentUser.getEmail();
+//        User currentUser = (User) authentication.getPrincipal();
+        String email = authentication.getName();
         DTOClass response = eventService.deleteEvent(id,email);
         return ResponseEntity.ok(response);
     }
@@ -47,8 +48,8 @@ public class EventController {
     @GetMapping("/list")
     public ResponseEntity<DTOClass> getAllEvents() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        String email = currentUser.getEmail();
+//        User currentUser = (User) authentication.getPrincipal();
+        String email = authentication.getName();
         DTOClass response = eventService.getEventList(email);
         return ResponseEntity.ok(response);
     }

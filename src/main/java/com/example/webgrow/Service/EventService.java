@@ -1,6 +1,6 @@
 package com.example.webgrow.Service;
 
-import com.example.webgrow.models.DTOClass;
+import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.EventRequest;
 
 public interface EventService {

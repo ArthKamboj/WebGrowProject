@@ -1,7 +1,7 @@
 package com.example.webgrow.Service.Impl;
 
 import com.example.webgrow.Service.EventService;
-import com.example.webgrow.models.DTOClass;
+import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.EventRequest;
@@ -30,13 +30,12 @@ public class EventServiceImpl implements EventService {
         event.setTitle(eventRequest.getTitle());
         event.setDescription(eventRequest.getDescription());
         event.setLocation(eventRequest.getLocation());
-        event.setTime(LocalDateTime.now());
+        event.setStartTime(eventRequest.getStartTime());
+        event.setEndTime(eventRequest.getEndTime());
         event.setHost(host);
         event.setImageUrl(eventRequest.getImageUrl());
         event.setMode(eventRequest.getMode());
-        event.setParticipationType(eventRequest.getParticipationType());
-        event.setDuration(eventRequest.getDuration());
-        event.setParticipantNumber(eventRequest.getParticipationNumber());
+        event.setCapacity(eventRequest.getCapacity());
         eventRepository.save(event);
         return new DTOClass("Event Created Successfully","SUCCESS",null);
     }
@@ -50,7 +49,8 @@ public class EventServiceImpl implements EventService {
         event.setTitle(eventRequest.getTitle());
         event.setDescription(eventRequest.getDescription());
         event.setLocation(eventRequest.getLocation());
-        event.setTime(LocalDateTime.now());
+        event.setStartTime(eventRequest.getStartTime());
+        event.setEndTime(eventRequest.getEndTime());
         eventRepository.save(event);
         return new DTOClass("Event Updated Successfully","SUCCESS",null);
     }
@@ -75,7 +75,10 @@ public class EventServiceImpl implements EventService {
                     eventResponse.setTitle(event.getTitle());
                     eventResponse.setDescription(event.getDescription());
                     eventResponse.setLocation(event.getLocation());
-                    eventResponse.setTime(LocalDateTime.now());
+                    eventResponse.setMode(event.getMode());
+                    eventResponse.setCapacity(event.getCapacity());
+                    eventResponse.setStartTime(event.getStartTime());
+                    eventResponse.setEndTime(event.getEndTime());
                     eventResponse.setHostEmail(event.getHost().getEmail());
                     return eventResponse;
                         }
@@ -92,7 +95,10 @@ public class EventServiceImpl implements EventService {
         response.setTitle(event.getTitle());
         response.setDescription(event.getDescription());
         response.setLocation(event.getLocation());
-        response.setTime(event.getTime());
+        response.setStartTime(event.getStartTime());
+        response.setEndTime(event.getEndTime());
+        response.setMode(event.getMode());
+        response.setCapacity(event.getCapacity());
         response.setHostEmail(event.getHost().getEmail());
         return new DTOClass("Event details retrieved successfully", "SUCCESS", response);
     }

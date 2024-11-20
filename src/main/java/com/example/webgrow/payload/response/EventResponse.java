@@ -10,6 +10,10 @@ public class EventResponse {
     private String title;
     private String description;
     private String location;
-    private LocalDateTime time;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private String hostEmail;
+    private Long capacity;
+    private String mode;
+    private String imageUrl;
 }

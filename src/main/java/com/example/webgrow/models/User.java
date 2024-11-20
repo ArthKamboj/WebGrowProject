@@ -21,7 +21,7 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
 
     private String firstName;
@@ -69,7 +69,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return verified;
     }
 
     @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)

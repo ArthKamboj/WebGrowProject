@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class NotificationDTO {
 
     private Long id;
-    private Integer participant_id;
+    private Long participant_id;
     private String message;
     private LocalDateTime timestamp;
     private boolean read;
