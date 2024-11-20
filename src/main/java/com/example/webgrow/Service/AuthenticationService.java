@@ -7,9 +7,7 @@ import com.example.webgrow.payload.request.RegisterRequest;
 import com.example.webgrow.payload.request.ValidatePasswordRequest;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.OtpValidate;
-import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.*;
-import com.example.webgrow.models.DTOClass;
 import jakarta.mail.MessagingException;
 
 public interface AuthenticationService {

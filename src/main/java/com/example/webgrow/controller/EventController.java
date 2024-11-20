@@ -1,7 +1,7 @@
 package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.EventService;
-import com.example.webgrow.models.DTOClass;
+import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.EventRequest;
 import lombok.RequiredArgsConstructor;

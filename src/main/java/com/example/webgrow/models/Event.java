@@ -22,7 +22,7 @@ public class Event {
     private String description;
     private String location;
     private String category;
-    private int capacity;
+    private Long capacity;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;

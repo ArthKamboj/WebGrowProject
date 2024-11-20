@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface RegistrationRepository extends JpaRepository<Registration, Long> {
 
-    List<Registration> findByParticipantId(Integer Id);
-    Optional<Registration> findByParticipantIdAndEventId(Integer Id, Long EventId);
+    List<Registration> findByParticipantId(Long Id);
+    Optional<Registration> findByParticipantIdAndEventId(Long Id, Long EventId);
 }
