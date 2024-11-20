@@ -69,7 +69,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return verified;
     }
 
     @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
