@@ -39,6 +39,5 @@ public class RegisterRequest {
     private String role;
 
     private String designation;
-
     private String organization;
 }

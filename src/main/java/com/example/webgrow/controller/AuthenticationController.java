@@ -3,7 +3,7 @@ package com.example.webgrow.controller;
 import com.example.webgrow.Service.AuthenticationService;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.*;
-import com.example.webgrow.models.DTOClass;
+import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.OtpValidate;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
 
 @CrossOrigin
 @RestController
@@ -23,7 +22,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<DTOClass> register(
             @Valid @RequestBody RegisterRequest request
-    ) throws MessagingException {
+    ) {
         return ResponseEntity.ok(service.register(request));
     }
 

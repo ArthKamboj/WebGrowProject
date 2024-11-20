@@ -20,8 +20,10 @@ import java.util.List;
 @Table(name= "_user")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+
     private String firstName;
     private String lastName;
     private String email;
@@ -67,6 +69,19 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return verified;
+        return enabled;
     }
+
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    private List<Quiz> hostedQuizzes;
+
+    @ManyToMany(mappedBy = "participants")
+    private List<Quiz> participatedQuizzes;
+
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    private List<Event> hostedEvents;
+
+    @ManyToMany(mappedBy = "participants")
+    private List<Event> participatedEvents;
+
 }

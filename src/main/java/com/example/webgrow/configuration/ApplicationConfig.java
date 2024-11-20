@@ -33,14 +33,6 @@ public class ApplicationConfig {
         return authProvider;
     }
 
-//    @Bean
-//    public AuthenticationProvider hostAuthenticationProvider() {
-//        DaoAuthenticationProvider hostAuthProvider = new DaoAuthenticationProvider();
-//        hostAuthProvider.setUserDetailsService(hostDetailsService());
-//        hostAuthProvider.setPasswordEncoder(passwordEncoder());
-//        return hostAuthProvider;
-//    }
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

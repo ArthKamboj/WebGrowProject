@@ -4,6 +4,7 @@ import com.example.webgrow.Service.AuthenticationService;
 import com.example.webgrow.Service.EmailService;
 import com.example.webgrow.Service.JwtService;
 import com.example.webgrow.models.*;
+import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.*;
 import com.example.webgrow.payload.response.AuthenticateResponse;
 import com.example.webgrow.repository.UserRepository;
@@ -30,9 +31,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public DTOClass register(RegisterRequest request) {
 
         String contact = request.getEmail();
+        User user = new User();
         if (repository.existsByEmail(contact)) {
             String password = request.getPassword();
-            var user = repository.findByEmail(contact).orElseThrow();
+            user = repository.findByEmail(contact).orElseThrow();
             if (user.isVerified()) { return new DTOClass("User Already Exists", "ERROR", null); }
             user.setFirstName(request.getFirstname());
             user.setLastName(request.getLastname());
@@ -55,16 +57,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
             return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
         } else {
-            var user = User.builder()
-                    .firstName(request.getFirstname())
-                    .lastName(request.getLastname())
-                    .email(request.getEmail())
-                    .mobile(request.getMobile())
-                    .verified(false)
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .role(Role.valueOf(request.getRole().toUpperCase()))
-                    .build();
-
+            user.setFirstName(request.getFirstname());
+            user.setLastName(request.getLastname());
+            user.setEmail(request.getEmail());
+            user.setMobile(request.getMobile());
+            user.setVerified(false);
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setRole(Role.valueOf(request.getRole().toUpperCase()));
 
             String otp = generateOtp();
             user.setOtp(otp);
