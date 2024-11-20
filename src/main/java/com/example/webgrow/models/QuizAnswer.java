@@ -30,6 +30,11 @@ public class QuizAnswer {
 
     private LocalDateTime timestamp;
 
+    @PrePersist
+    public void setTimestamp() {
+        this.timestamp = (this.timestamp == null) ? LocalDateTime.now() : this.timestamp;
+    }
+
     public boolean isCorrect() {
         return selectedOption != null && selectedOption.equals(question.getCorrectAnswer());
     }

@@ -68,6 +68,19 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return verified;
+        return enabled;
     }
+
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    private List<Quiz> hostedQuizzes;
+
+    @ManyToMany(mappedBy = "participants")
+    private List<Quiz> participatedQuizzes;
+
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    private List<Event> hostedEvents;
+
+    @ManyToMany(mappedBy = "participants")
+    private List<Event> participatedEvents;
+
 }

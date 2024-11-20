@@ -1,21 +1,17 @@
 package com.example.webgrow.models;
 
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-
+@Entity
+@Table(name = "events")
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "event_participant")
+@AllArgsConstructor
 public class Event {
 
     @Id
@@ -24,8 +20,27 @@ public class Event {
 
     private String title;
     private String description;
-    private LocalDateTime date;
     private String location;
     private String category;
     private int capacity;
+
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+
+    private String mode;
+    private String imageUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "host_id", nullable = false)
+    private User host;
+
+    @ManyToMany
+    @JoinTable(
+            name = "event_participants",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "participant_id")
+    )
+    private List<User> participants;
+
+    private boolean isActive;
 }

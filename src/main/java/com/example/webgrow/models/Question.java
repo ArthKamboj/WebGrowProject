@@ -1,6 +1,7 @@
 package com.example.webgrow.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
@@ -23,10 +24,14 @@ public class Question {
     @ElementCollection
     @CollectionTable(name = "question_options", joinColumns = @JoinColumn(name = "question_id"))
     @Column(name = "option")
+    @Size(min = 2, max = 15)
     private List<String> options;
 
     @Column(nullable = false)
     private String correctAnswer;
+
+    @Column(nullable = false)
+    private int questionNumber;
 
     @ManyToOne
     @JoinColumn(name = "quiz_id", nullable = false)

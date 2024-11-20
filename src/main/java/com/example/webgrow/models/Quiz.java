@@ -22,6 +22,7 @@ public class Quiz {
     private String title;
 
     private String description;
+
     @ManyToOne
     @JoinColumn(name = "host_id", nullable = false)
     private User host;
@@ -38,5 +39,6 @@ public class Quiz {
     )
     private List<User> participants;
 
-    private boolean isActive;
+    @Column(nullable = false)
+    private Boolean isActive;
 }

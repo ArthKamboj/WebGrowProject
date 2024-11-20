@@ -61,16 +61,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setVerified(false);
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole(Role.valueOf(request.getRole().toUpperCase()));
-//            user = User.builder()
-//                    .firstName(request.getFirstname())
-//                    .lastName(request.getLastname())
-//                    .email(request.getEmail())
-//                    .mobile(request.getMobile())
-//                    .verified(false)
-//                    .password(passwordEncoder.encode(request.getPassword()))
-//                    .role(Role.valueOf(request.getRole().toUpperCase()))
-//                    .build();
-
 
             String otp = generateOtp();
             user.setOtp(otp);

@@ -157,24 +157,30 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     private NotificationDTO convertToDTO(Notification notification) {
-        return NotificationDTO.builder()
-                .id(notification.getId())
-                .participant_id(notification.getParticipant().getId())
-                .message(notification.getMessage())
-                .timestamp(notification.getTimestamp())
-                .read(notification.isRead())
-                .build();
+        NotificationDTO dto = new NotificationDTO();
+        dto.setId(notification.getId());
+        dto.setParticipant_id(notification.getParticipant().getId());
+        dto.setMessage(notification.getMessage());
+        dto.setTimestamp(notification.getTimestamp());
+        dto.setRead(notification.isRead());
+        return dto;
     }
 
+
     private EventDTO convertToDTO(Event event) {
-        return EventDTO.builder()
-                .id(event.getId())
-                .title(event.getTitle())
-                .description(event.getDescription())
-                .date(event.getDate())
-                .location(event.getLocation())
-                .category(event.getCategory())
-                .capacity(event.getCapacity())
-                .build();
+        EventDTO dto = new EventDTO();
+        dto.setId(event.getId());
+        dto.setTitle(event.getTitle());
+        dto.setDescription(event.getDescription());
+        dto.setLocation(event.getLocation());
+        dto.setCategory(event.getCategory());
+        dto.setCapacity(event.getCapacity());
+        dto.setStartTime(event.getStartTime());
+        dto.setEndTime(event.getEndTime());
+        dto.setMode(event.getMode());
+        dto.setImageUrl(event.getImageUrl());
+        dto.setActive(event.isActive());
+        return dto;
     }
+
 }

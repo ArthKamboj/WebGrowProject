@@ -26,4 +26,9 @@ public class Notification {
     private String message;
     private LocalDateTime timestamp;
     private boolean read;
+
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = true)
+    private Event event;
+
 }

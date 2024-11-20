@@ -20,11 +20,11 @@ public class QuizAttempt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "participant_id", nullable = false)
     private User participant;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
@@ -36,4 +36,3 @@ public class QuizAttempt {
 
     private boolean isCompleted;
 }
-
