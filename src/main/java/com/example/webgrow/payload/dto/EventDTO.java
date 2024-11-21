@@ -18,7 +18,10 @@ public class EventDTO {
     private String description;
     private String location;
     private String category;
-    private Long capacity;
+    private Long capacityMin;
+    private Long capacityMax;
+    private LocalDateTime registerStart;
+    private LocalDateTime registerEnd;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
