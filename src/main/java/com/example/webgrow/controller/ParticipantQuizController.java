@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/participant/quiz")
 @RequiredArgsConstructor
-public class QuizController {
+public class ParticipantQuizController {
 
     private final QuizParticipantService quizParticipantService;
 

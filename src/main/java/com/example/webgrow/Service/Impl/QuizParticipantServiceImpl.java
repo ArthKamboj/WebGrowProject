@@ -5,6 +5,9 @@ import com.example.webgrow.models.*;
 import com.example.webgrow.payload.dto.*;
 import com.example.webgrow.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,7 +42,7 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
     }
 
     @Override
-    public QuestionDTO getQuizQuestion(Long quizId, int questionNumber, String email) {
+    public QuestionDTO getQuizQuestion(Long quizId, int page, String email) {
         User user = getUserByEmail(email);
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
@@ -47,11 +50,21 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         if (!quiz.getParticipants().contains(user)) {
             throw new RuntimeException("Participant is not registered for this quiz");
         }
+        long totalQuestions = questionRepository.countByQuiz(quiz);
 
-        Question question = questionRepository.findByQuizAndQuestionNumber(quiz, questionNumber)
-                .orElseThrow(() -> new RuntimeException("Question not found for this quiz"));
+        // Validate page number
+        if (page < 1 || page > totalQuestions) {
+            throw new RuntimeException("Invalid page number. Must be between 1 and " + totalQuestions);
+        }
 
-        return convertToQuestionDTO(question);
+        Pageable pageable = PageRequest.of(page - 1, 1);
+        Page<Question> questionPage = questionRepository.findByQuiz(quiz, pageable);
+
+        if (questionPage.isEmpty()) {
+            throw new RuntimeException("No question found for this page");
+        }
+
+        return convertToQuestionDTO(questionPage.getContent().get(0));
     }
 
     @Override
@@ -63,6 +76,10 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         Quiz quiz = question.getQuiz();
         if (!quiz.getParticipants().contains(user)) {
             throw new RuntimeException("Participant is not registered for this quiz");
+        }
+
+        if (!question.getOptions().contains(quizAnswerDTO.getSelectedOption())) {
+            throw new RuntimeException("Selected option is not valid for this question!");
         }
 
         QuizAnswer answer = new QuizAnswer();
@@ -84,10 +101,14 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
             throw new RuntimeException("Participant is not registered for this quiz");
         }
 
+        if (quizAttemptRepository.findByParticipantAndQuiz(user, quiz).isPresent()) {
+            throw new RuntimeException("Quiz has already been submitted by this participant!");
+        }
+
         List<QuizAnswer> answers = quizAnswerRepository.findByParticipantAndQuestionQuiz(user, quiz);
         long totalQuestions = questionRepository.countByQuiz(quiz);
         long correctAnswers = answers.stream()
-                .filter(answer -> answer.getSelectedOption().equals(answer.getQuestion().getCorrectAnswer()))
+                .filter(QuizAnswer::isCorrect)
                 .count();
 
         QuizAttempt attempt = new QuizAttempt();
@@ -96,9 +117,11 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         attempt.setTotalQuestions((int) totalQuestions);
         attempt.setCorrectAnswers((int) correctAnswers);
         attempt.setAttemptTime(LocalDateTime.now());
+        attempt.setCompleted(true); // Flag as completed
 
         quizAttemptRepository.save(attempt);
     }
+
 
     @Override
     public QuizAttemptDTO getQuizResults(String email, Long quizId) {

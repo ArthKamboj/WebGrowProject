@@ -8,7 +8,7 @@ public interface QuizParticipantService {
 
     List<QuizDTO> getAvailableQuizzes(String email);
 
-    QuestionDTO getQuizQuestion(Long quizId, int questionNumber, String email);
+    QuestionDTO getQuizQuestion(Long quizId, int page, String email);
 
     void submitAnswer(String email, QuizAnswerDTO quizAnswerDTO);
 
