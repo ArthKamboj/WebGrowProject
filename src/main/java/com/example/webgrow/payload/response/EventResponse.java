@@ -16,4 +16,5 @@ public class EventResponse {
     private Long capacity;
     private String mode;
     private String imageUrl;
+    private String eventType;
 }
