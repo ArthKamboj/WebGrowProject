@@ -13,8 +13,13 @@ public class EventResponse {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String hostEmail;
-    private Long capacity;
+    private Long capacityMin;
+    private Long capacityMax;
+    private LocalDateTime registerStart;
+    private LocalDateTime registerEnd;
+    private String festival;
     private String mode;
     private String imageUrl;
     private String eventType;
+
 }

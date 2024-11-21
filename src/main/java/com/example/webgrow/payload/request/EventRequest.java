@@ -13,7 +13,11 @@ public class EventRequest {
     private String mode;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Long capacity;
+    private Long capacityMin;
+    private Long capacityMax;
+    private LocalDateTime registerStart;
+    private LocalDateTime registerEnd;
+    private String festival;
     private String eventType;
 
 }
