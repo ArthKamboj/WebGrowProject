@@ -23,6 +23,7 @@ public class Event {
     private String location;
     private String category;
     private Long capacity;
+    private String eventType;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;

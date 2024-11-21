@@ -14,5 +14,6 @@ public class EventRequest {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Long capacity;
+    private String eventType;
 
 }

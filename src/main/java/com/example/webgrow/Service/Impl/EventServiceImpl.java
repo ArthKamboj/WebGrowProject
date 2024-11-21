@@ -33,6 +33,7 @@ public class EventServiceImpl implements EventService {
         event.setStartTime(eventRequest.getStartTime());
         event.setEndTime(eventRequest.getEndTime());
         event.setHost(host);
+        event.setEventType(eventRequest.getEventType());
         event.setImageUrl(eventRequest.getImageUrl());
         event.setMode(eventRequest.getMode());
         event.setCapacity(eventRequest.getCapacity());
@@ -76,9 +77,11 @@ public class EventServiceImpl implements EventService {
                     eventResponse.setDescription(event.getDescription());
                     eventResponse.setLocation(event.getLocation());
                     eventResponse.setMode(event.getMode());
+                    eventResponse.setEventType(event.getEventType());
                     eventResponse.setCapacity(event.getCapacity());
                     eventResponse.setStartTime(event.getStartTime());
                     eventResponse.setEndTime(event.getEndTime());
+                    eventResponse.setImageUrl(event.getImageUrl());
                     eventResponse.setHostEmail(event.getHost().getEmail());
                     return eventResponse;
                         }
@@ -98,6 +101,7 @@ public class EventServiceImpl implements EventService {
         response.setStartTime(event.getStartTime());
         response.setEndTime(event.getEndTime());
         response.setMode(event.getMode());
+        response.setEventType(event.getEventType());
         response.setCapacity(event.getCapacity());
         response.setHostEmail(event.getHost().getEmail());
         return new DTOClass("Event details retrieved successfully", "SUCCESS", response);
