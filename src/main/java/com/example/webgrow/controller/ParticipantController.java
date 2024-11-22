@@ -98,4 +98,11 @@ public class ParticipantController {
         List<NotificationDTO> notifications = participantService.getNotifications(email, defaultPage, defaultSize);
         return ResponseEntity.ok(notifications);
     }
+
+    @GetMapping("/events/{eventId}")
+    public ResponseEntity<EventDTO> getEventDetails(@PathVariable Long eventId) {
+        EventDTO eventDetails = participantService.getEventDetails(eventId);
+        return ResponseEntity.ok(eventDetails);
+    }
+
 }

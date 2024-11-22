@@ -37,9 +37,14 @@ public class EventServiceImpl implements EventService {
         event.setCategory(eventRequest.getCategory());
         event.setEndTime(eventRequest.getEndTime());
         event.setHost(host);
+        event.setEventType(eventRequest.getEventType());
         event.setImageUrl(eventRequest.getImageUrl());
         event.setMode(eventRequest.getMode());
-        event.setCapacity(eventRequest.getCapacity());
+        event.setRegisterStart(eventRequest.getRegisterStart());
+        event.setRegisterEnd(eventRequest.getRegisterEnd());
+        event.setFestival(eventRequest.getFestival());
+        event.setCapacityMin(eventRequest.getCapacityMin());
+        event.setCapacityMax(eventRequest.getCapacityMax());
         eventRepository.save(event);
 
         if (eventRequest.getCategory().toLowerCase().contains("quiz"))
@@ -70,6 +75,7 @@ public class EventServiceImpl implements EventService {
         event.setLocation(eventRequest.getLocation());
         event.setStartTime(eventRequest.getStartTime());
         event.setEndTime(eventRequest.getEndTime());
+        event.setFestival(eventRequest.getFestival());
         eventRepository.save(event);
         return new DTOClass("Event Updated Successfully","SUCCESS",null);
     }
@@ -95,9 +101,15 @@ public class EventServiceImpl implements EventService {
                     eventResponse.setDescription(event.getDescription());
                     eventResponse.setLocation(event.getLocation());
                     eventResponse.setMode(event.getMode());
-                    eventResponse.setCapacity(event.getCapacity());
+                    eventResponse.setFestival(event.getFestival());
+                    eventResponse.setEventType(event.getEventType());
+                    eventResponse.setCapacityMin(event.getCapacityMin());
+                    eventResponse.setCapacityMax(event.getCapacityMax());
                     eventResponse.setStartTime(event.getStartTime());
                     eventResponse.setEndTime(event.getEndTime());
+                    eventResponse.setRegisterStart(event.getRegisterStart());
+                    eventResponse.setRegisterEnd(event.getRegisterEnd());
+                    eventResponse.setImageUrl(event.getImageUrl());
                     eventResponse.setHostEmail(event.getHost().getEmail());
                     return eventResponse;
                         }
@@ -117,7 +129,12 @@ public class EventServiceImpl implements EventService {
         response.setStartTime(event.getStartTime());
         response.setEndTime(event.getEndTime());
         response.setMode(event.getMode());
-        response.setCapacity(event.getCapacity());
+        response.setFestival(event.getFestival());
+        response.setEventType(event.getEventType());
+        response.setRegisterStart(event.getRegisterStart());
+        response.setRegisterEnd(event.getRegisterEnd());
+        response.setCapacityMin(event.getCapacityMin());
+        response.setCapacityMax(event.getCapacityMax());
         response.setHostEmail(event.getHost().getEmail());
         return new DTOClass("Event details retrieved successfully", "SUCCESS", response);
     }

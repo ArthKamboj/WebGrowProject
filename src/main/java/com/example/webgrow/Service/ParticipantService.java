@@ -26,6 +26,8 @@ public interface ParticipantService {
 
     public UserDTO getParticipantProfile(String email);
 
+    EventDTO getEventDetails(Long eventId);
+
     public void updateParticipantProfile(String email, User updatedProfile);
 
     public List<NotificationDTO> getNotifications(String email, int page, int size);
