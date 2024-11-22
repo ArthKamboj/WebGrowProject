@@ -1,12 +1,14 @@
 package com.example.webgrow.Service.Impl;
 
 import com.example.webgrow.Service.EventService;
+import com.example.webgrow.models.Quiz;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.response.EventResponse;
 import com.example.webgrow.repository.EventRepository;
+import com.example.webgrow.repository.QuizRepository;
 import com.example.webgrow.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
+    private final QuizRepository quizRepository;
     private final UserRepository userRepository;
 
     @Override
@@ -31,6 +34,7 @@ public class EventServiceImpl implements EventService {
         event.setDescription(eventRequest.getDescription());
         event.setLocation(eventRequest.getLocation());
         event.setStartTime(eventRequest.getStartTime());
+        event.setCategory(eventRequest.getCategory());
         event.setEndTime(eventRequest.getEndTime());
         event.setHost(host);
         event.setEventType(eventRequest.getEventType());
@@ -42,7 +46,22 @@ public class EventServiceImpl implements EventService {
         event.setCapacityMin(eventRequest.getCapacityMin());
         event.setCapacityMax(eventRequest.getCapacityMax());
         eventRepository.save(event);
+
+        if (eventRequest.getCategory().toLowerCase().contains("quiz"))
+        {
+            Quiz quiz = new Quiz();
+            quiz.setTitle(eventRequest.getTitle()); // Use event title for quiz title
+            quiz.setDescription(eventRequest.getDescription());
+            quiz.setHost(host);
+            quiz.setStartTime(eventRequest.getStartTime());
+            quiz.setEndTime(eventRequest.getEndTime());
+            quiz.setParticipants(event.getParticipants()); // Optional: link the same participants if applicable
+            quiz.setIsActive(true);
+
+            quizRepository.save(quiz);
+        }
         return new DTOClass("Event Created Successfully","SUCCESS",null);
+
     }
 
     @Override

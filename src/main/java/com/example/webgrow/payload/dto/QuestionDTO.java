@@ -13,8 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 public class QuestionDTO {
     private Long id;
+    private Long quizId;
     private String questionText;
     private List<String> options;
     private int pageNumber;
     private int totalPages;
+    private String correctAnswer;
 }
