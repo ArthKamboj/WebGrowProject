@@ -31,6 +31,7 @@ public class Event {
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private LocalDateTime lastUpdate;
 
     private String mode;
     private String imageUrl;

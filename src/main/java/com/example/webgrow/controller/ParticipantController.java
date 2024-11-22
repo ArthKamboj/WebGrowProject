@@ -99,7 +99,7 @@ public class ParticipantController {
         return ResponseEntity.ok(notifications);
     }
 
-    @GetMapping("/events/{eventId}")
+    @GetMapping("/events/quiz/{eventId}")
     public ResponseEntity<EventDTO> getEventDetails(@PathVariable Long eventId) {
         EventDTO eventDetails = participantService.getEventDetails(eventId);
         return ResponseEntity.ok(eventDetails);
