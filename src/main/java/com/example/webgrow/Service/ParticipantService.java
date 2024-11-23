@@ -3,6 +3,7 @@ package com.example.webgrow.Service;
 import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.EventDTO;
+import com.example.webgrow.payload.dto.LeaderboardResponseDTO;
 import com.example.webgrow.payload.dto.NotificationDTO;
 import com.example.webgrow.payload.dto.UserDTO;
 
