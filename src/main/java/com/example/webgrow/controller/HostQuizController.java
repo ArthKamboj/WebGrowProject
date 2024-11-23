@@ -17,9 +17,13 @@ public class HostQuizController {
 
     private final QuizHostService quizHostService;
 
-    @PostMapping("/add-questions")
-    public ResponseEntity<String> addQuestionsToQuiz(@RequestBody List<QuestionDTO> questionDTOList) {
-        quizHostService.addQuestionsToQuiz(questionDTOList);
+    @PostMapping("/{quizId}/add-questions")
+    public ResponseEntity<String> addQuestionsToQuiz(
+            @PathVariable Long quizId,
+            @RequestBody List<QuestionDTO> questionDTOList
+    ) {
+        quizHostService.addQuestionsToQuiz(quizId, questionDTOList);
         return ResponseEntity.ok("Questions added successfully!");
     }
+
 }

@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface QuizHostService {
 
-    public void addQuestionsToQuiz(List<QuestionDTO> questionDTOList);
+    public void addQuestionsToQuiz(Long quizId, List<QuestionDTO> questionDTOList);
 
 
 }

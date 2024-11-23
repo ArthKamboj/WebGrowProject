@@ -21,38 +21,21 @@ public class QuizHostServiceImpl implements QuizHostService {
     private final QuestionRepository questionRepository;
 
     @Override
-    public void addQuestionsToQuiz(List<QuestionDTO> questionDTOList) {
-        if (questionDTOList.isEmpty()) {
-            throw new RuntimeException("No questions provided!");
-        }
-
-        // Retrieve the Quiz ID from the first question
-        Long quizId = questionDTOList.get(0).getQuizId();
+    public void addQuestionsToQuiz(Long quizId, List<QuestionDTO> questionDTOList) {
         Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new RuntimeException("Quiz not found with ID: " + quizId));
+                .orElseThrow(() -> new RuntimeException("Quiz not found!"));
 
-        if (questionDTOList.stream().anyMatch(q -> !q.getId().equals(quizId))) {
-            throw new RuntimeException("All questions must belong to the same quiz!");
-        }
-
-        AtomicInteger nextQuestionNumber = new AtomicInteger((int)questionRepository.countByQuiz(quiz) + 1);
-
-        List<Question> questions = questionDTOList.stream().map(questionDTO -> {
-            Question question = new Question();
-            question.setQuiz(quiz);
-            question.setQuestionText(questionDTO.getQuestionText());
-            question.setOptions(questionDTO.getOptions());
-
-            if (!questionDTO.getOptions().contains(questionDTO.getCorrectAnswer())) {
-                throw new RuntimeException("Correct answer must be one of the options!");
-            }
-
-            question.setCorrectAnswer(questionDTO.getCorrectAnswer());
-
-            question.setQuestionNumber(nextQuestionNumber.getAndIncrement());
-            return question;
-        }).collect(Collectors.toList());
+        List<Question> questions = questionDTOList.stream()
+                .map(dto -> {
+                    Question question = new Question();
+                    question.setQuestionText(dto.getQuestionText());
+                    question.setOptions(dto.getOptions());
+                    question.setCorrectAnswer(dto.getCorrectAnswer());
+                    question.setQuiz(quiz);
+                    return question;
+                }).collect(Collectors.toList());
 
         questionRepository.saveAll(questions);
     }
+
 }
