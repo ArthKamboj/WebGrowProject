@@ -91,7 +91,7 @@ public class EventServiceImpl implements EventService {
         event.setCapacityMax(eventRequest.getCapacityMax());
         event.setRegisterEnd(eventRequest.getRegisterEnd());
         event.setLastUpdate(LocalDateTime.now());
-        if(eventRequest.getRegisterStart().isBefore(LocalDateTime.now()))
+        if(eventRequest.getRegisterStart() != null && !eventRequest.getRegisterStart().isBefore(LocalDateTime.now()))
         {
             event.setRegisterStart(eventRequest.getRegisterStart());
         }

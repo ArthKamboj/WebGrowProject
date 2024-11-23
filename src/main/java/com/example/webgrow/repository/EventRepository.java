@@ -14,11 +14,12 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e WHERE " +
             "(:search IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
-            "(:category IS NULL OR e.category = :category) AND " +
-            "(:location IS NULL OR e.location = :location)")
+            "(:category IS NULL OR LOWER(e.category) = LOWER(:category)) AND " +
+            "(:location IS NULL OR LOWER(e.location) = LOWER(:location))")
     List<Event> findEvents(@Param("search") String search,
                            @Param("category") String category,
                            @Param("location") String location);
+
 
     List<Event> findByHostId(Long hostId);
 

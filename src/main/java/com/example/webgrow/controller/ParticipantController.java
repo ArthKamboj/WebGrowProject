@@ -26,6 +26,10 @@ public class ParticipantController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String location) {
+
+        search = search != null ? search : "";
+        category = category != null ? category : "";
+        location = location != null ? location : "";
         List<EventDTO> events = participantService.getAllEvents(search, category, location);
         return ResponseEntity.ok(events);
     }

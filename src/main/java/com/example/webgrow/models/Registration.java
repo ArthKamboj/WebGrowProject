@@ -21,7 +21,7 @@ public class Registration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer registration_id;
+    private Long registration_id;
     @ManyToOne
     @JoinColumn(name = "participant_id", nullable = false)
     private User participant;
