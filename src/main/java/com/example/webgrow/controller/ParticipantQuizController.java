@@ -1,10 +1,7 @@
 package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.QuizParticipantService;
-import com.example.webgrow.payload.dto.QuestionDTO;
-import com.example.webgrow.payload.dto.QuizAnswerDTO;
-import com.example.webgrow.payload.dto.QuizAttemptDTO;
-import com.example.webgrow.payload.dto.QuizDTO;
+import com.example.webgrow.payload.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -71,4 +68,14 @@ public class ParticipantQuizController {
         QuizAttemptDTO results = quizParticipantService.getQuizResults(email, quizId);
         return ResponseEntity.ok(results);
     }
+
+    @GetMapping("/{quizId}/leaderboard-and-scores")
+    public ResponseEntity<LeaderboardResponseDTO> getLeaderboardAndParticipantDetails(
+            @PathVariable Long quizId,
+            @AuthenticationPrincipal String email
+    ) {
+        LeaderboardResponseDTO response = quizParticipantService.getLeaderboardAndParticipantDetails(quizId, email);
+        return ResponseEntity.ok(response);
+    }
+
 }

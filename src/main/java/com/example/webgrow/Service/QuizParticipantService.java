@@ -15,4 +15,6 @@ public interface QuizParticipantService {
     void submitQuiz(Long quizId, String email);
 
     QuizAttemptDTO getQuizResults(String email, Long quizId);
+
+    LeaderboardResponseDTO getLeaderboardAndParticipantDetails(Long quizId, String email);
 }

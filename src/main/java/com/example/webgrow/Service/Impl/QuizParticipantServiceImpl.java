@@ -135,6 +135,67 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         return convertToQuizAttemptDTO(attempt);
     }
 
+    @Override
+    public LeaderboardResponseDTO getLeaderboardAndParticipantDetails(Long quizId, String email) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        // Fetch top 3 leaderboard entries
+        List<QuizAttempt> topAttempts = quizAttemptRepository
+                .findTop3ByQuizOrderByCorrectAnswersDescAttemptTimeAsc(quiz);
+        List<LeaderboardEntryDTO> topScores = topAttempts.stream()
+                .map(this::convertToLeaderboardEntryDTO)
+                .collect(Collectors.toList());
+
+        // Fetch participant details
+        User participant = getUserByEmail(email);
+        QuizAttempt participantAttempt = quizAttemptRepository.findByParticipantAndQuiz(participant, quiz)
+                .orElseThrow(() -> new RuntimeException("No quiz attempt found for this participant"));
+
+        ParticipantScoreDTO participantDetails = convertToParticipantScoreDTO(participantAttempt);
+
+        // Combine both in the response DTO
+        LeaderboardResponseDTO response = new LeaderboardResponseDTO();
+        response.setTopScores(topScores);
+        response.setParticipantDetails(participantDetails);
+        return response;
+    }
+
+    private LeaderboardEntryDTO convertToLeaderboardEntryDTO(QuizAttempt attempt) {
+        LeaderboardEntryDTO dto = new LeaderboardEntryDTO();
+        dto.setParticipantName(attempt.getParticipant().getFirstName());
+        dto.setImageUrl(attempt.getParticipant().getImageUrl());
+        dto.setCorrectAnswers(attempt.getCorrectAnswers());
+        dto.setTotalQuestions(attempt.getTotalQuestions());
+        return dto;
+    }
+
+    private ParticipantScoreDTO convertToParticipantScoreDTO(QuizAttempt attempt) {
+        ParticipantScoreDTO dto = new ParticipantScoreDTO();
+        dto.setParticipantName(attempt.getParticipant().getFirstName());
+        dto.setImageUrl(attempt.getParticipant().getImageUrl());
+        dto.setCorrectAnswers(attempt.getCorrectAnswers());
+        dto.setTotalQuestions(attempt.getTotalQuestions());
+
+        List<QuestionScoreDTO> questionScores = quizAnswerRepository
+                .findByParticipantAndQuestionQuiz(attempt.getParticipant(), attempt.getQuiz())
+                .stream()
+                .map(this::convertToQuestionScoreDTO)
+                .collect(Collectors.toList());
+        dto.setQuestionScores(questionScores);
+
+        return dto;
+    }
+
+    private QuestionScoreDTO convertToQuestionScoreDTO(QuizAnswer answer) {
+        QuestionScoreDTO dto = new QuestionScoreDTO();
+        dto.setQuestionText(answer.getQuestion().getQuestionText());
+        dto.setSelectedOption(answer.getSelectedOption());
+        dto.setCorrectAnswer(answer.getQuestion().getCorrectAnswer());
+        dto.setCorrect(answer.isCorrect());
+        return dto;
+    }
+
 
     private QuizDTO convertToQuizDTO(Quiz quiz) {
         QuizDTO quizDTO = new QuizDTO();
