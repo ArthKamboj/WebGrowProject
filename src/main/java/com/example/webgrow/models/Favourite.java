@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "favourite")
+@Table(name = "favourite", uniqueConstraints = @UniqueConstraint(columnNames = {"participant_id", "event_id"}))
 public class Favourite {
 
     @Id

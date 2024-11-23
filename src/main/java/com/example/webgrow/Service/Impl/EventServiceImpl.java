@@ -1,15 +1,15 @@
 package com.example.webgrow.Service.Impl;
 
 import com.example.webgrow.Service.EventService;
+import com.example.webgrow.Service.ParticipantService;
+import com.example.webgrow.models.Notification;
 import com.example.webgrow.models.Quiz;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.response.EventResponse;
-import com.example.webgrow.repository.EventRepository;
-import com.example.webgrow.repository.QuizRepository;
-import com.example.webgrow.repository.UserRepository;
+import com.example.webgrow.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +24,10 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
+    private RegistrationRepository registrationRepository;
+    private final FavouriteRepository favouriteRepository;
+    private final NotificationRepository notificationRepository;
+    private final ParticipantService userService;
 
     @Override
     public DTOClass  createEvent(EventRequest eventRequest, String email) {
@@ -91,6 +95,8 @@ public class EventServiceImpl implements EventService {
         event.setCapacityMax(eventRequest.getCapacityMax());
         event.setRegisterEnd(eventRequest.getRegisterEnd());
         event.setLastUpdate(LocalDateTime.now());
+
+        sendEventUpdateNotifications(event);
         if(eventRequest.getRegisterStart() != null && !eventRequest.getRegisterStart().isBefore(LocalDateTime.now()))
         {
             event.setRegisterStart(eventRequest.getRegisterStart());
@@ -100,6 +106,31 @@ public class EventServiceImpl implements EventService {
         }
         eventRepository.save(event);
         return new DTOClass("Event Updated Successfully","SUCCESS",null);
+    }
+
+    private void sendEventUpdateNotifications(Event event) {
+        List<User> registeredUsers = registrationRepository.findByEventId(event.getId());
+        List<User> favoriteUsers = favouriteRepository.findByEventId(event.getId());
+
+        for (User user : registeredUsers) {
+            createNotification(user, event, "The event you registered for has been updated.");
+        }
+
+        for (User user : favoriteUsers) {
+            createNotification(user, event, "The event you favorited has been updated.");
+        }
+    }
+
+    private void createNotification(User user, Event event, String message) {
+        Notification notification = Notification.builder()
+                .participant(user)
+                .message(message)
+                .timestamp(LocalDateTime.now())
+                .read(false)
+                .event(event)
+                .build();
+
+        notificationRepository.save(notification);
     }
 
     @Override
