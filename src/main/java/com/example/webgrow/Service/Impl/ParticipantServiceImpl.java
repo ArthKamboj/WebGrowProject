@@ -138,6 +138,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         if (updatedProfile.getMobile() != null) {
             user.setMobile(updatedProfile.getMobile());
         }
+        user.setImageUrl(updatedProfile.getImageUrl());
         System.out.println("Updated user details: " + user);
 
 
