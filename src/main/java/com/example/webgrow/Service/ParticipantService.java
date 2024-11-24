@@ -2,34 +2,39 @@ package com.example.webgrow.Service;
 
 import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
-import com.example.webgrow.payload.dto.EventDTO;
-import com.example.webgrow.payload.dto.LeaderboardResponseDTO;
-import com.example.webgrow.payload.dto.NotificationDTO;
-import com.example.webgrow.payload.dto.UserDTO;
+import com.example.webgrow.payload.dto.*;
 
 import java.util.List;
 
 public interface ParticipantService {
 
-    public List<EventDTO> getAllEvents(String search, String category, String location);
+    public ApiResponse<List<EventDTO>> getAllEvents(String search, String category, String location);
 
-    public String registerForEvent(String email, Long eventId);
+    public ApiResponse<String> registerForEvent(String email, Long eventId);
 
-    public List<EventDTO> getRegisteredEvents(String email);
+    public ApiResponse<List<EventDTO>> getRegisteredEvents(String email);
 
-    public String addToFavourites(String email, Long eventId);
+    public ApiResponse<String> addToFavourites(String email, Long eventId);
 
-    public List<EventDTO> getFavouriteEvents(String email);
+    public ApiResponse<List<EventDTO>> getFavouriteEvents(String email);
 
-    public String unregisterFromEvent(String email, Long eventId);
+    public ApiResponse<String> unregisterFromEvent(String email, Long eventId);
 
-    public String unmarkAsFavourite(String email, Long eventId);
+    public ApiResponse<String> unmarkAsFavourite(String email, Long eventId);
 
-    public UserDTO getParticipantProfile(String email);
+    public ApiResponse<UserDTO> getParticipantProfile(String email);
 
-    EventDTO getEventDetails(Long eventId);
+    ApiResponse<EventDTO> getEventDetails(Long eventId);
 
-    public void updateParticipantProfile(String email, User updatedProfile);
+    public ApiResponse<String> updateParticipantProfile(String email, User updatedProfile);
 
-    public List<NotificationDTO> getNotifications(String email, int page, int size);
+    public ApiResponse<List<NotificationDTO>> getNotifications(String email, int page, int size);
+
+    public ApiResponse<String> createTeam(String email, Long eventId, TeamRequest teamRequest);
+
+    public ApiResponse<List<TeamResponse>> searchTeams(Long eventId, String teamName);
+
+    public ApiResponse<String> requestToJoinTeam(String email, Long teamId);
+
+    public ApiResponse<String> respondToJoinRequest(Long requestId, String response);
 }

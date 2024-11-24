@@ -28,7 +28,9 @@ public class Event {
     private LocalDateTime registerStart;
     private LocalDateTime registerEnd;
     private String festival;
-
+    private boolean teamCreationAllowed;
+    private int minTeamSize;
+    private int maxTeamSize;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime lastUpdate;
