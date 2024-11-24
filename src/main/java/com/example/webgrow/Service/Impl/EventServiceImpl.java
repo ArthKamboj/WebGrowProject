@@ -24,10 +24,9 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
-    private RegistrationRepository registrationRepository;
+    private final RegistrationRepository registrationRepository;
     private final FavouriteRepository favouriteRepository;
     private final NotificationRepository notificationRepository;
-    private final ParticipantService userService;
 
     @Override
     public DTOClass  createEvent(EventRequest eventRequest, String email) {
