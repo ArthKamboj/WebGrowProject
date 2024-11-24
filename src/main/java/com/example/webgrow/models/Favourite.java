@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "favourite")
+@Table(name = "favourite", uniqueConstraints = @UniqueConstraint(columnNames = {"participant_id", "event_id"}))
 public class Favourite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer favId;
+    private Long favId;
     @ManyToOne
     @JoinColumn(name = "participant_id", nullable = false)
     private User participant;

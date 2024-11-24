@@ -1,7 +1,6 @@
 package com.example.webgrow.repository;
 
 import com.example.webgrow.models.QuizAnswer;
-import com.example.webgrow.models.Question;
 import com.example.webgrow.models.User;
 import com.example.webgrow.models.Quiz;
 import org.springframework.data.jpa.repository.JpaRepository;

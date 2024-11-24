@@ -18,6 +18,7 @@ public class UserDTO {
     private String lastname;
     private String email;
     private String mobile;
+    private String imageUrl;
 
     public static UserDTO from(User user) {
         UserDTO userDTO = new UserDTO();

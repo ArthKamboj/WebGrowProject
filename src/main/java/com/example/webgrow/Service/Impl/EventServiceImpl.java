@@ -1,13 +1,16 @@
 package com.example.webgrow.Service.Impl;
 
 import com.example.webgrow.Service.EventService;
+import com.example.webgrow.Service.ParticipantService;
+import com.example.webgrow.models.Notification;
+import com.example.webgrow.models.Quiz;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.response.EventResponse;
-import com.example.webgrow.repository.EventRepository;
-import com.example.webgrow.repository.UserRepository;
+import com.example.webgrow.repository.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +22,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
+    private final QuizRepository quizRepository;
     private final UserRepository userRepository;
+    private final RegistrationRepository registrationRepository;
+    private final FavouriteRepository favouriteRepository;
+    private final NotificationRepository notificationRepository;
 
     @Override
     public DTOClass  createEvent(EventRequest eventRequest, String email) {
@@ -31,6 +38,7 @@ public class EventServiceImpl implements EventService {
         event.setDescription(eventRequest.getDescription());
         event.setLocation(eventRequest.getLocation());
         event.setStartTime(eventRequest.getStartTime());
+        event.setCategory(eventRequest.getCategory());
         event.setEndTime(eventRequest.getEndTime());
         event.setHost(host);
         event.setEventType(eventRequest.getEventType());
@@ -41,11 +49,36 @@ public class EventServiceImpl implements EventService {
         event.setFestival(eventRequest.getFestival());
         event.setCapacityMin(eventRequest.getCapacityMin());
         event.setCapacityMax(eventRequest.getCapacityMax());
+        event.setLastUpdate(LocalDateTime.now());
         eventRepository.save(event);
+
+        if (eventRequest.getCategory().toLowerCase().contains("quiz"))
+        {
+            Quiz quiz = new Quiz();
+            quiz.setTitle(eventRequest.getTitle());
+            quiz.setDescription(eventRequest.getDescription());
+            quiz.setHost(host);
+            quiz.setStartTime(eventRequest.getStartTime());
+            quiz.setEndTime(eventRequest.getEndTime());
+            quiz.setEndTime(eventRequest.getEndTime());
+            quiz.setEventType(eventRequest.getEventType());
+            quiz.setCategory(eventRequest.getCategory());
+            quiz.setRegisterStart(eventRequest.getRegisterStart());
+            quiz.setRegisterEnd(eventRequest.getRegisterEnd());
+            quiz.setFestival(eventRequest.getFestival());
+            quiz.setCapacityMin(eventRequest.getCapacityMin());
+            quiz.setCapacityMax(eventRequest.getCapacityMax());
+            quiz.setParticipants(event.getParticipants());
+            quiz.setIsActive(true);
+
+            quizRepository.save(quiz);
+        }
         return new DTOClass("Event Created Successfully","SUCCESS",null);
+
     }
 
     @Override
+    @Transactional
     public DTOClass updateEvent(Long eventId, EventRequest eventRequest, String hostEmail) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if(!event.getHost().getEmail().equals(hostEmail)) {
@@ -57,8 +90,46 @@ public class EventServiceImpl implements EventService {
         event.setStartTime(eventRequest.getStartTime());
         event.setEndTime(eventRequest.getEndTime());
         event.setFestival(eventRequest.getFestival());
+        event.setCapacityMin(eventRequest.getCapacityMin());
+        event.setCapacityMax(eventRequest.getCapacityMax());
+        event.setRegisterEnd(eventRequest.getRegisterEnd());
+        event.setLastUpdate(LocalDateTime.now());
+
+        sendEventUpdateNotifications(event);
+        if(eventRequest.getRegisterStart() != null && !eventRequest.getRegisterStart().isBefore(LocalDateTime.now()))
+        {
+            event.setRegisterStart(eventRequest.getRegisterStart());
+        }
+        else{
+            return new DTOClass("Registration already started", "ERROR", null);
+        }
         eventRepository.save(event);
         return new DTOClass("Event Updated Successfully","SUCCESS",null);
+    }
+
+    private void sendEventUpdateNotifications(Event event) {
+        List<User> registeredUsers = registrationRepository.findByEventId(event.getId());
+        List<User> favoriteUsers = favouriteRepository.findByEventId(event.getId());
+
+        for (User user : registeredUsers) {
+            createNotification(user, event, "The event you registered for has been updated.");
+        }
+
+        for (User user : favoriteUsers) {
+            createNotification(user, event, "The event you favorited has been updated.");
+        }
+    }
+
+    private void createNotification(User user, Event event, String message) {
+        Notification notification = Notification.builder()
+                .participant(user)
+                .message(message)
+                .timestamp(LocalDateTime.now())
+                .read(false)
+                .event(event)
+                .build();
+
+        notificationRepository.save(notification);
     }
 
     @Override

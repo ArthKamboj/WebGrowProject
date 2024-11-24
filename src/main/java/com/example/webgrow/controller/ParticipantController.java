@@ -26,6 +26,10 @@ public class ParticipantController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String location) {
+
+        search = search != null ? search : "";
+        category = category != null ? category : "";
+        location = location != null ? location : "";
         List<EventDTO> events = participantService.getAllEvents(search, category, location);
         return ResponseEntity.ok(events);
     }
@@ -98,4 +102,11 @@ public class ParticipantController {
         List<NotificationDTO> notifications = participantService.getNotifications(email, defaultPage, defaultSize);
         return ResponseEntity.ok(notifications);
     }
+
+    @GetMapping("/events/details/{eventId}")
+    public ResponseEntity<EventDTO> getEventDetails(@PathVariable Long eventId) {
+        EventDTO eventDetails = participantService.getEventDetails(eventId);
+        return ResponseEntity.ok(eventDetails);
+    }
+
 }

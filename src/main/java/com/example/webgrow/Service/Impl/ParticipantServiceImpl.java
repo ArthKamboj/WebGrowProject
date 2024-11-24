@@ -138,6 +138,9 @@ public class ParticipantServiceImpl implements ParticipantService {
         if (updatedProfile.getMobile() != null) {
             user.setMobile(updatedProfile.getMobile());
         }
+        if(updatedProfile.getImageUrl() != null) {
+            user.setImageUrl(updatedProfile.getImageUrl());
+        }
         System.out.println("Updated user details: " + user);
 
 
@@ -154,6 +157,13 @@ public class ParticipantServiceImpl implements ParticipantService {
         return notificationPage.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public EventDTO getEventDetails(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + eventId));
+        return convertToDTO(event);
     }
 
     private NotificationDTO convertToDTO(Notification notification) {
@@ -179,6 +189,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         dto.setStartTime(event.getStartTime());
         dto.setEndTime(event.getEndTime());
         dto.setMode(event.getMode());
+        dto.setLastUpdate(event.getLastUpdate());
         dto.setImageUrl(event.getImageUrl());
         dto.setActive(event.isActive());
         return dto;

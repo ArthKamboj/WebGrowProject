@@ -36,6 +36,7 @@ public class User implements UserDetails {
     private String organization;
     private boolean verified;
     private boolean enabled;
+    private String imageUrl;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

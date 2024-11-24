@@ -23,13 +23,26 @@ public class Quiz {
 
     private String description;
 
+    private String location;
+    private String category;
+    private Long capacityMin;
+    private Long capacityMax;
+    private String eventType;
+    private LocalDateTime registerStart;
+    private LocalDateTime registerEnd;
+    private String festival;
+
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private LocalDateTime lastUpdate;
+    private LocalDateTime deadline;
+
+    private String mode;
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "host_id", nullable = false)
     private User host;
-
-    private LocalDateTime startTime;
-
-    private LocalDateTime endTime;
 
     @ManyToMany
     @JoinTable(

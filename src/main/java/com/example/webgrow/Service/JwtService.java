@@ -1,6 +1,7 @@
 package com.example.webgrow.Service;
 
 
+import com.example.webgrow.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,13 +31,16 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
-//        Map<String, Object> claims = new HashMap<>();
-//        claims.put("role", role);
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRole().name());
+        return generateToken(new HashMap<>(), user);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        if (userDetails instanceof User user) {
+            extraClaims.put("role", user.getRole().name()); // Add the role to extra claims
+        }
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

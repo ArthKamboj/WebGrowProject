@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/events")
 @RequiredArgsConstructor
@@ -30,7 +31,6 @@ public class EventController {
     @PutMapping("/update/{id}")
     public ResponseEntity<DTOClass> updateEvent(@RequestBody EventRequest eventRequest, @PathVariable("id") long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User currentUser = (User) authentication.getPrincipal();
         String email = authentication.getName();
         DTOClass response = eventService.updateEvent(id,eventRequest,email);
         return ResponseEntity.ok(response);

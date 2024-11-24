@@ -10,6 +10,7 @@ public class EventRequest {
     private String title;
     private String description;
     private String location;
+    private String category;
     private String mode;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
