@@ -60,4 +60,10 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{id}/participants")
+    public ResponseEntity<DTOClass> getParticipants(@PathVariable("id") long id) {
+        DTOClass response = eventService.getParticipants(id);
+        return ResponseEntity.ok(response);
+    }
+
 }

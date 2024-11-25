@@ -20,5 +20,4 @@ public class EventRequest {
     private LocalDateTime registerEnd;
     private String festival;
     private String eventType;
-
 }

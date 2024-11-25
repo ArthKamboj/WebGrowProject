@@ -27,7 +27,7 @@ public class FileController {
     public ResponseEntity<String> getFileUrl(@PathVariable String keyName) {
         try {
             String fileUrl = s3Service.getFileUrl(keyName);
-            return ResponseEntity.ok(fileUrl);  // Return the S3 URL
+            return ResponseEntity.ok(fileUrl);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Failed to get file URL: " + e.getMessage());
         }

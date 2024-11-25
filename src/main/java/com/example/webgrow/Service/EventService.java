@@ -9,4 +9,5 @@ public interface EventService {
     DTOClass deleteEvent(Long eventId,String hostEmail);
     DTOClass getEventList(String hostEmail);
     DTOClass getEventDetails(Long eventId);
+    DTOClass getParticipants(Long eventId);
 }

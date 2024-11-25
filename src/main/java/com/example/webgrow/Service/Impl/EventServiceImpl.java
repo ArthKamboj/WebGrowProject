@@ -32,8 +32,8 @@ public class EventServiceImpl implements EventService {
     public DTOClass  createEvent(EventRequest eventRequest, String email) {
         User host = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Host with email " + email + " not found"));
-
         Event event = new Event();
+        event.setTeamCreationAllowed(eventRequest.isTeamCreationAllowed());
         event.setTitle(eventRequest.getTitle());
         event.setDescription(eventRequest.getDescription());
         event.setLocation(eventRequest.getLocation());
@@ -189,6 +189,20 @@ public class EventServiceImpl implements EventService {
         response.setCapacityMax(event.getCapacityMax());
         response.setHostEmail(event.getHost().getEmail());
         return new DTOClass("Event details retrieved successfully", "SUCCESS", response);
+    }
+
+    @Override
+    public DTOClass getParticipants(Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(()
+                -> new RuntimeException("Event not found"+eventId));
+        List<User> participants = registrationRepository.findByEventId(eventId);
+        if(participants.isEmpty()) {
+            return new DTOClass("Participant not found","FAILURE",null);
+        }
+        List <String> participantsDetails = participants.stream()
+                .map(user->"Name: "+user.getFirstName()+",Email: "+user.getEmail())
+                .collect(Collectors.toList());
+        return new DTOClass("Participants retrieved successfully", "SUCCESS", participantsDetails);
     }
 
 }
