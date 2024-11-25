@@ -22,6 +22,9 @@ public class S3Service {
     }
 
     public void uploadFile(MultipartFile file, String keyName) throws IOException {
+        String contentType = file.getContentType();
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(contentType);
         try (InputStream inputStream = file.getInputStream()) {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, keyName, inputStream, new ObjectMetadata());
             s3Client.putObject(putObjectRequest);
