@@ -32,6 +32,7 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new RuntimeException("Host with email " + email + " not found"));
 
         Event event = new Event();
+
         event.setTitle(eventRequest.getTitle());
         event.setDescription(eventRequest.getDescription());
         event.setLocation(eventRequest.getLocation());
@@ -47,6 +48,11 @@ public class EventServiceImpl implements EventService {
         event.setFestival(eventRequest.getFestival());
         event.setCapacityMin(eventRequest.getCapacityMin());
         event.setCapacityMax(eventRequest.getCapacityMax());
+        event.setTeamCreationAllowed(eventRequest.isTeamCreationAllowed());
+        if(event.isTeamCreationAllowed()) {
+            event.setMinTeamSize(eventRequest.getMinTeamSize());
+            event.setMaxTeamSize(eventRequest.getMaxTeamSize());
+        }
         event.setLastUpdate(LocalDateTime.now());
         eventRepository.save(event);
 
