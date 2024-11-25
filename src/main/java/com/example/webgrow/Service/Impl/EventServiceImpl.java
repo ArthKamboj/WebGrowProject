@@ -2,11 +2,8 @@ package com.example.webgrow.Service.Impl;
 
 import com.example.webgrow.Service.EventService;
 import com.example.webgrow.Service.ParticipantService;
-import com.example.webgrow.models.Notification;
-import com.example.webgrow.models.Quiz;
+import com.example.webgrow.models.*;
 import com.example.webgrow.payload.dto.DTOClass;
-import com.example.webgrow.models.Event;
-import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.response.EventResponse;
 import com.example.webgrow.repository.*;
@@ -27,6 +24,7 @@ public class EventServiceImpl implements EventService {
     private final RegistrationRepository registrationRepository;
     private final FavouriteRepository favouriteRepository;
     private final NotificationRepository notificationRepository;
+    private final RoomRepository roomRepository;
 
     @Override
     public DTOClass  createEvent(EventRequest eventRequest, String email) {
@@ -194,4 +192,36 @@ public class EventServiceImpl implements EventService {
         return new DTOClass("Event details retrieved successfully", "SUCCESS", response);
     }
 
+    public DTOClass createRooms(Long eventId, int roomCount, List<String> roomNames) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        for (int i = 0; i < roomCount; i++) {
+            String roomName = roomNames != null && i < roomNames.size()
+                    ? roomNames.get(i)
+                    : "room-" + (i + 1);
+            Room room = new Room();
+            room.setName(roomName);
+            room.setEvent(event);
+            room.setVacant(true);
+            room.setLastUpdated(LocalDateTime.now());
+            roomRepository.save(room);
+        }
+        return new DTOClass("Rooms created successfully","SUCCESS",null);
+    }
+
+    // Method to update room status
+    public DTOClass updateRoomStatus(Long roomId, boolean isVacant) {
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Room not found"));
+        room.setVacant(isVacant);
+        room.setLastUpdated(LocalDateTime.now());
+        roomRepository.save(room);
+        return new DTOClass("Room updated successfully","SUCCESS",null);
+    }
+
+    // Method to fetch rooms for an event
+    public List<Room> getRoomsForEvent(Long eventId) {
+        return roomRepository.findByEventId(eventId);
+    }
 }
