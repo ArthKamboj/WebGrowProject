@@ -20,5 +20,8 @@ public class EventRequest {
     private LocalDateTime registerEnd;
     private String festival;
     private String eventType;
+    private boolean teamCreationAllowed;
+    private int minTeamSize;
+    private int maxTeamSize;
 
 }
