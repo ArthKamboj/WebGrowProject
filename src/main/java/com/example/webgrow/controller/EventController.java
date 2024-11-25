@@ -87,5 +87,11 @@ public class EventController {
         List<Room> rooms = eventService.getRoomsForEvent(eventId);
         return ResponseEntity.ok(rooms);
     }
+    @GetMapping("/{id}/participants")
+    public ResponseEntity<DTOClass> getParticipantsForEvent(@PathVariable("id") Long id) {
+        DTOClass response = eventService.getParticipants(id);
+        return ResponseEntity.ok(response);
+    }
+
 
 }

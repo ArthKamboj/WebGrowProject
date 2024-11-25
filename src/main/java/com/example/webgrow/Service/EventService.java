@@ -15,4 +15,5 @@ public interface EventService {
     List<Room> getRoomsForEvent(Long eventId);
     DTOClass updateRoomStatus(Long roomId, boolean isVacant);
     DTOClass createRooms(Long eventId, int roomCount, List<String> roomNames);
+    DTOClass getParticipants(Long eventId);
 }

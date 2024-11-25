@@ -216,6 +216,24 @@ public class EventServiceImpl implements EventService {
         return new DTOClass("Rooms created successfully","SUCCESS",null);
     }
 
+    @Override
+    public DTOClass getParticipants(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found with id " + eventId));
+
+        List<User> participants = registrationRepository.findByEventId(eventId);
+
+        if (participants.isEmpty()) {
+            return new DTOClass("No participants registered for this event", "SUCCESS", null);
+        }
+
+        List<String> participantDetails = participants.stream()
+                .map(user -> "Name: " + user.getFirstName() + ", Email: " + user.getEmail())
+                .collect(Collectors.toList());
+
+        return new DTOClass("Participants retrieved successfully", "SUCCESS", participantDetails);
+    }
+
     // Method to update room status
     public DTOClass updateRoomStatus(Long roomId, boolean isVacant) {
         Room room = roomRepository.findById(roomId)
