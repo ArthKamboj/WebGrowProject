@@ -9,6 +9,8 @@ import com.example.webgrow.payload.response.EventResponse;
 import com.example.webgrow.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
+
     private final EventRepository eventRepository;
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
@@ -27,12 +30,11 @@ public class EventServiceImpl implements EventService {
     private final RoomRepository roomRepository;
 
     @Override
-    public DTOClass  createEvent(EventRequest eventRequest, String email) {
+    public DTOClass createEvent(EventRequest eventRequest, String email) {
         User host = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Host with email " + email + " not found"));
 
         Event event = new Event();
-
         event.setTitle(eventRequest.getTitle());
         event.setDescription(eventRequest.getDescription());
         event.setLocation(eventRequest.getLocation());
@@ -49,21 +51,20 @@ public class EventServiceImpl implements EventService {
         event.setCapacityMin(eventRequest.getCapacityMin());
         event.setCapacityMax(eventRequest.getCapacityMax());
         event.setTeamCreationAllowed(eventRequest.isTeamCreationAllowed());
-        if(event.isTeamCreationAllowed()) {
+        if (event.isTeamCreationAllowed()) {
             event.setMinTeamSize(eventRequest.getMinTeamSize());
             event.setMaxTeamSize(eventRequest.getMaxTeamSize());
         }
         event.setLastUpdate(LocalDateTime.now());
         eventRepository.save(event);
 
-        if (eventRequest.getCategory().toLowerCase().contains("quiz"))
-        {
+        // If it's a quiz event, create a corresponding Quiz
+        if (eventRequest.getCategory().toLowerCase().contains("quiz")) {
             Quiz quiz = new Quiz();
             quiz.setTitle(eventRequest.getTitle());
             quiz.setDescription(eventRequest.getDescription());
             quiz.setHost(host);
             quiz.setStartTime(eventRequest.getStartTime());
-            quiz.setEndTime(eventRequest.getEndTime());
             quiz.setEndTime(eventRequest.getEndTime());
             quiz.setEventType(eventRequest.getEventType());
             quiz.setCategory(eventRequest.getCategory());
@@ -77,17 +78,18 @@ public class EventServiceImpl implements EventService {
 
             quizRepository.save(quiz);
         }
-        return new DTOClass("Event Created Successfully","SUCCESS",null);
 
+        return new DTOClass("Event Created Successfully", "SUCCESS", null);
     }
 
     @Override
     @Transactional
     public DTOClass updateEvent(Long eventId, EventRequest eventRequest, String hostEmail) {
         Event event = eventRepository.findById(eventId).orElseThrow();
-        if(!event.getHost().getEmail().equals(hostEmail)) {
-            return new DTOClass("Host Email Not Matched","FAILURE",null);
+        if (!event.getHost().getEmail().equals(hostEmail)) {
+            return new DTOClass("Host Email Not Matched", "FAILURE", null);
         }
+
         event.setTitle(eventRequest.getTitle());
         event.setDescription(eventRequest.getDescription());
         event.setLocation(eventRequest.getLocation());
@@ -103,15 +105,14 @@ public class EventServiceImpl implements EventService {
         event.setLastUpdate(LocalDateTime.now());
 
         sendEventUpdateNotifications(event);
-        if(eventRequest.getRegisterStart() != null && !eventRequest.getRegisterStart().isBefore(LocalDateTime.now()))
-        {
+        if (eventRequest.getRegisterStart() != null && !eventRequest.getRegisterStart().isBefore(LocalDateTime.now())) {
             event.setRegisterStart(eventRequest.getRegisterStart());
-        }
-        else{
+        } else {
             return new DTOClass("Registration already started", "ERROR", null);
         }
+
         eventRepository.save(event);
-        return new DTOClass("Event Updated Successfully","SUCCESS",null);
+        return new DTOClass("Event Updated Successfully", "SUCCESS", null);
     }
 
     private void sendEventUpdateNotifications(Event event) {
@@ -142,17 +143,19 @@ public class EventServiceImpl implements EventService {
     @Override
     public DTOClass deleteEvent(Long eventId, String hostEmail) {
         Event event = eventRepository.findById(eventId).orElseThrow();
-        if(!event.getHost().getEmail().equals(hostEmail)) {
-            return new DTOClass("Unauthorized to delete this event","FAILURE",null);
+        if (!event.getHost().getEmail().equals(hostEmail)) {
+            return new DTOClass("Unauthorized to delete this event", "FAILURE", null);
         }
         eventRepository.delete(event);
-        return new DTOClass("Event Deleted Successfully","SUCCESS",null);
+        return new DTOClass("Event Deleted Successfully", "SUCCESS", null);
     }
 
     @Override
-    public DTOClass getEventList(String hostEmail) {
+    public DTOClass getEventList(String hostEmail, Pageable pageable) {
         User host = userRepository.findByEmail(hostEmail).orElseThrow();
-        List<EventResponse> events = eventRepository.findByHostId(host.getId()).stream()
+        Page<Event> eventsPage = eventRepository.findByHostEmail(host.getEmail(), pageable);
+
+        List<EventResponse> events = eventsPage.getContent().stream()
                 .map(event -> {
                     EventResponse eventResponse = new EventResponse();
                     eventResponse.setId(event.getId());
@@ -171,10 +174,10 @@ public class EventServiceImpl implements EventService {
                     eventResponse.setImageUrl(event.getImageUrl());
                     eventResponse.setHostEmail(event.getHost().getEmail());
                     return eventResponse;
-                        }
+                })
+                .collect(Collectors.toList());
 
-                ).collect(Collectors.toList());
-        return new DTOClass("Events Retrieved Successfully","SUCCESS",events);
+        return new DTOClass("Events Retrieved Successfully", "SUCCESS", events);
     }
 
     @Override
@@ -213,7 +216,7 @@ public class EventServiceImpl implements EventService {
             room.setLastUpdated(LocalDateTime.now());
             roomRepository.save(room);
         }
-        return new DTOClass("Rooms created successfully","SUCCESS",null);
+        return new DTOClass("Rooms created successfully", "SUCCESS", null);
     }
 
     @Override
@@ -241,7 +244,7 @@ public class EventServiceImpl implements EventService {
         room.setVacant(isVacant);
         room.setLastUpdated(LocalDateTime.now());
         roomRepository.save(room);
-        return new DTOClass("Room updated successfully","SUCCESS",null);
+        return new DTOClass("Room updated successfully", "SUCCESS", null);
     }
 
     // Method to fetch rooms for an event
