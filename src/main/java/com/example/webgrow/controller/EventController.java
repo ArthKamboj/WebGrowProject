@@ -5,6 +5,7 @@ import com.example.webgrow.models.Room;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.EventRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -46,10 +47,10 @@ public class EventController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<DTOClass> getAllEvents(Pageable pageable) {
+    public ResponseEntity<Page<DTOClass>> getAllEvents(Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        DTOClass response = eventService.getEventList(email,pageable);
+        Page<DTOClass> response = eventService.getEventList(email, pageable);
         return ResponseEntity.ok(response);
     }
 

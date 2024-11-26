@@ -28,6 +28,7 @@ public class EventServiceImpl implements EventService {
     private final FavouriteRepository favouriteRepository;
     private final NotificationRepository notificationRepository;
     private final RoomRepository roomRepository;
+    private final WebinarRepository webinarRepository;
 
     @Override
     public DTOClass createEvent(EventRequest eventRequest, String email) {
@@ -77,6 +78,25 @@ public class EventServiceImpl implements EventService {
             quiz.setIsActive(true);
 
             quizRepository.save(quiz);
+        }
+        if (eventRequest.getCategory().toLowerCase().contains("webinar")) {
+            Webinar webinar = new Webinar();
+            webinar.setTitle(eventRequest.getTitle());
+            webinar.setDescription(eventRequest.getDescription());
+            webinar.setHost(host);
+            webinar.setStartTime(eventRequest.getStartTime());
+            webinar.setEndTime(eventRequest.getEndTime());
+            webinar.setEventType(eventRequest.getEventType());
+            webinar.setCategory(eventRequest.getCategory());
+            webinar.setRegisterStart(eventRequest.getRegisterStart());
+            webinar.setRegisterEnd(eventRequest.getRegisterEnd());
+            webinar.setFestival(eventRequest.getFestival());
+            webinar.setCapacityMin(eventRequest.getCapacityMin());
+            webinar.setCapacityMax(eventRequest.getCapacityMax());
+            webinar.setParticipants(event.getParticipants());
+            webinar.setIsActive(true);
+
+            webinarRepository.save(webinar);
         }
 
         return new DTOClass("Event Created Successfully", "SUCCESS", null);
@@ -151,33 +171,34 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public DTOClass getEventList(String hostEmail, Pageable pageable) {
-        User host = userRepository.findByEmail(hostEmail).orElseThrow();
+    public Page<DTOClass> getEventList(String hostEmail, Pageable pageable) {
+        User host = userRepository.findByEmail(hostEmail)
+                .orElseThrow(() -> new RuntimeException("Host not found"));
+
         Page<Event> eventsPage = eventRepository.findByHostEmail(host.getEmail(), pageable);
 
-        List<EventResponse> events = eventsPage.getContent().stream()
-                .map(event -> {
-                    EventResponse eventResponse = new EventResponse();
-                    eventResponse.setId(event.getId());
-                    eventResponse.setTitle(event.getTitle());
-                    eventResponse.setDescription(event.getDescription());
-                    eventResponse.setLocation(event.getLocation());
-                    eventResponse.setMode(event.getMode());
-                    eventResponse.setFestival(event.getFestival());
-                    eventResponse.setEventType(event.getEventType());
-                    eventResponse.setCapacityMin(event.getCapacityMin());
-                    eventResponse.setCapacityMax(event.getCapacityMax());
-                    eventResponse.setStartTime(event.getStartTime());
-                    eventResponse.setEndTime(event.getEndTime());
-                    eventResponse.setRegisterStart(event.getRegisterStart());
-                    eventResponse.setRegisterEnd(event.getRegisterEnd());
-                    eventResponse.setImageUrl(event.getImageUrl());
-                    eventResponse.setHostEmail(event.getHost().getEmail());
-                    return eventResponse;
-                })
-                .collect(Collectors.toList());
+        Page<DTOClass> dtoPage = eventsPage.map(event -> {
+            EventResponse eventResponse = new EventResponse();
+            eventResponse.setId(event.getId());
+            eventResponse.setTitle(event.getTitle());
+            eventResponse.setDescription(event.getDescription());
+            eventResponse.setLocation(event.getLocation());
+            eventResponse.setMode(event.getMode());
+            eventResponse.setFestival(event.getFestival());
+            eventResponse.setEventType(event.getEventType());
+            eventResponse.setCapacityMin(event.getCapacityMin());
+            eventResponse.setCapacityMax(event.getCapacityMax());
+            eventResponse.setStartTime(event.getStartTime());
+            eventResponse.setEndTime(event.getEndTime());
+            eventResponse.setRegisterStart(event.getRegisterStart());
+            eventResponse.setRegisterEnd(event.getRegisterEnd());
+            eventResponse.setImageUrl(event.getImageUrl());
+            eventResponse.setHostEmail(event.getHost().getEmail());
 
-        return new DTOClass("Events Retrieved Successfully", "SUCCESS", events);
+            return new DTOClass("Event Retrieved Successfully", "SUCCESS", eventResponse); // Assuming DTOClass can handle single event
+        });
+
+        return dtoPage;
     }
 
     @Override
