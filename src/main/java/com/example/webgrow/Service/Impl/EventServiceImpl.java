@@ -28,7 +28,7 @@ public class EventServiceImpl implements EventService {
     private final FavouriteRepository favouriteRepository;
     private final NotificationRepository notificationRepository;
     private final RoomRepository roomRepository;
-    private final WebinarRepository webinarRepository;
+//    private final WebinarRepository webinarRepository;
 
     @Override
     public DTOClass createEvent(EventRequest eventRequest, String email) {
@@ -51,6 +51,7 @@ public class EventServiceImpl implements EventService {
         event.setFestival(eventRequest.getFestival());
         event.setCapacityMin(eventRequest.getCapacityMin());
         event.setCapacityMax(eventRequest.getCapacityMax());
+        event.setUrl(eventRequest.getUrl());
         event.setTeamCreationAllowed(eventRequest.isTeamCreationAllowed());
         if (event.isTeamCreationAllowed()) {
             event.setMinTeamSize(eventRequest.getMinTeamSize());
@@ -79,25 +80,25 @@ public class EventServiceImpl implements EventService {
 
             quizRepository.save(quiz);
         }
-        if (eventRequest.getCategory().toLowerCase().contains("webinar")) {
-            Webinar webinar = new Webinar();
-            webinar.setTitle(eventRequest.getTitle());
-            webinar.setDescription(eventRequest.getDescription());
-            webinar.setHost(host);
-            webinar.setStartTime(eventRequest.getStartTime());
-            webinar.setEndTime(eventRequest.getEndTime());
-            webinar.setEventType(eventRequest.getEventType());
-            webinar.setCategory(eventRequest.getCategory());
-            webinar.setRegisterStart(eventRequest.getRegisterStart());
-            webinar.setRegisterEnd(eventRequest.getRegisterEnd());
-            webinar.setFestival(eventRequest.getFestival());
-            webinar.setCapacityMin(eventRequest.getCapacityMin());
-            webinar.setCapacityMax(eventRequest.getCapacityMax());
-            webinar.setParticipants(event.getParticipants());
-            webinar.setIsActive(true);
-
-            webinarRepository.save(webinar);
-        }
+//        if (eventRequest.getCategory().toLowerCase().contains("webinar")) {
+//            Webinar webinar = new Webinar();
+//            webinar.setTitle(eventRequest.getTitle());
+//            webinar.setDescription(eventRequest.getDescription());
+//            webinar.setHost(host);
+//            webinar.setStartTime(eventRequest.getStartTime());
+//            webinar.setEndTime(eventRequest.getEndTime());
+//            webinar.setEventType(eventRequest.getEventType());
+//            webinar.setCategory(eventRequest.getCategory());
+//            webinar.setRegisterStart(eventRequest.getRegisterStart());
+//            webinar.setRegisterEnd(eventRequest.getRegisterEnd());
+//            webinar.setFestival(eventRequest.getFestival());
+//            webinar.setCapacityMin(eventRequest.getCapacityMin());
+//            webinar.setCapacityMax(eventRequest.getCapacityMax());
+//            webinar.setParticipants(event.getParticipants());
+//            webinar.setIsActive(true);
+//
+//            webinarRepository.save(webinar);
+//        }
 
         return new DTOClass("Event Created Successfully", "SUCCESS", null);
     }
@@ -119,6 +120,7 @@ public class EventServiceImpl implements EventService {
         event.setCapacityMin(eventRequest.getCapacityMin());
         event.setCapacityMax(eventRequest.getCapacityMax());
         event.setRegisterEnd(eventRequest.getRegisterEnd());
+        event.setUrl(eventRequest.getUrl());
         event.setTeamCreationAllowed(eventRequest.isTeamCreationAllowed());
         event.setMinTeamSize(eventRequest.getMinTeamSize());
         event.setMaxTeamSize(eventRequest.getMaxTeamSize());

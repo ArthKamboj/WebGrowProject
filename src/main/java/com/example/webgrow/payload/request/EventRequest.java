@@ -23,5 +23,6 @@ public class EventRequest {
     private boolean teamCreationAllowed;
     private int minTeamSize;
     private int maxTeamSize;
+    private String url;
 
 }

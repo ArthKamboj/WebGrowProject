@@ -54,5 +54,6 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Room> rooms = new ArrayList<>();
 
+    private String url;
     private boolean isActive;
 }

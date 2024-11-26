@@ -31,4 +31,5 @@ public class EventDTO {
     private String imageUrl;
 
     private boolean isActive;
+    private String url;
 }
