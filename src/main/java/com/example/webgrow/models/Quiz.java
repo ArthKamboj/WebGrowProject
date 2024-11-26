@@ -35,7 +35,6 @@ public class Quiz {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime lastUpdate;
-    private LocalDateTime deadline;
 
     private String mode;
     private String imageUrl;

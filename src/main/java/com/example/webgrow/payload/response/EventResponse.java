@@ -21,5 +21,5 @@ public class EventResponse {
     private String mode;
     private String imageUrl;
     private String eventType;
-
+    private String url;
 }
