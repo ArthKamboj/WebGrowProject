@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLConnection;
 
 @Service
 public class S3Service {
@@ -22,11 +23,15 @@ public class S3Service {
     }
 
     public void uploadFile(MultipartFile file, String keyName) throws IOException {
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
         String contentType = file.getContentType();
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(contentType);
+
+
         try (InputStream inputStream = file.getInputStream()) {
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, keyName, inputStream, new ObjectMetadata());
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, keyName, inputStream, metadata);
             s3Client.putObject(putObjectRequest);
         }
     }
