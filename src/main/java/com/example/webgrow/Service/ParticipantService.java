@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ParticipantService {
 
-    public ApiResponse<List<EventDTO>> getAllEvents(String search, String category, String location);
+    public ApiResponse<List<EventDTO>> getAllEvents();
 
     public ApiResponse<String> registerForEvent(String email, Long eventId);
 

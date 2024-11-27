@@ -36,8 +36,8 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     // 1. Get All Events
     @Override
-    public ApiResponse<List<EventDTO>> getAllEvents(String search, String category, String location) {
-        List<EventDTO> events = eventRepository.findEvents(search, category, location)
+    public ApiResponse<List<EventDTO>> getAllEvents() {
+        List<EventDTO> events = eventRepository.findEvents()
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());

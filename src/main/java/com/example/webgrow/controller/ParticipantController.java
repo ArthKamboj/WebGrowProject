@@ -21,15 +21,9 @@ public class ParticipantController {
 
     // 1. Get All Events
     @GetMapping("/events")
-    public ResponseEntity<ApiResponse<List<EventDTO>>> getAllEvents(
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String location) {
+    public ResponseEntity<ApiResponse<List<EventDTO>>> getAllEvents() {
 
-        search = search != null ? search : "";
-        category = category != null ? category : "";
-        location = location != null ? location : "";
-        ApiResponse<List<EventDTO>> events = participantService.getAllEvents(search, category, location);
+        ApiResponse<List<EventDTO>> events = participantService.getAllEvents();
         return ResponseEntity.ok(events);
     }
 

@@ -14,13 +14,8 @@ import java.util.List;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    @Query("SELECT e FROM Event e WHERE " +
-            "(:search IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
-            "(:category IS NULL OR LOWER(e.category) = LOWER(:category)) AND " +
-            "(:location IS NULL OR LOWER(e.location) = LOWER(:location))")
-    List<Event> findEvents(@Param("search") String search,
-                           @Param("category") String category,
-                           @Param("location") String location);
+    @Query("SELECT e FROM Event e WHERE e.host.role = 'HOST'")
+    List<Event> findEvents();
 
     Page<Event> findByHostEmail(String hostEmail, Pageable pageable);
 
