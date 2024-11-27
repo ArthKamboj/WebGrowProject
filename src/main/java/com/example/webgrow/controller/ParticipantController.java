@@ -4,6 +4,7 @@ import com.example.webgrow.Service.ParticipantService;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -102,8 +103,8 @@ public class ParticipantController {
     }
 
     @GetMapping("/events/details/{eventId}")
-    public ResponseEntity<ApiResponse<EventDTO>> getEventDetails(@PathVariable Long eventId) {
-        ApiResponse<EventDTO> eventDetails = participantService.getEventDetails(eventId);
+    public ResponseEntity<ApiResponse<EventDTO>> getEventDetails(@PathVariable Long eventId, @AuthenticationPrincipal String email) {
+        ApiResponse<EventDTO> eventDetails = participantService.getEventDetails(eventId, email);
         return ResponseEntity.ok(eventDetails);
     }
 
@@ -134,6 +135,15 @@ public class ParticipantController {
                                                        @PathVariable Long requestId) {
         ApiResponse<String> result = participantService.respondToJoinRequest(requestId, response);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/viewed")
+    public ResponseEntity<Page<EventDTO>> getRecentlyViewedEvents(
+            @AuthenticationPrincipal String email,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<EventDTO> events = participantService.getRecentlyViewedEvents(email, page, size);
+        return ResponseEntity.ok(events);
     }
 
 

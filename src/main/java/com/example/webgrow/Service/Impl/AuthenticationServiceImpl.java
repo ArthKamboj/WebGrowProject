@@ -98,9 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (!user.isVerified()) {
             return new DTOClass("Invalid email", "ERROR", null);
         }
-//        else if(user.getPassword().equals(request.getPassword())){
-//            return new DTOClass("Invalid password", "ERROR", null);
-//        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -108,7 +106,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
         var jwtToken = jwtService.generateToken(user);
-        return new DTOClass("Authentication successful", "SUCCESS", new AuthenticateResponse(jwtToken));
+        return new DTOClass("Authentication successful. Role: "+ user.getRole(), "SUCCESS", new AuthenticateResponse(jwtToken));
     }
 
     public DTOClass validate(OtpValidate request) {
