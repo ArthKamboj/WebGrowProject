@@ -3,17 +3,17 @@ package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.EventService;
 import com.example.webgrow.payload.dto.EventDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/public/homepage")
+@RequiredArgsConstructor
 public class LoggedOutController {
 
-    private EventService eventService;
+    private final EventService eventService;
 
     @GetMapping("/{page}/{size}")
     public Page<EventDTO> getPaginatedEvents(

@@ -280,7 +280,7 @@ public class EventServiceImpl implements EventService {
 
     public Page<EventDTO> getUnloggedEvents(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "lastUpdate"));
-        Page<Event> events = eventRepository.findAllActiveEvents(pageable);
+        Page<Event> events = eventRepository.findOngoingOrUpcomingRegistrations(pageable);
         return events.map(this::convertToEventDTO);
     }
 
