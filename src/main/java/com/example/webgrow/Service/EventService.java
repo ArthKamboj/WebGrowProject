@@ -2,6 +2,7 @@ package com.example.webgrow.Service;
 
 import com.example.webgrow.models.Room;
 import com.example.webgrow.payload.dto.DTOClass;
+import com.example.webgrow.payload.dto.EventDTO;
 import com.example.webgrow.payload.request.EventRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,5 +19,5 @@ public interface EventService {
     DTOClass updateRoomStatus(Long roomId, boolean isVacant);
     DTOClass createRooms(Long eventId, int roomCount, List<String> roomNames);
     DTOClass getParticipants(Long eventId);
-
+    Page<EventDTO> getUnloggedEvents(int page, int size);
 }
