@@ -192,6 +192,8 @@ public class ParticipantServiceImpl implements ParticipantService {
         dto.setCapacityMax(event.getCapacityMax());
         dto.setStartTime(event.getStartTime());
         dto.setEndTime(event.getEndTime());
+        dto.setRegisterStart(event.getRegisterStart());
+        dto.setRegisterEnd(event.getRegisterEnd());
         dto.setMode(event.getMode());
         dto.setLastUpdate(event.getLastUpdate());
         dto.setImageUrl(event.getImageUrl());

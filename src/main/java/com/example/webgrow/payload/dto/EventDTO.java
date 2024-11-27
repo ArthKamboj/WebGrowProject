@@ -16,6 +16,7 @@ public class EventDTO {
     private Long id;
     private String title;
     private String description;
+
     private String location;
     private String category;
     private Long capacityMin;

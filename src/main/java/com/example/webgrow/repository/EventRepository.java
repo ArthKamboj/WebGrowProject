@@ -24,7 +24,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     Page<Event> findByHostEmail(String hostEmail, Pageable pageable);
 
-    @Query("SELECT e FROM Event e JOIN e.participants p WHERE p.id = :participantId")
-    List<Event> findByParticipantId(@Param("participantId") Long participantId);
+//    @Query("SELECT e FROM Event e JOIN e.participants p WHERE p.id = :participantId")
+//    List<Event> findByParticipantId(@Param("participantId") Long participantId);
 
+    Page<Event> findAllActiveEvents(Pageable pageable);
 }

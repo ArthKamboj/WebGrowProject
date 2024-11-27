@@ -31,7 +31,9 @@ public class SecurityConfiguration {
                 .cors(cors -> {})
                 .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/v1/auth/**")
-                .permitAll()
+                        .permitAll()
+                .requestMatchers("/api/v1/public/**")
+                        .permitAll()
                 .anyRequest()
                 .authenticated())
 
