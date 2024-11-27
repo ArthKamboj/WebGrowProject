@@ -40,4 +40,7 @@ public interface ParticipantService {
     public ApiResponse<String> respondToJoinRequest(Long requestId, String response);
 
     Page<EventDTO> getRecentlyViewedEvents(String email, int page, int size);
+
+    List<EventDTO> getPastRegisteredEvents(String email);
+
 }

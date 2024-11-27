@@ -146,5 +146,11 @@ public class ParticipantController {
         return ResponseEntity.ok(events);
     }
 
+    @GetMapping("/past-events")
+    public ResponseEntity<List<EventDTO>> getPastRegisteredEvents(@AuthenticationPrincipal String email) {
+        List<EventDTO> pastEvents = participantService.getPastRegisteredEvents(email);
+        return ResponseEntity.ok(pastEvents);
+    }
+
 
 }

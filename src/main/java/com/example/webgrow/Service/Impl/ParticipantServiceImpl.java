@@ -342,5 +342,15 @@ public class ParticipantServiceImpl implements ParticipantService {
                 );
     }
 
+    @Override
+    public List<EventDTO> getPastRegisteredEvents(String email) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        List<Event> pastEvents = registrationRepository.findPastRegisteredEvents(email, currentTime);
+
+        return pastEvents.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
 
 }
