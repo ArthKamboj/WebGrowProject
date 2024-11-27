@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     private final NotificationRepository notificationRepository;
     private final TeamRepository teamRepository;
     private final TeamJoinRequestRepository teamJoinRequestRepository;
+    private final UserEventViewRepository userEventViewRepository;
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -164,9 +166,12 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public ApiResponse<EventDTO> getEventDetails(Long eventId) {
+    public ApiResponse<EventDTO> getEventDetails(Long eventId, String email) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found with ID: " + eventId));
+
+        trackEventView(email, event);
+
         return new ApiResponse<>(true,"Event details retrieved successfully", convertToDTO(event));
     }
 
@@ -302,6 +307,49 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         notificationRepository.save(notification);
         return new ApiResponse<>(true, "Request " + response.toLowerCase(), null);
+    }
+
+    @Override
+    public Page<EventDTO> getRecentlyViewedEvents(String email, int page, int size) {
+        LocalDateTime oneHourAgo = LocalDateTime.now().minusHours(1);
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "viewedAt"));
+
+        Page<Event> events = userEventViewRepository.findRecentEventViewsByUser(email, oneHourAgo, pageable);
+        return events.map(this::convertToDTO);
+    }
+
+    private void trackEventView(String email, Event event) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        LocalDateTime oneHourAgo = LocalDateTime.now().minusHours(1);
+
+        // Check for existing view
+        userEventViewRepository.findByUserAndEventAndViewedAtAfter(user, event, oneHourAgo)
+                .ifPresentOrElse(
+                        view -> {
+                            view.setViewedAt(LocalDateTime.now());
+                            userEventViewRepository.save(view);
+                        },
+                        () -> {
+                            UserEventView newView = UserEventView.builder()
+                                    .user(user)
+                                    .event(event)
+                                    .viewedAt(LocalDateTime.now())
+                                    .build();
+                            userEventViewRepository.save(newView);
+                        }
+                );
+    }
+
+    @Override
+    public List<EventDTO> getPastRegisteredEvents(String email) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        List<Event> pastEvents = registrationRepository.findPastRegisteredEvents(email, currentTime);
+
+        return pastEvents.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
 

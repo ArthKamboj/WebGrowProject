@@ -1,6 +1,7 @@
 package com.example.webgrow.Service;
 
 import com.example.webgrow.models.Room;
+import com.example.webgrow.payload.dto.ApiResponse;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.dto.EventDTO;
 import com.example.webgrow.payload.request.EventRequest;
