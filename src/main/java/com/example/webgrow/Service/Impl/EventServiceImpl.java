@@ -43,6 +43,7 @@ public class EventServiceImpl implements EventService {
         event.setCategory(eventRequest.getCategory());
         event.setEndTime(eventRequest.getEndTime());
         event.setHost(host);
+        event.setOrganization(eventRequest.getOrganization());
         event.setEventType(eventRequest.getEventType());
         event.setImageUrl(eventRequest.getImageUrl());
         event.setMode(eventRequest.getMode());
@@ -73,6 +74,7 @@ public class EventServiceImpl implements EventService {
             quiz.setRegisterStart(eventRequest.getRegisterStart());
             quiz.setRegisterEnd(eventRequest.getRegisterEnd());
             quiz.setFestival(eventRequest.getFestival());
+            quiz.setOrganization(eventRequest.getOrganization());
             quiz.setCapacityMin(eventRequest.getCapacityMin());
             quiz.setCapacityMax(eventRequest.getCapacityMax());
             quiz.setParticipants(event.getParticipants());
@@ -117,6 +119,7 @@ public class EventServiceImpl implements EventService {
         event.setStartTime(eventRequest.getStartTime());
         event.setEndTime(eventRequest.getEndTime());
         event.setFestival(eventRequest.getFestival());
+        event.setOrganization(eventRequest.getOrganization());
         event.setCapacityMin(eventRequest.getCapacityMin());
         event.setCapacityMax(eventRequest.getCapacityMax());
         event.setRegisterEnd(eventRequest.getRegisterEnd());
@@ -188,6 +191,7 @@ public class EventServiceImpl implements EventService {
             eventResponse.setMode(event.getMode());
             eventResponse.setFestival(event.getFestival());
             eventResponse.setEventType(event.getEventType());
+            eventResponse.setOrganization(event.getOrganization());
             eventResponse.setCapacityMin(event.getCapacityMin());
             eventResponse.setCapacityMax(event.getCapacityMax());
             eventResponse.setStartTime(event.getStartTime());
@@ -213,6 +217,7 @@ public class EventServiceImpl implements EventService {
         response.setLocation(event.getLocation());
         response.setStartTime(event.getStartTime());
         response.setEndTime(event.getEndTime());
+        response.setOrganization(event.getOrganization());
         response.setMode(event.getMode());
         response.setFestival(event.getFestival());
         response.setEventType(event.getEventType());
@@ -258,6 +263,23 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
 
         return new DTOClass("Participants retrieved successfully", "SUCCESS", participantDetails);
+    }
+
+    @Override
+    public DTOClass assignAdministrators(Long eventId, Long hostId, String hostEmail) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found with id: " + eventId));
+        if (!event.getHost().getEmail().equals(hostEmail)) {
+            return new DTOClass("Unauthorized to assign administrators", "FAILURE", null);
+        }
+        User adminUser = userRepository.findById(hostId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + hostId));
+        if (event.getAdministrators().contains(adminUser)) {
+            return new DTOClass("User is already an administrator", "FAILURE", null);
+        }
+        event.getAdministrators().add(adminUser);
+        eventRepository.save(event);
+        return new DTOClass("Administrators assigned successfully", "SUCCESS", null);
     }
 
     // Method to update room status

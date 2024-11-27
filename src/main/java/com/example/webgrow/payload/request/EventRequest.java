@@ -24,5 +24,5 @@ public class EventRequest {
     private int minTeamSize;
     private int maxTeamSize;
     private String url;
-
+    private String organization;
 }
