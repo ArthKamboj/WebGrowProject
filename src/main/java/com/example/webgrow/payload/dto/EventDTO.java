@@ -32,6 +32,7 @@ public class EventDTO {
     private String imageUrl;
 
     private boolean isActive;
+    private boolean teamCreationAllowed;
     private String url;
 
     private HostDTO host;

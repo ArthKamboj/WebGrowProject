@@ -208,6 +208,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         dto.setMode(event.getMode());
         dto.setLastUpdate(event.getLastUpdate());
         dto.setImageUrl(event.getImageUrl());
+        dto.setTeamCreationAllowed(event.isTeamCreationAllowed());
         dto.setActive(event.isActive());
 
         // Map host details

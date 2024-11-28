@@ -90,7 +90,7 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("{eventId}/add-admin")
+    @PostMapping("{eventId}/add-admin/{adminId}")
     public ResponseEntity<DTOClass> addAdmin(@PathVariable Long eventId,
                                              @PathVariable Long adminId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
