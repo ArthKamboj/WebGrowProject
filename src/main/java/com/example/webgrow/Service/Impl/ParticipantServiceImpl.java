@@ -188,7 +188,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     private EventDTO convertToDTO(Event event) {
         EventDTO dto = new EventDTO();
-        dto.setId(event.getId());
+        dto.setId(String.valueOf(event.getId()));
         dto.setTitle(event.getTitle());
         dto.setDescription(event.getDescription());
         dto.setLocation(event.getLocation());
