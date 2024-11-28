@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionDTO {
-    private Long id;
+    private String id;
     private Long quizId;
     private String questionText;
     private List<String> options;

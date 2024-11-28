@@ -184,7 +184,7 @@ public class EventServiceImpl implements EventService {
 
         Page<DTOClass> dtoPage = eventsPage.map(event -> {
             EventResponse eventResponse = new EventResponse();
-            eventResponse.setId(event.getId());
+            eventResponse.setId(String.valueOf(event.getId()));
             eventResponse.setTitle(event.getTitle());
             eventResponse.setDescription(event.getDescription());
             eventResponse.setLocation(event.getLocation());
@@ -210,7 +210,7 @@ public class EventServiceImpl implements EventService {
     public DTOClass getEventDetails(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         EventResponse response = new EventResponse();
-        response.setId(event.getId());
+        response.setId(String.valueOf(event.getId()));
         response.setTitle(event.getTitle());
         response.setDescription(event.getDescription());
         response.setLocation(event.getLocation());

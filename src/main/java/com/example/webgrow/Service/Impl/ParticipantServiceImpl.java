@@ -177,7 +177,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
     private NotificationDTO convertToDTO(Notification notification) {
         NotificationDTO dto = new NotificationDTO();
-        dto.setId(notification.getId());
+        dto.setId(String.valueOf(notification.getId()));
         dto.setParticipant_id(notification.getParticipant().getId());
         dto.setMessage(notification.getMessage());
         dto.setTimestamp(notification.getTimestamp());
@@ -240,7 +240,7 @@ public class ParticipantServiceImpl implements ParticipantService {
                 : teamRepository.findByEventIdAndIsPublicTrue(eventId);
 
         List<TeamResponse> teamResponses = teams.stream()
-                .map(team -> new TeamResponse(team.getId(), team.getName(), team.getLeader().getId()))
+                .map(team -> new TeamResponse(String.valueOf(team.getId()), team.getName(), team.getLeader().getId()))
                 .collect(Collectors.toList());
 
         return new ApiResponse<>(true, "Teams retrieved successfully", teamResponses);
