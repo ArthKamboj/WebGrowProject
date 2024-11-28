@@ -10,4 +10,5 @@ public class UpdateProfileRequest {
     private String mobile;
     private String designation;
     private String organization;
+    private String imageUrl;
 }
