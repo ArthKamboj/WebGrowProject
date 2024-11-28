@@ -7,6 +7,7 @@ import com.example.webgrow.payload.request.EventRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,7 +48,7 @@ public class EventController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Page<DTOClass>> getAllEvents(Pageable pageable) {
+    public ResponseEntity<Page<DTOClass>> getAllEvents( Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         Page<DTOClass> response = eventService.getEventList(email, pageable);
