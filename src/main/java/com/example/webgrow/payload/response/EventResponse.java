@@ -22,5 +22,6 @@ public class EventResponse {
     private String imageUrl;
     private String eventType;
     private String url;
+    private LocalDateTime lastUpdate;
     private String organization;
 }
