@@ -26,6 +26,7 @@ public class UserDTO {
         userDTO.setLastname(user.getLastName());
         userDTO.setEmail(user.getEmail());
         userDTO.setMobile(user.getMobile());
+        userDTO.setImageUrl(user.getImageUrl());
         return userDTO;
     }
 }

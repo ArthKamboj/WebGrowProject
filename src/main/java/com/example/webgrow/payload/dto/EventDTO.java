@@ -33,4 +33,17 @@ public class EventDTO {
 
     private boolean isActive;
     private String url;
+
+    private HostDTO host;
+
+    @Data
+    public static class HostDTO {
+        private String id;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String mobile;
+        private String organization;
+        private String designation;
+    }
 }

@@ -3,6 +3,7 @@ package com.example.webgrow.controller;
 import com.example.webgrow.Service.ParticipantService;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -78,7 +79,7 @@ public class ParticipantController {
 
     // 9. Update Participant Profile
     @PutMapping("/profile")
-    public ResponseEntity<ApiResponse<String>> updateProfile(@AuthenticationPrincipal String email, @RequestBody User updatedProfile) {
+    public ResponseEntity<ApiResponse<String>> updateProfile(@AuthenticationPrincipal String email,@Valid @RequestBody User updatedProfile) {
         ApiResponse<String> message = participantService.updateParticipantProfile(email, updatedProfile);
         return ResponseEntity.ok(message);
     }
