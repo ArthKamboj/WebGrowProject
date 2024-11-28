@@ -141,9 +141,9 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
         // Fetch top 3 leaderboard entries
-        List<QuizAttempt> topAttempts = quizAttemptRepository
-                .findTop3ByQuizOrderByCorrectAnswersDescAttemptTimeAsc(quiz);
-        List<LeaderboardEntryDTO> topScores = topAttempts.stream()
+        List<QuizAttempt> allAttempts = quizAttemptRepository
+                .findByQuizOrderByCorrectAnswersDescAttemptTimeAsc(quiz);
+        List<LeaderboardEntryDTO> allScores = allAttempts.stream()
                 .map(this::convertToLeaderboardEntryDTO)
                 .collect(Collectors.toList());
 
@@ -156,7 +156,7 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
 
         // Combine both in the response DTO
         LeaderboardResponseDTO response = new LeaderboardResponseDTO();
-        response.setTopScores(topScores);
+        response.setTopScores(allScores);
         response.setParticipantDetails(participantDetails);
         return response;
     }

@@ -189,6 +189,8 @@ public class ParticipantServiceImpl implements ParticipantService {
         dto.setMessage(notification.getMessage());
         dto.setTimestamp(notification.getTimestamp());
         dto.setRead(notification.isRead());
+        notification.setRead(true);
+        notificationRepository.save(notification);
         return dto;
     }
 
@@ -304,13 +306,12 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         teamJoinRequestRepository.save(joinRequest);
 
-        Notification notification = Notification.builder()
-                .participant(team.getEvent().getHost())
-                .message("A participant has requested to join the team: " + team.getName())
-                .timestamp(LocalDateTime.now())
-                .read(false)
-                .event(team.getEvent())
-                .build();
+        Notification notification = new Notification();
+        notification.setParticipant(team.getLeader());
+        notification.setMessage("A participant has requested to join your team: " + team.getName());
+        notification.setTimestamp(LocalDateTime.now());
+        notification.setRead(false);
+        notification.setEvent(team.getEvent());
 
         notificationRepository.save(notification);
         return new ApiResponse<>(true, "Join request sent to host", null);
@@ -335,13 +336,12 @@ public class ParticipantServiceImpl implements ParticipantService {
             teamRepository.save(team);
         }
 
-        Notification notification = Notification.builder()
-                .participant(joinRequest.getParticipant())
-                .message("Your request to join the team: " + joinRequest.getTeam().getName() + " has been " + response.toLowerCase() + ".")
-                .timestamp(LocalDateTime.now())
-                .read(false)
-                .event(joinRequest.getTeam().getEvent())
-                .build();
+        Notification notification = new Notification();
+                notification.setParticipant(joinRequest.getParticipant());
+                notification.setMessage("Your request to join the team: " + joinRequest.getTeam().getName() + " has been " + response.toLowerCase() + ".");
+                notification.setTimestamp(LocalDateTime.now());
+                notification.setRead(false);
+                notification.setEvent(joinRequest.getTeam().getEvent());
 
         notificationRepository.save(notification);
         return new ApiResponse<>(true, "Request " + response.toLowerCase(), null);
@@ -370,11 +370,10 @@ public class ParticipantServiceImpl implements ParticipantService {
                             userEventViewRepository.save(view);
                         },
                         () -> {
-                            UserEventView newView = UserEventView.builder()
-                                    .user(user)
-                                    .event(event)
-                                    .viewedAt(LocalDateTime.now())
-                                    .build();
+                            UserEventView newView = new UserEventView();
+                                    newView.setUser(user);
+                                    newView.setEvent(event);
+                                    newView.setViewedAt(LocalDateTime.now());
                             userEventViewRepository.save(newView);
                         }
                 );

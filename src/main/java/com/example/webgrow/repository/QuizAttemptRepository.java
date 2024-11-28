@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> {
 
     Optional<QuizAttempt> findByParticipantAndQuiz(User participant, Quiz quiz);
-    List<QuizAttempt> findTop3ByQuizOrderByCorrectAnswersDescAttemptTimeAsc(Quiz quiz);
+    List<QuizAttempt> findByQuizOrderByCorrectAnswersDescAttemptTimeAsc(Quiz quiz);
 
 }
