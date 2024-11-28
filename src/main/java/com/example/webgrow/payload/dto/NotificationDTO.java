@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class NotificationDTO {
 
-    private Long id;
+    private String id;
     private Long participant_id;
     private String message;
     private LocalDateTime timestamp;

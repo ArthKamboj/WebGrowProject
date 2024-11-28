@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class EventDTO {
 
-    private Long id;
+    private String id;
     private String title;
     private String description;
+
     private String location;
     private String category;
     private Long capacityMin;

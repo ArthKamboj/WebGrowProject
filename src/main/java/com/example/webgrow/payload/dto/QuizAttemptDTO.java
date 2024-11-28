@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuizAttemptDTO {
-    private Long quizId;
+    private String quizId;
     private String title;
     private String participantName;
     private int totalQuestions;

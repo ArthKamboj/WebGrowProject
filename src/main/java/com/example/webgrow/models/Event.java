@@ -68,6 +68,9 @@ public class Event {
             inverseJoinColumns = @JoinColumn(name = "admin_id")
     )
     private List<User> administrators = new ArrayList<>();
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserEventView> userEventViews = new ArrayList<>();
+
 
     private String url;
     private boolean isActive;

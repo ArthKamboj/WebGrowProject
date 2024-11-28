@@ -3,12 +3,13 @@ package com.example.webgrow.Service;
 import com.example.webgrow.models.Event;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface ParticipantService {
 
-    public ApiResponse<List<EventDTO>> getAllEvents(String search, String category, String location);
+    public ApiResponse<List<EventDTO>> getAllEvents();
 
     public ApiResponse<String> registerForEvent(String email, Long eventId);
 
@@ -24,7 +25,7 @@ public interface ParticipantService {
 
     public ApiResponse<UserDTO> getParticipantProfile(String email);
 
-    ApiResponse<EventDTO> getEventDetails(Long eventId);
+    ApiResponse<EventDTO> getEventDetails(Long eventId, String email);
 
     public ApiResponse<String> updateParticipantProfile(String email, User updatedProfile);
 
@@ -37,4 +38,9 @@ public interface ParticipantService {
     public ApiResponse<String> requestToJoinTeam(String email, Long teamId);
 
     public ApiResponse<String> respondToJoinRequest(Long requestId, String response);
+
+    Page<EventDTO> getRecentlyViewedEvents(String email, int page, int size);
+
+    List<EventDTO> getPastRegisteredEvents(String email);
+
 }

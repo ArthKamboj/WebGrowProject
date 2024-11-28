@@ -199,7 +199,7 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
 
     private QuizDTO convertToQuizDTO(Quiz quiz) {
         QuizDTO quizDTO = new QuizDTO();
-        quizDTO.setId(quiz.getId());
+        quizDTO.setId(String.valueOf(quiz.getId()));
         quizDTO.setTitle(quiz.getTitle());
         quizDTO.setDescription(quiz.getDescription());
         quizDTO.setStartTime(quiz.getStartTime());
@@ -209,7 +209,7 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
 
     private QuestionDTO convertToQuestionDTO(Question question) {
         QuestionDTO questionDTO = new QuestionDTO();
-        questionDTO.setId(question.getId());
+        questionDTO.setId(String.valueOf(question.getId()));
         questionDTO.setQuestionText(question.getQuestionText());
         questionDTO.setOptions(question.getOptions());
         return questionDTO;
@@ -217,7 +217,7 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
 
     private QuizAttemptDTO convertToQuizAttemptDTO(QuizAttempt attempt) {
         QuizAttemptDTO attemptDTO = new QuizAttemptDTO();
-        attemptDTO.setQuizId(attempt.getQuiz().getId());
+        attemptDTO.setQuizId(String.valueOf(attempt.getQuiz().getId()));
         attemptDTO.setTitle(attempt.getQuiz().getTitle());
         attemptDTO.setTotalQuestions(attempt.getTotalQuestions());
         attemptDTO.setCorrectAnswers(attempt.getCorrectAnswers());

@@ -4,13 +4,16 @@ import com.example.webgrow.Service.EventService;
 import com.example.webgrow.Service.ParticipantService;
 import com.example.webgrow.models.*;
 import com.example.webgrow.payload.dto.DTOClass;
+import com.example.webgrow.payload.dto.EventDTO;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.response.EventResponse;
 import com.example.webgrow.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -184,7 +187,7 @@ public class EventServiceImpl implements EventService {
 
         Page<DTOClass> dtoPage = eventsPage.map(event -> {
             EventResponse eventResponse = new EventResponse();
-            eventResponse.setId(event.getId());
+            eventResponse.setId(String.valueOf(event.getId()));
             eventResponse.setTitle(event.getTitle());
             eventResponse.setDescription(event.getDescription());
             eventResponse.setLocation(event.getLocation());
@@ -212,7 +215,7 @@ public class EventServiceImpl implements EventService {
     public DTOClass getEventDetails(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow();
         EventResponse response = new EventResponse();
-        response.setId(event.getId());
+        response.setId(String.valueOf(event.getId()));
         response.setTitle(event.getTitle());
         response.setDescription(event.getDescription());
         response.setLocation(event.getLocation());
@@ -296,5 +299,31 @@ public class EventServiceImpl implements EventService {
     // Method to fetch rooms for an event
     public List<Room> getRoomsForEvent(Long eventId) {
         return roomRepository.findByEventId(eventId);
+    }
+
+    public Page<EventDTO> getUnloggedEvents(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "lastUpdate"));
+        Page<Event> events = eventRepository.findOngoingOrUpcomingRegistrations(pageable);
+        return events.map(this::convertToEventDTO);
+    }
+
+    private EventDTO convertToEventDTO(Event event) {
+        EventDTO dto = new EventDTO();
+        dto.setId(String.valueOf(event.getId()));
+        dto.setTitle(event.getTitle());
+        dto.setDescription(event.getDescription());
+        dto.setLocation(event.getLocation());
+        dto.setCategory(event.getCategory());
+        dto.setCapacityMin(event.getCapacityMin());
+        dto.setCapacityMax(event.getCapacityMax());
+        dto.setStartTime(event.getStartTime());
+        dto.setEndTime(event.getEndTime());
+        dto.setRegisterStart(event.getRegisterStart());
+        dto.setRegisterEnd(event.getRegisterEnd());
+        dto.setMode(event.getMode());
+        dto.setLastUpdate(event.getLastUpdate());
+        dto.setImageUrl(event.getImageUrl());
+        dto.setActive(event.isActive());
+        return dto;
     }
 }
