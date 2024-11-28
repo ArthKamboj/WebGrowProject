@@ -144,11 +144,18 @@ public class ParticipantServiceImpl implements ParticipantService {
         if (updatedProfile.getMobile() != null) {
             user.setMobile(updatedProfile.getMobile());
         }
-        if(updatedProfile.getImageUrl() != null) {
+        if (updatedProfile.getImageUrl() != null) {
             user.setImageUrl(updatedProfile.getImageUrl());
+            System.out.println("Updating imageUrl to: " + updatedProfile.getImageUrl()); // Debug log
+        } else {
+            System.out.println("ImageUrl is null in the request"); // Debug log
         }
-
+        System.out.println("User object before saving: " + user);
         userRepository.save(user);
+        User updatedUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("User not found after save"));
+
+        System.out.println("User object after saving: " + updatedUser);
         return new ApiResponse<>(true, "Profile updated successfully", null);
     }
 
@@ -172,7 +179,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         trackEventView(email, event);
 
-        return new ApiResponse<>(true,"Event details retrieved successfully", convertToDTO(event));
+        return new ApiResponse<>(true,"Event details retrieved successfully", convertToNewDTO(event));
     }
 
     private NotificationDTO convertToDTO(Notification notification) {
@@ -182,6 +189,36 @@ public class ParticipantServiceImpl implements ParticipantService {
         dto.setMessage(notification.getMessage());
         dto.setTimestamp(notification.getTimestamp());
         dto.setRead(notification.isRead());
+        return dto;
+    }
+
+    private EventDTO convertToNewDTO(Event event) {
+        EventDTO dto = new EventDTO();
+        dto.setId(String.valueOf(event.getId()));
+        dto.setTitle(event.getTitle());
+        dto.setDescription(event.getDescription());
+        dto.setLocation(event.getLocation());
+        dto.setCategory(event.getCategory());
+        dto.setCapacityMin(event.getCapacityMin());
+        dto.setCapacityMax(event.getCapacityMax());
+        dto.setStartTime(event.getStartTime());
+        dto.setEndTime(event.getEndTime());
+        dto.setRegisterStart(event.getRegisterStart());
+        dto.setRegisterEnd(event.getRegisterEnd());
+        dto.setMode(event.getMode());
+        dto.setLastUpdate(event.getLastUpdate());
+        dto.setImageUrl(event.getImageUrl());
+        dto.setActive(event.isActive());
+
+        // Map host details
+        EventDTO.HostDTO host = new EventDTO.HostDTO();
+        host.setId(String.valueOf(event.getHost().getId()));
+        host.setFirstName(event.getHost().getFirstName());
+        host.setLastName(event.getHost().getLastName());
+        host.setEmail(event.getHost().getEmail());
+        host.setMobile(event.getHost().getMobile());
+        dto.setHost(host);
+
         return dto;
     }
 
