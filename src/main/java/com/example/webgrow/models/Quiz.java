@@ -38,6 +38,7 @@ public class Quiz {
 
     private String mode;
     private String imageUrl;
+    private String organization;
 
     @ManyToOne
     @JoinColumn(name = "host_id", nullable = false)

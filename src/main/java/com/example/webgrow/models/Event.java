@@ -35,6 +35,7 @@ public class Event {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime lastUpdate;
+    private String organization;
 
     private String mode;
     private String imageUrl;
@@ -60,6 +61,13 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Registration> registrations = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "event_administrators",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "admin_id")
+    )
+    private List<User> administrators = new ArrayList<>();
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserEventView> userEventViews = new ArrayList<>();
 

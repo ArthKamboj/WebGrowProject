@@ -88,4 +88,13 @@ public class EventController {
         DTOClass response = eventService.getParticipants(id);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("{eventId}/add-admin")
+    public ResponseEntity<DTOClass> addAdmin(@PathVariable Long eventId,
+                                             @PathVariable Long adminId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        DTOClass response =eventService.assignAdministrators(eventId,adminId,email);
+        return ResponseEntity.ok(response);
+    }
 }
