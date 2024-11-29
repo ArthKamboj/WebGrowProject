@@ -282,7 +282,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         List<TeamResponse> teamResponses = teams.stream()
                 .map(team -> {
                     String leaderId = String.valueOf(team.getLeader().getId());
-                    String leaderName = team.getLeader().getFirstName() + "" + team.getLeader().getLastName();
+                    String leaderName = team.getLeader().getFirstName() + " " + team.getLeader().getLastName();
                     String leaderEmail = team.getLeader().getEmail();
                     return new TeamResponse(
                             String.valueOf(team.getId()),
@@ -318,7 +318,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         Notification notification = new Notification();
         notification.setParticipant(team.getLeader());
-        notification.setMessage("A participant has requested to join your team: " + team.getName() + "with request id: " + joinRequest.getId());
+        notification.setMessage("A participant has requested to join your team: " + team.getName() + " with request id: " + joinRequest.getId());
         notification.setTimestamp(LocalDateTime.now());
         notification.setRead(false);
         notification.setEvent(team.getEvent());

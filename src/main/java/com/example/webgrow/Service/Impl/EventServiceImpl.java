@@ -77,6 +77,7 @@ public class EventServiceImpl implements EventService {
         // If it's a quiz event, create a corresponding Quiz
         if (eventRequest.getCategory().toLowerCase().contains("quiz")) {
             Quiz quiz = new Quiz();
+            quiz.setId(event.getId());
             quiz.setTitle(eventRequest.getTitle());
             quiz.setDescription(eventRequest.getDescription());
             quiz.setHost(host);
