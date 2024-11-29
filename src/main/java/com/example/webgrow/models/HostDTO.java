@@ -14,6 +14,7 @@ public class HostDTO {
     private String email;
     private String mobile;
     private String role;
+    private String imageUrl;
     private boolean verified;
     private boolean enabled;
 }
