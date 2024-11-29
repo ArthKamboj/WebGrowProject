@@ -102,16 +102,16 @@ public class EventServiceImpl implements EventService {
     @Override
     public DTOClass updateUserDetails(UpdateProfileRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        String email = currentUser.getEmail();
+        String email =authentication.getName();
         var user=userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not found with email: " + email));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setMobile(request.getMobile());
+        user.setImageUrl(request.getImageUrl());
         user.setDesignation(request.getDesignation());
         user.setOrganization(request.getOrganization());
         userRepository.save(user);
-        return new DTOClass("Profile updated successfully", "SUCCESS", null);
+        return new DTOClass("Profile updated successfully", "SUCCESS", user);
     }
     @Override
     @Transactional
@@ -180,12 +180,17 @@ public class EventServiceImpl implements EventService {
         notificationRepository.save(notification);
     }
 
+    @Transactional
     @Override
     public DTOClass deleteEvent(Long eventId, String hostEmail) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
+                new RuntimeException("Event not found"));
         if (!event.getHost().getEmail().equals(hostEmail)) {
             return new DTOClass("Unauthorized to delete this event", "FAILURE", null);
         }
+        event.getNotifications().size();
+        event.getTimelineEntries().size();
+
         eventRepository.delete(event);
         return new DTOClass("Event Deleted Successfully", "SUCCESS", null);
     }
@@ -408,6 +413,7 @@ public class EventServiceImpl implements EventService {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
+                user.getImageUrl(),
                 user.getMobile(),
                 user.getRole().name(),
                 user.isVerified(),
