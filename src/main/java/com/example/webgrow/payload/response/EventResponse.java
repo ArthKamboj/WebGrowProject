@@ -1,8 +1,10 @@
 package com.example.webgrow.payload.response;
 
+import com.example.webgrow.payload.dto.TimelineEntryDto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class EventResponse {
@@ -24,4 +26,5 @@ public class EventResponse {
     private String url;
     private LocalDateTime lastUpdate;
     private String organization;
+    private List<TimelineEntryDto> timelineEntries;
 }

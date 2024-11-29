@@ -4,12 +4,15 @@ import com.example.webgrow.Service.EventService;
 import com.example.webgrow.models.*;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.dto.EventDTO;
+import com.example.webgrow.payload.dto.TimelineEntryDto;
+import com.example.webgrow.payload.request.BulkTimelineEntryRequest;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.request.UpdateProfileRequest;
 import com.example.webgrow.payload.response.EventResponse;
 import com.example.webgrow.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +40,8 @@ public class EventServiceImpl implements EventService {
     private final FavouriteRepository favouriteRepository;
     private final NotificationRepository notificationRepository;
     private final RoomRepository roomRepository;
+    @Autowired
+    private TimelineEntryRepository timelineEntryRepository;
 
     @Override
     public DTOClass createEvent(EventRequest eventRequest, String email) {
@@ -237,6 +242,10 @@ public class EventServiceImpl implements EventService {
         response.setCapacityMin(event.getCapacityMin());
         response.setCapacityMax(event.getCapacityMax());
         response.setHostEmail(event.getHost().getEmail());
+        List<TimelineEntryDto> timelineDtos = event.getTimelineEntries().stream()
+                .map(entry -> new TimelineEntryDto(entry.getDay(), entry.getDescription()))
+                .toList();
+        response.setTimelineEntries(timelineDtos);
         return new DTOClass("Event details retrieved successfully", "SUCCESS", response);
     }
 
@@ -354,6 +363,23 @@ public class EventServiceImpl implements EventService {
         Page<Event> events = eventRepository.findOngoingOrUpcomingRegistrations(pageable);
         return events.map(this::convertToEventDTO);
     }
+
+    @Override
+    @Transactional
+    public List<TimeLineEntry> addTimelineEntries(Long eventId, BulkTimelineEntryRequest bulkTimelineEntryRequest) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        List<TimeLineEntry> timelineEntries = bulkTimelineEntryRequest.getEntries()
+                .stream()
+                .map(dto -> TimeLineEntry.builder()
+                        .day((long) dto.getDay())
+                        .description(dto.getDescription())
+                        .event(event)
+                        .build())
+                .toList();
+        return timelineEntryRepository.saveAll(timelineEntries);
+    }
+
 
     private EventDTO convertToEventDTO(Event event) {
         EventDTO dto = new EventDTO();

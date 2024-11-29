@@ -76,6 +76,10 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserEventView> userEventViews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<TimeLineEntry> timelineEntries = new ArrayList<>();
+
 
     private String url;
     private boolean isActive;
