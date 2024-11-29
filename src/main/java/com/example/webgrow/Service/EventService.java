@@ -1,10 +1,13 @@
 package com.example.webgrow.Service;
 
+import com.example.webgrow.models.Notification;
 import com.example.webgrow.models.Room;
 import com.example.webgrow.payload.dto.ApiResponse;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.dto.EventDTO;
 import com.example.webgrow.payload.request.EventRequest;
+import com.example.webgrow.payload.request.UpdateProfileRequest;
+import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,4 +25,6 @@ public interface EventService {
     DTOClass getParticipants(Long eventId);
     DTOClass assignAdministrators(Long eventId, Long adminId, String hostEmail);
     Page<EventDTO> getUnloggedEvents(int page, int size);
+    DTOClass updateUserDetails(UpdateProfileRequest request) throws MessagingException;
+    public List<Notification> getHostNotifications(String email);
 }

@@ -1,13 +1,15 @@
 package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.EventService;
+import com.example.webgrow.models.Notification;
 import com.example.webgrow.models.Room;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.EventRequest;
+import com.example.webgrow.payload.request.UpdateProfileRequest;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -97,5 +99,20 @@ public class EventController {
         String email = authentication.getName();
         DTOClass response =eventService.assignAdministrators(eventId,adminId,email);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/user/updateprofile")
+    public ResponseEntity<DTOClass> updateUserDetails(@RequestBody UpdateProfileRequest request) throws MessagingException {
+        DTOClass user=eventService.updateUserDetails(request);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/notifications")
+    public ResponseEntity<List<Notification>> getNotifications() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        List<Notification> notifications = eventService.getHostNotifications(email);
+        return ResponseEntity.ok(notifications);
     }
 }

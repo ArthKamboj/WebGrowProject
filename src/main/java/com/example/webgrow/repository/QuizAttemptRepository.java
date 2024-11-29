@@ -3,7 +3,6 @@ package com.example.webgrow.repository;
 import com.example.webgrow.models.Quiz;
 import com.example.webgrow.models.QuizAttempt;
 import com.example.webgrow.models.User;
-import com.example.webgrow.payload.dto.QuizAttemptDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

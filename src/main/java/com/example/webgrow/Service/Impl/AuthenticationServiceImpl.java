@@ -186,20 +186,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new DTOClass("User Fetched Successfully","SUCCESS", hostDTO);
     }
 
-    @Override
-    public DTOClass updateUserDetails(UpdateProfileRequest request) throws MessagingException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
-        String email = currentUser.getEmail();
-        var user=repository.findByEmail(email).orElseThrow(()->new RuntimeException("User not found with email: " + email));
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setMobile(request.getMobile());
-        user.setDesignation(request.getDesignation());
-        user.setOrganization(request.getOrganization());
-        userRepository.save(user);
-        return new DTOClass("Profile updated successfully", "SUCCESS", null);
-    }
 
 
 }

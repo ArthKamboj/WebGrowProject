@@ -1,26 +1,32 @@
 package com.example.webgrow.Service.Impl;
 
 import com.example.webgrow.Service.EventService;
-import com.example.webgrow.Service.ParticipantService;
 import com.example.webgrow.models.*;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.dto.EventDTO;
 import com.example.webgrow.payload.request.EventRequest;
+import com.example.webgrow.payload.request.UpdateProfileRequest;
 import com.example.webgrow.payload.response.EventResponse;
 import com.example.webgrow.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
@@ -31,7 +37,6 @@ public class EventServiceImpl implements EventService {
     private final FavouriteRepository favouriteRepository;
     private final NotificationRepository notificationRepository;
     private final RoomRepository roomRepository;
-//    private final WebinarRepository webinarRepository;
 
     @Override
     public DTOClass createEvent(EventRequest eventRequest, String email) {
@@ -85,29 +90,24 @@ public class EventServiceImpl implements EventService {
 
             quizRepository.save(quiz);
         }
-//        if (eventRequest.getCategory().toLowerCase().contains("webinar")) {
-//            Webinar webinar = new Webinar();
-//            webinar.setTitle(eventRequest.getTitle());
-//            webinar.setDescription(eventRequest.getDescription());
-//            webinar.setHost(host);
-//            webinar.setStartTime(eventRequest.getStartTime());
-//            webinar.setEndTime(eventRequest.getEndTime());
-//            webinar.setEventType(eventRequest.getEventType());
-//            webinar.setCategory(eventRequest.getCategory());
-//            webinar.setRegisterStart(eventRequest.getRegisterStart());
-//            webinar.setRegisterEnd(eventRequest.getRegisterEnd());
-//            webinar.setFestival(eventRequest.getFestival());
-//            webinar.setCapacityMin(eventRequest.getCapacityMin());
-//            webinar.setCapacityMax(eventRequest.getCapacityMax());
-//            webinar.setParticipants(event.getParticipants());
-//            webinar.setIsActive(true);
-//
-//            webinarRepository.save(webinar);
-//        }
 
         return new DTOClass("Event Created Successfully", "SUCCESS", null);
     }
 
+    @Override
+    public DTOClass updateUserDetails(UpdateProfileRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+        var user=userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not found with email: " + email));
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setMobile(request.getMobile());
+        user.setDesignation(request.getDesignation());
+        user.setOrganization(request.getOrganization());
+        userRepository.save(user);
+        return new DTOClass("Profile updated successfully", "SUCCESS", null);
+    }
     @Override
     @Transactional
     public DTOClass updateEvent(Long eventId, EventRequest eventRequest, String hostEmail) {
@@ -152,7 +152,7 @@ public class EventServiceImpl implements EventService {
         }
 
         for (User user : favoriteUsers) {
-            createNotification(user, event, "The event you favorited has been updated.");
+            createNotification(user, event, "The event you marked favourite has been updated.");
         }
     }
 
@@ -205,7 +205,7 @@ public class EventServiceImpl implements EventService {
             eventResponse.setHostEmail(event.getHost().getEmail());
             eventResponse.setLastUpdate(LocalDateTime.now());
 
-            return new DTOClass("Event Retrieved Successfully", "SUCCESS", eventResponse); // Assuming DTOClass can handle single event
+            return new DTOClass("Event Retrieved Successfully", "SUCCESS", eventResponse);
         });
 
         return dtoPage;
@@ -268,7 +268,41 @@ public class EventServiceImpl implements EventService {
 
         return new DTOClass("Participants retrieved successfully", "SUCCESS", participantDetails);
     }
+    @Scheduled(fixedRate = 60000) // Runs every 1 minute
+    public void sendEventReminders() {
+        LocalDateTime now = LocalDateTime.now();
+        log.info("Running sendEventReminders task at {}", now);
 
+        List<Event> upcomingEvents = eventRepository.findUpcomingEvents(now);
+
+        for (Event event : upcomingEvents) {
+            try {
+                LocalDateTime startTime = event.getStartTime();
+                User host = event.getHost();
+
+                long minutesDifference = ChronoUnit.MINUTES.between(now, startTime);
+
+                if (minutesDifference == 1440) { // 24 hours
+                    createNotification(host, event, "Reminder: Your event \"" + event.getTitle() + "\" starts in 24 hours.");
+                } else if (minutesDifference == 60) { // 1 hour
+                    createNotification(host, event, "Reminder: Your event \"" + event.getTitle() + "\" starts in 1 hour.");
+                } else if (minutesDifference == 10) { // 10 minutes
+                    createNotification(host, event, "Reminder: Your event \"" + event.getTitle() + "\" starts in 10 minutes.");
+                }
+            } catch (Exception e) {
+                log.error("Error sending reminder for event ID {}: {}", event.getId(), e.getMessage());
+            }
+        }
+    }
+
+
+    @Override
+    public List<Notification> getHostNotifications(String email) {
+        User host = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Host not found with email: " + email));
+
+        return notificationRepository.findByParticipantId(host);
+    }
     @Override
     public DTOClass assignAdministrators(Long eventId, Long hostId, String hostEmail) {
         Event event = eventRepository.findById(eventId)
