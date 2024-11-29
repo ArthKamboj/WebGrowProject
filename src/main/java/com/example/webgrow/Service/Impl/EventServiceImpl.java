@@ -74,7 +74,6 @@ public class EventServiceImpl implements EventService {
         event.setLastUpdate(LocalDateTime.now());
         eventRepository.save(event);
 
-        // If it's a quiz event, create a corresponding Quiz
         if (eventRequest.getCategory().toLowerCase().contains("quiz")) {
             Quiz quiz = new Quiz();
             quiz.setId(event.getId());
@@ -120,13 +119,13 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(eventId).orElseThrow(() ->
                 new RuntimeException("Event not found with ID: " + eventId));
         if (!event.getHost().getEmail().equals(hostEmail)) {
-            return new DTOClass("Host Email Not Matched", "FAILURE", null);
+           throw new RuntimeException("Wrong email");
         }
         boolean isAuthorized = event.getHost().getEmail().equals(hostEmail) ||
                 event.getAdministrators().stream().anyMatch(admin -> admin.getEmail().equals(hostEmail));
 
         if (!isAuthorized) {
-            return new DTOClass("Unauthorized to update the event", "FAILURE", null);
+            throw new RuntimeException("Unauthorized access is not allowed");
         }
 
         event.setTitle(eventRequest.getTitle());
@@ -149,7 +148,7 @@ public class EventServiceImpl implements EventService {
         if (eventRequest.getRegisterStart() != null && !eventRequest.getRegisterStart().isBefore(LocalDateTime.now())) {
             event.setRegisterStart(eventRequest.getRegisterStart());
         } else {
-            return new DTOClass("Registration already started", "ERROR", null);
+           throw new RuntimeException("Registration already started");
         }
 
         eventRepository.save(event);
@@ -207,6 +206,7 @@ public class EventServiceImpl implements EventService {
             eventResponse.setMode(event.getMode());
             eventResponse.setFestival(event.getFestival());
             eventResponse.setEventType(event.getEventType());
+            eventResponse.setCategory(event.getCategory());
             eventResponse.setOrganization(event.getOrganization());
             eventResponse.setCapacityMin(event.getCapacityMin());
             eventResponse.setCapacityMax(event.getCapacityMax());
@@ -325,12 +325,11 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + eventId));
         if (!event.getHost().getEmail().equals(hostEmail)) {
-            return new DTOClass("Unauthorized to assign administrators", "FAILURE", null);
-        }
+            throw new RuntimeException("Unauthorized to elect administrators"); }
         User adminUser = userRepository.findById(hostId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + hostId));
         if (event.getAdministrators().contains(adminUser)) {
-            return new DTOClass("User is already an administrator", "FAILURE", null);
+            throw new RuntimeException("User is already an administrator");
         }
         event.getAdministrators().add(adminUser);
         eventRepository.save(event);

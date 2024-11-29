@@ -17,4 +17,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
 
     @Query("SELECT qa FROM QuizAttempt qa WHERE qa.quiz.id = :quizId")
     List<QuizAttemptDTO> getQuizAttempts(@Param("quizId") Long quizId);
+
+    List<Quiz> findByCategory(String category);
+
 }

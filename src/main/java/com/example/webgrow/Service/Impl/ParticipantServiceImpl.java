@@ -28,6 +28,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     private final TeamRepository teamRepository;
     private final TeamJoinRequestRepository teamJoinRequestRepository;
     private final UserEventViewRepository userEventViewRepository;
+    private final QuizRepository quizRepository;
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -63,8 +64,21 @@ public class ParticipantServiceImpl implements ParticipantService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
+        boolean alreadyRegistered = registrationRepository.existsByParticipantAndEvent(user, event);
+        if (alreadyRegistered) {
+            throw new RuntimeException("User already registered for this event");
+        }
+
         Registration registration = new Registration(user, event);
         registrationRepository.save(registration);
+
+        List<Quiz> quizzes = quizRepository.findByCategory(event.getCategory());
+        for (Quiz quiz : quizzes) {
+            if (quiz.getId().equals(event.getId()) && !quiz.getParticipants().contains(user)) {
+                quiz.getParticipants().add(user);
+                quizRepository.save(quiz);
+            }
+        }
 
         return new ApiResponse<>(true,"Successfully registered for the event", null);
     }
@@ -146,16 +160,11 @@ public class ParticipantServiceImpl implements ParticipantService {
         }
         if (updatedProfile.getImageUrl() != null) {
             user.setImageUrl(updatedProfile.getImageUrl());
-            System.out.println("Updating imageUrl to: " + updatedProfile.getImageUrl()); // Debug log
-        } else {
-            System.out.println("ImageUrl is null in the request"); // Debug log
         }
-        System.out.println("User object before saving: " + user);
         userRepository.save(user);
         User updatedUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new RuntimeException("User not found after save"));
 
-        System.out.println("User object after saving: " + updatedUser);
         return new ApiResponse<>(true, "Profile updated successfully", null);
     }
 
@@ -307,12 +316,11 @@ public class ParticipantServiceImpl implements ParticipantService {
             throw new RuntimeException("User already in the team.");
         }
 
-        TeamJoinRequest joinRequest = TeamJoinRequest.builder()
-                .participant(participant)
-                .team(team)
-                .requestTime(LocalDateTime.now())
-                .status("PENDING")
-                .build();
+        TeamJoinRequest joinRequest = new TeamJoinRequest();
+                joinRequest.setParticipant(participant);
+                joinRequest.setTeam(team);
+                joinRequest.setRequestTime(LocalDateTime.now());
+                joinRequest.setStatus("PENDING");
 
         teamJoinRequestRepository.save(joinRequest);
 
