@@ -12,4 +12,7 @@ import java.util.List;
 public interface QuizAnswerRepository extends JpaRepository<QuizAnswer, Long> {
 
     List<QuizAnswer> findByParticipantAndQuestionQuiz(User participant, Quiz quiz);
+
+    Long countByParticipantAndQuestionQuiz(User user,Quiz quiz);
+
 }

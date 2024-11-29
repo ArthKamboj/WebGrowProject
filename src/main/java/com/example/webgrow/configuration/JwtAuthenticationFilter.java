@@ -1,7 +1,6 @@
 package com.example.webgrow.configuration;
 
 import com.example.webgrow.Service.JwtService;
-import com.example.webgrow.models.Role;
 import com.example.webgrow.models.User;
 import com.example.webgrow.repository.UserRepository;
 import jakarta.servlet.FilterChain;

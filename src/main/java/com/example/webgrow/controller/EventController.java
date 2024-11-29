@@ -1,12 +1,15 @@
 package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.EventService;
+import com.example.webgrow.models.Notification;
 import com.example.webgrow.models.Room;
 import com.example.webgrow.models.TimeLineEntry;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.BulkTimelineEntryRequest;
 import com.example.webgrow.payload.request.EventRequest;
+import com.example.webgrow.payload.request.UpdateProfileRequest;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -100,6 +103,22 @@ public class EventController {
         DTOClass response =eventService.assignAdministrators(eventId,adminId,email);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/user/updateprofile")
+    public ResponseEntity<DTOClass> updateUserDetails(@RequestBody UpdateProfileRequest request) throws MessagingException {
+        DTOClass user=eventService.updateUserDetails(request);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/notifications")
+    public ResponseEntity<List<Notification>> getNotifications() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        List<Notification> notifications = eventService.getHostNotifications(email);
+        return ResponseEntity.ok(notifications);
+    }
+
     @GetMapping("{eventId}/administrators")
     public ResponseEntity<List<User>> getAdministrators(@PathVariable Long eventId) {
         List<User> administrators = eventService.getAdministrators(eventId);
