@@ -92,6 +92,26 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
     }
 
     @Override
+    public QuizProgressDTO getQuizProgress(Long quizId, String email) {
+        User user = getUserByEmail(email);
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        // Get the total number of questions in the quiz
+        long totalQuestions = questionRepository.countByQuiz(quiz);
+
+        // Get the number of questions the participant has submitted answers for
+        long submittedQuestions = quizAnswerRepository.countByParticipantAndQuestionQuiz(user, quiz);
+
+        // Prepare the DTO to return
+        QuizProgressDTO progressDTO = new QuizProgressDTO();
+        progressDTO.setTotalQuestions(totalQuestions);
+        progressDTO.setSubmittedQuestions(submittedQuestions);
+
+        return progressDTO;
+    }
+
+    @Override
     public void submitQuiz(Long quizId, String email) {
         User user = getUserByEmail(email);
         Quiz quiz = quizRepository.findById(quizId)
