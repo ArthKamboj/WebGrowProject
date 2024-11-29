@@ -60,11 +60,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.verifyForgotPassword(request));
     }
 
-    @GetMapping("/user/profile")
-    public ResponseEntity<DTOClass> getProfile() throws MessagingException {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        DTOClass user=service.getUserByEmail(email);
-        return ResponseEntity.ok(user);
-    }
+
 
 }

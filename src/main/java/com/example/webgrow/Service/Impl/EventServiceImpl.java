@@ -400,4 +400,19 @@ public class EventServiceImpl implements EventService {
         dto.setActive(event.isActive());
         return dto;
     }
+    public DTOClass getUserByEmail(String email) {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+        HostDTO hostDTO = new HostDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getMobile(),
+                user.getRole().name(),
+                user.isVerified(),
+                user.isEnabled()
+        );
+        return new DTOClass("User Fetched Successfully","SUCCESS", hostDTO);
+    }
 }
