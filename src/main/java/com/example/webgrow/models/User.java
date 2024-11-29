@@ -1,5 +1,7 @@
 package com.example.webgrow.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,9 +31,11 @@ public class User implements UserDetails {
     private String lastName;
     private String email;
     private String mobile;
+    @JsonIgnore
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @JsonIgnore
     private String otp;
     private String designation;
     private String organization;
@@ -87,6 +91,7 @@ public class User implements UserDetails {
     private List<Event> participatedEvents;
 
     @ManyToMany(mappedBy = "administrators")
+    @JsonBackReference
     private List<Event> managedEvents = new ArrayList<>();
 
 

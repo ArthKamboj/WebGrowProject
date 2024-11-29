@@ -1,5 +1,6 @@
 package com.example.webgrow.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -70,6 +71,7 @@ public class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "admin_id")
     )
+    @JsonManagedReference
     private List<User> administrators = new ArrayList<>();
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserEventView> userEventViews = new ArrayList<>();

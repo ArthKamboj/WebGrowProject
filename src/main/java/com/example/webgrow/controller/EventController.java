@@ -2,6 +2,7 @@ package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.EventService;
 import com.example.webgrow.models.Room;
+import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.EventRequest;
 import lombok.RequiredArgsConstructor;
@@ -98,4 +99,10 @@ public class EventController {
         DTOClass response =eventService.assignAdministrators(eventId,adminId,email);
         return ResponseEntity.ok(response);
     }
+    @GetMapping("{eventId}/administrators")
+    public ResponseEntity<List<User>> getAdministrators(@PathVariable Long eventId) {
+        List<User> administrators = eventService.getAdministrators(eventId);
+        return ResponseEntity.ok(administrators);
+    }
+
 }
