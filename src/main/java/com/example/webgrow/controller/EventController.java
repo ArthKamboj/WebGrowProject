@@ -2,13 +2,14 @@ package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.EventService;
 import com.example.webgrow.models.Room;
+import com.example.webgrow.models.TimeLineEntry;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.DTOClass;
+import com.example.webgrow.payload.request.BulkTimelineEntryRequest;
 import com.example.webgrow.payload.request.EventRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -103,6 +104,15 @@ public class EventController {
     public ResponseEntity<List<User>> getAdministrators(@PathVariable Long eventId) {
         List<User> administrators = eventService.getAdministrators(eventId);
         return ResponseEntity.ok(administrators);
+    }
+
+    @PostMapping("/{eventId}/timeline/bulk")
+    public ResponseEntity<List<TimeLineEntry>> addTimelineEntry(
+            @PathVariable Long eventId,
+            @RequestBody BulkTimelineEntryRequest bulkTimelineEntryRequest
+    ) {
+        List<TimeLineEntry> newEntries = eventService.addTimelineEntries(eventId, bulkTimelineEntryRequest);
+        return ResponseEntity.ok(newEntries);
     }
 
 }
