@@ -29,5 +29,6 @@ public interface EventService {
     Page<EventDTO> getUnloggedEvents(int page, int size);
     List<TimeLineEntry> addTimelineEntries(Long eventId, BulkTimelineEntryRequest bulkTimelineEntryRequest);
     DTOClass updateUserDetails(UpdateProfileRequest request) throws MessagingException;
-    public List<Notification> getHostNotifications(String email);
+    List<Notification> getHostNotifications(String email);
+    DTOClass getUserByEmail(String email) throws MessagingException;
 }

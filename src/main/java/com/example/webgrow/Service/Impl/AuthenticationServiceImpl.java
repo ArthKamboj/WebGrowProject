@@ -171,20 +171,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return new DTOClass("NO USER EXIST WITH THE GIVEN EMAIL", "FAILURE", null);
         }
     }
-    public DTOClass getUserByEmail(String email) {
-        var user = repository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
-        HostDTO hostDTO = new HostDTO(
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getMobile(),
-                user.getRole().name(),
-                user.isVerified(),
-                user.isEnabled()
-        );
-        return new DTOClass("User Fetched Successfully","SUCCESS", hostDTO);
-    }
+
 
 
 
