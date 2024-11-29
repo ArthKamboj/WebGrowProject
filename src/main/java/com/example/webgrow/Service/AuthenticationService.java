@@ -17,6 +17,4 @@ public interface AuthenticationService {
     DTOClass forgotPassword(String email) throws MessagingException;
     DTOClass verifyForgotPasswordOtp(ForgotPasswordOtpRequest request) throws MessagingException;
     DTOClass verifyForgotPassword(ValidatePasswordRequest request);
-    DTOClass getUserByEmail(String email) throws MessagingException;
-
 }

@@ -104,6 +104,13 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/user/profile")
+    public ResponseEntity<DTOClass> getProfile() throws MessagingException {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        DTOClass user = eventService.getUserByEmail(email);
+        return ResponseEntity.ok(user);
+    }
+
     @PutMapping("/user/updateprofile")
     public ResponseEntity<DTOClass> updateUserDetails(@RequestBody UpdateProfileRequest request) throws MessagingException {
         DTOClass user=eventService.updateUserDetails(request);
