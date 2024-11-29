@@ -280,8 +280,18 @@ public class ParticipantServiceImpl implements ParticipantService {
                 : teamRepository.findByEventIdAndIsPublicTrue(eventId);
 
         List<TeamResponse> teamResponses = teams.stream()
-                .map(team -> new TeamResponse(String.valueOf(team.getId()), team.getName(), team.getLeader().getId()))
-                .collect(Collectors.toList());
+                .map(team -> {
+                    String leaderId = String.valueOf(team.getLeader().getId());
+                    String leaderName = team.getLeader().getFirstName() + "" + team.getLeader().getLastName();
+                    String leaderEmail = team.getLeader().getEmail();
+                    return new TeamResponse(
+                            String.valueOf(team.getId()),
+                            team.getName(),
+                            leaderId,
+                            leaderName,
+                            leaderEmail
+                    );
+                }).collect(Collectors.toList());
 
         return new ApiResponse<>(true, "Teams retrieved successfully", teamResponses);
     }

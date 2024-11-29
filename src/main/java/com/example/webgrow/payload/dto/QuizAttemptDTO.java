@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class QuizAttemptDTO {
     private String quizId;
     private String title;
+    private Long participantId;
     private String participantName;
     private int totalQuestions;
     private int correctAnswers;

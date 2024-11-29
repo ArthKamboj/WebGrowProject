@@ -3,8 +3,12 @@ package com.example.webgrow.Service.Impl;
 import com.example.webgrow.Service.QuizHostService;
 import com.example.webgrow.models.Question;
 import com.example.webgrow.models.Quiz;
+import com.example.webgrow.models.QuizAttempt;
+import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.QuestionDTO;
+import com.example.webgrow.payload.dto.QuizAttemptDTO;
 import com.example.webgrow.repository.QuestionRepository;
+import com.example.webgrow.repository.QuizAttemptRepository;
 import com.example.webgrow.repository.QuizRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +23,7 @@ public class QuizHostServiceImpl implements QuizHostService {
 
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
+    private final QuizAttemptRepository quizAttemptRepository;
 
     @Override
     public void addQuestionsToQuiz(Long quizId, List<QuestionDTO> questionDTOList) {
@@ -36,6 +41,27 @@ public class QuizHostServiceImpl implements QuizHostService {
                 }).collect(Collectors.toList());
 
         questionRepository.saveAll(questions);
+    }
+
+    @Override
+    public List<QuizAttemptDTO> getQuizAttempts(Long quizId) {
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new RuntimeException("Quiz not found!"));
+
+        // Fetch all quiz attempts for the given quiz
+        List<QuizAttempt> attempts = quizAttemptRepository.findByQuiz(quiz);
+
+        // Map to DTO
+        return attempts.stream().map(attempt -> {
+            QuizAttemptDTO dto = new QuizAttemptDTO();
+            User participant = attempt.getParticipant();
+            dto.setParticipantId(participant.getId());
+            dto.setParticipantName(participant.getFirstName() + " " + participant.getLastName());
+            dto.setCorrectAnswers(attempt.getCorrectAnswers());
+            dto.setTotalQuestions(attempt.getTotalQuestions());
+            dto.setAttemptTime(attempt.getAttemptTime());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
 }

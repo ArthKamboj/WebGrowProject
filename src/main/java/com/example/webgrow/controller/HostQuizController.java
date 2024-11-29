@@ -3,6 +3,7 @@ package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.QuizHostService;
 import com.example.webgrow.payload.dto.QuestionDTO;
+import com.example.webgrow.payload.dto.QuizAttemptDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,4 +27,9 @@ public class HostQuizController {
         return ResponseEntity.ok("Questions added successfully!");
     }
 
+    @GetMapping("/quizzes/{quizId}/attempts")
+    public ResponseEntity<List<QuizAttemptDTO>> getQuizAttempts(@PathVariable Long quizId) {
+        List<QuizAttemptDTO> attempts = quizHostService.getQuizAttempts(quizId);
+        return ResponseEntity.ok(attempts);
+    }
 }

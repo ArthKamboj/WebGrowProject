@@ -8,5 +8,7 @@ import lombok.*;
 public class TeamResponse {
     private String id;
     private String name;
-    private Long leaderId;
+    private String leaderId;
+    private String leaderName;
+    private String leaderEmail;
 }
