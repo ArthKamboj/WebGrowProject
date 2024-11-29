@@ -78,4 +78,14 @@ public class ParticipantQuizController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{quizId}/progress")
+    public ResponseEntity<QuizProgressDTO> getQuizProgress(
+            @PathVariable Long quizId,
+            @AuthenticationPrincipal String email
+    ) {
+        QuizProgressDTO progress = quizParticipantService.getQuizProgress(quizId, email);
+        return ResponseEntity.ok(progress);
+    }
+
+
 }

@@ -1,7 +1,6 @@
 package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.AuthenticationService;
-import com.example.webgrow.models.User;
 import com.example.webgrow.payload.request.*;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.OtpValidate;
@@ -68,9 +67,4 @@ public class AuthenticationController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/user/updateprofile")
-    public ResponseEntity<DTOClass> updateUserDetails(@RequestBody UpdateProfileRequest request) throws MessagingException {
-        DTOClass user=service.updateUserDetails(request);
-        return ResponseEntity.ok(user);
-    }
 }

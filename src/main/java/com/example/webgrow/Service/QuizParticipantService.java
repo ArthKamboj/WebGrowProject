@@ -17,4 +17,6 @@ public interface QuizParticipantService {
     QuizAttemptDTO getQuizResults(String email, Long quizId);
 
     LeaderboardResponseDTO getLeaderboardAndParticipantDetails(Long quizId, String email);
+
+    QuizProgressDTO getQuizProgress(Long quizId, String email);
 }

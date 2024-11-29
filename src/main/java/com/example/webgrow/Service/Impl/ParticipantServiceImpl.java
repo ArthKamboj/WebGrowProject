@@ -318,7 +318,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         Notification notification = new Notification();
         notification.setParticipant(team.getLeader());
-        notification.setMessage("A participant has requested to join your team: " + team.getName());
+        notification.setMessage("A participant has requested to join your team: " + team.getName() + "with request id: " + joinRequest.getId());
         notification.setTimestamp(LocalDateTime.now());
         notification.setRead(false);
         notification.setEvent(team.getEvent());

@@ -28,7 +28,7 @@ public class Notification {
     private boolean read;
 
     @ManyToOne
-    @JoinColumn(name = "event_id", nullable = true)
+    @JoinColumn(name = "event_id")
     private Event event;
 
 }
