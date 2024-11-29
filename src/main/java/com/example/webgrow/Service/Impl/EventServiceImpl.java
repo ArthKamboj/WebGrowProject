@@ -207,6 +207,7 @@ public class EventServiceImpl implements EventService {
             eventResponse.setMode(event.getMode());
             eventResponse.setFestival(event.getFestival());
             eventResponse.setEventType(event.getEventType());
+            eventResponse.setCategory(event.getCategory());
             eventResponse.setOrganization(event.getOrganization());
             eventResponse.setCapacityMin(event.getCapacityMin());
             eventResponse.setCapacityMax(event.getCapacityMax());

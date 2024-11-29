@@ -23,6 +23,7 @@ public class EventResponse {
     private String mode;
     private String imageUrl;
     private String eventType;
+    private String category;
     private String url;
     private LocalDateTime lastUpdate;
     private String organization;
