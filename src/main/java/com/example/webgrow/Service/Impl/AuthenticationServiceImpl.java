@@ -12,8 +12,6 @@ import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Random;
@@ -35,7 +33,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (repository.existsByEmail(contact)) {
             String password = request.getPassword();
             user = repository.findByEmail(contact).orElseThrow();
-            if (user.isVerified()) { return new DTOClass("User Already Exists", "ERROR", null); }
+            if (user.isVerified()) { throw new RuntimeException("User already exists"); }
             user.setFirstName(request.getFirstname());
             user.setLastName(request.getLastname());
             user.setEmail(request.getEmail());
@@ -53,7 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 sendVerificationEmail(user.getEmail(), otp);
             }
             catch (MessagingException e) {
-                return new DTOClass("Failed to send otp", "ERROR", null);
+                throw new RuntimeException("Failed to send OTP to " + user.getEmail());
             }
             return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
         } else {
@@ -72,7 +70,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 sendVerificationEmail(user.getEmail(), otp);
             }
             catch (MessagingException e) {
-                return new DTOClass("Failed to send otp", "ERROR", null);
+                throw new RuntimeException("Failed to send OTP to " + user.getEmail());
             }
 
             return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
@@ -96,7 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public DTOClass authenticate(AuthenticateRequest request) {
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
         if (!user.isVerified()) {
-            return new DTOClass("Invalid email", "ERROR", null);
+            throw new RuntimeException("Failed to send OTP to " + user.getEmail());
         }
 
         authenticationManager.authenticate(
@@ -117,7 +115,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             repository.save(user);
             return new DTOClass("OTP validated successfully", "SUCCESS", new AuthenticateResponse(jwtToken));
         } else {
-            return new DTOClass("Invalid OTP provided", "FAILURE", null);
+            throw new RuntimeException("Invalid OTP provided");
         }
     }
 
@@ -131,12 +129,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return new DTOClass("OTP sent to " + user.getEmail(), "SUCCESS", null);
         }
         else {
-//            var user = hostRepository.findByEmail(email).orElseThrow();
-//            String otp = generateOtp();
-//            user.setOtp(otp);
-//            hostRepository.save(user);
-//            sendVerificationEmail(email, otp);
-            return new DTOClass("NO USER WITH GIVEN EMAIL FOUND " , "FAILURE", null);
+            throw new RuntimeException("Invalid email provided");
         }
     }
 
@@ -147,7 +140,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             repository.save(user);
             return new DTOClass("OTP validated successfully", "SUCCESS", null);
         } else {
-            return new DTOClass("Invalid OTP provided", "FAILURE", null);
+            throw new RuntimeException("Invalid OTP provided");
         }
     }
 
@@ -161,18 +154,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return new DTOClass("Password changed successfully", "SUCCESS", null);
             }
             else {
-                return new DTOClass("Email not verified through otp", "FAILURE", null);
+                throw new RuntimeException("email not allowed to change password");
             }
         }
         else {
-//            var user = hostRepository.findByEmail(request.getEmail()).orElseThrow();
-//            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-//            hostRepository.save(user);
-            return new DTOClass("NO USER EXIST WITH THE GIVEN EMAIL", "FAILURE", null);
+            throw new RuntimeException("Invalid email provided");
         }
     }
-
-
-
 
 }

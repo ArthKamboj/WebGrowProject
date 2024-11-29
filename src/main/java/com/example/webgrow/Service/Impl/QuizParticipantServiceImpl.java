@@ -23,6 +23,7 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
     private final QuizAttemptRepository quizAttemptRepository;
     private final QuizAnswerRepository quizAnswerRepository;
     private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -97,13 +98,13 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
-        // Get the total number of questions in the quiz
+
         long totalQuestions = questionRepository.countByQuiz(quiz);
 
-        // Get the number of questions the participant has submitted answers for
+
         long submittedQuestions = quizAnswerRepository.countByParticipantAndQuestionQuiz(user, quiz);
 
-        // Prepare the DTO to return
+
         QuizProgressDTO progressDTO = new QuizProgressDTO();
         progressDTO.setTotalQuestions(totalQuestions);
         progressDTO.setSubmittedQuestions(submittedQuestions);
@@ -137,7 +138,7 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         attempt.setTotalQuestions((int) totalQuestions);
         attempt.setCorrectAnswers((int) correctAnswers);
         attempt.setAttemptTime(LocalDateTime.now());
-        attempt.setCompleted(true); // Flag as completed
+        attempt.setCompleted(true);
 
         quizAttemptRepository.save(attempt);
     }
@@ -160,21 +161,21 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
-        // Fetch top 3 leaderboard entries
+
         List<QuizAttempt> allAttempts = quizAttemptRepository
                 .findByQuizOrderByCorrectAnswersDescAttemptTimeAsc(quiz);
         List<LeaderboardEntryDTO> allScores = allAttempts.stream()
                 .map(this::convertToLeaderboardEntryDTO)
                 .collect(Collectors.toList());
 
-        // Fetch participant details
+
         User participant = getUserByEmail(email);
         QuizAttempt participantAttempt = quizAttemptRepository.findByParticipantAndQuiz(participant, quiz)
                 .orElseThrow(() -> new RuntimeException("No quiz attempt found for this participant"));
 
         ParticipantScoreDTO participantDetails = convertToParticipantScoreDTO(participantAttempt);
 
-        // Combine both in the response DTO
+
         LeaderboardResponseDTO response = new LeaderboardResponseDTO();
         response.setTopScores(allScores);
         response.setParticipantDetails(participantDetails);

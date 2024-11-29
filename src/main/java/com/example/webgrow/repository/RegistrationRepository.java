@@ -24,4 +24,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Long
     @Query("SELECT r.event FROM Registration r WHERE r.participant.email = :email AND r.event.endTime < :currentTime")
     List<Event> findPastRegisteredEvents(@Param("email") String email, @Param("currentTime") LocalDateTime currentTime);
 
+    boolean existsByParticipantAndEvent(User user, Event event);
+
 }
