@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QuizAnswerDTO {
     private String quizId;
-    private Long questionId;
+    private String questionId;
     private String selectedOption;
 }

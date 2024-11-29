@@ -44,7 +44,7 @@ public class ParticipantQuizController {
             @AuthenticationPrincipal String email
     ) {
         answerDTO.setQuizId(String.valueOf(quizId));
-        answerDTO.setQuestionId(questionId);
+        answerDTO.setQuestionId(String.valueOf(questionId));
         quizParticipantService.submitAnswer(email, answerDTO);
         return ResponseEntity.ok("Answer submitted successfully");
     }

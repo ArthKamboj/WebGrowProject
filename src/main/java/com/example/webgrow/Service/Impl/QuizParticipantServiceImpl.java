@@ -71,7 +71,7 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
     @Override
     public void submitAnswer(String email, QuizAnswerDTO quizAnswerDTO) {
         User user = getUserByEmail(email);
-        Question question = questionRepository.findById(quizAnswerDTO.getQuestionId())
+        Question question = questionRepository.findById(Long.parseLong(quizAnswerDTO.getQuestionId()))
                 .orElseThrow(() -> new RuntimeException("Question not found"));
 
         Quiz quiz = question.getQuiz();
