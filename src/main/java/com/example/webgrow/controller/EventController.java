@@ -3,6 +3,7 @@ package com.example.webgrow.controller;
 import com.example.webgrow.Service.EventService;
 import com.example.webgrow.models.Notification;
 import com.example.webgrow.models.Room;
+import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.request.UpdateProfileRequest;
@@ -115,4 +116,11 @@ public class EventController {
         List<Notification> notifications = eventService.getHostNotifications(email);
         return ResponseEntity.ok(notifications);
     }
+
+    @GetMapping("{eventId}/administrators")
+    public ResponseEntity<List<User>> getAdministrators(@PathVariable Long eventId) {
+        List<User> administrators = eventService.getAdministrators(eventId);
+        return ResponseEntity.ok(administrators);
+    }
+
 }

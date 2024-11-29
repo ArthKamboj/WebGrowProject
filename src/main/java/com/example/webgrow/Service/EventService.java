@@ -2,6 +2,7 @@ package com.example.webgrow.Service;
 
 import com.example.webgrow.models.Notification;
 import com.example.webgrow.models.Room;
+import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.ApiResponse;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.dto.EventDTO;
@@ -24,6 +25,7 @@ public interface EventService {
     DTOClass createRooms(Long eventId, int roomCount, List<String> roomNames);
     DTOClass getParticipants(Long eventId);
     DTOClass assignAdministrators(Long eventId, Long adminId, String hostEmail);
+    List<User> getAdministrators(Long eventId);
     Page<EventDTO> getUnloggedEvents(int page, int size);
     DTOClass updateUserDetails(UpdateProfileRequest request) throws MessagingException;
     public List<Notification> getHostNotifications(String email);

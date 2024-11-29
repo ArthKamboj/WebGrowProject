@@ -111,9 +111,16 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public DTOClass updateEvent(Long eventId, EventRequest eventRequest, String hostEmail) {
-        Event event = eventRepository.findById(eventId).orElseThrow();
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
+                new RuntimeException("Event not found with ID: " + eventId));
         if (!event.getHost().getEmail().equals(hostEmail)) {
             return new DTOClass("Host Email Not Matched", "FAILURE", null);
+        }
+        boolean isAuthorized = event.getHost().getEmail().equals(hostEmail) ||
+                event.getAdministrators().stream().anyMatch(admin -> admin.getEmail().equals(hostEmail));
+
+        if (!isAuthorized) {
+            return new DTOClass("Unauthorized to update the event", "FAILURE", null);
         }
 
         event.setTitle(eventRequest.getTitle());
@@ -318,6 +325,13 @@ public class EventServiceImpl implements EventService {
         event.getAdministrators().add(adminUser);
         eventRepository.save(event);
         return new DTOClass("Administrators assigned successfully", "SUCCESS", null);
+    }
+
+    @Override
+    public List<User> getAdministrators(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found with id: " + eventId));
+        return event.getAdministrators();
     }
 
     // Method to update room status
