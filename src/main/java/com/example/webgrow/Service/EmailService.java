@@ -13,12 +13,12 @@ public class EmailService {
     public EmailService(JavaMailSender mailSender) {
         this.mailSender=mailSender;
     }
-    public void sendEmail(String to, String subject, String body) throws MessagingException {
+    public void sendEmail(String to, String subject, String body, boolean isHtml) throws MessagingException {
         MimeMessage message=mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,true);
         helper.setTo(to);
         helper.setSubject(subject);
-        helper.setText(body);
+        helper.setText(body, isHtml);
         mailSender.send(message);
 
     }

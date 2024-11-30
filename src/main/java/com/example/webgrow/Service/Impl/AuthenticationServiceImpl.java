@@ -86,9 +86,107 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     private void sendVerificationEmail(String email, String otp) throws MessagingException {
-        String subject = "Verification mail";
-        String body = "Your verification code is " + otp;
-        emailService.sendEmail(email, subject, body);
+        String subject = "Verifying your Email address";
+        String htmlTemplate = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f7f9fc;
+                color: #333333;
+            }
+            .email-container {
+                max-width: 600px;
+                margin: 20px auto;
+                background-color: #ffffff;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+                background-color: #303f9f;
+                color: #ffffff;
+                text-align: center;
+                padding: 25px 0;
+                font-size: 28px;
+                font-weight: bold;
+                letter-spacing: 1px;
+            }
+            .content {
+                padding: 40px 30px;
+                text-align: center;
+                background-color: #f9f9f9;
+            }
+            .content h1 {
+                font-size: 26px;
+                font-weight: bold;
+                color: #303f9f;
+                margin-bottom: 15px;
+            }
+            .content .otp {
+                font-size: 40px;
+                font-weight: bold;
+                color: #303f9f;
+                margin: 0 0 20px;
+                background-color: #e6f0ff;
+                padding: 15px 30px;
+                border-radius: 8px;
+                display: inline-block;
+                letter-spacing: 2px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            }
+            .content p {
+                font-size: 14px;
+                color: #666666;
+                margin-top: 15px;
+            }
+            .footer {
+                background-color: #f9f9f9;
+                padding: 20px;
+                text-align: center;
+                font-size: 14px;
+                color: #999999;
+                line-height: 1.6;
+                border-top: 1px solid #e0e0e0;
+            }
+            .footer a {
+                color: #303f9f;
+                text-decoration: none;
+            }
+            .footer a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <div class="header">
+                WebGrow
+            </div>
+            <div class="content">
+                <h1>Verification Code</h1>
+                <div class="otp">%s</div>
+                <p>(This code will expire 10 minutes after it was sent.)</p>
+            </div>
+            <div class="footer">
+                Welcome to WebGrow, your trusted platform for managing and discovering events. We’re excited to have you on board! 
+                If you have any questions or need assistance, feel free to reach out to our support team. 
+                Let’s make your event experience truly exceptional. Thank you for choosing WebGrow – where your events come to life!
+            </div>
+        </div>
+    </body>
+    </html>
+""";
+
+
+        String body = String.format(htmlTemplate, otp);
+
+        emailService.sendEmail(email, subject, body, true);
     }
 
     public DTOClass authenticate(AuthenticateRequest request) {

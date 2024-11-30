@@ -1,5 +1,6 @@
 package com.example.webgrow.payload.request;
 
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @Data
@@ -8,5 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 public class ForgetPasswordRequest {
 
+    @Email(message = "Email should be valid")
     private String email;
 }
