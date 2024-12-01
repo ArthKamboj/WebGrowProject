@@ -276,6 +276,20 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public DTOClass renameRoom(Long eventId, Long roomId, String newName) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        Room room = roomRepository.findByIdAndEventId(roomId, eventId)
+                .orElseThrow(() -> new RuntimeException("Room not found for this event"));
+
+        room.setName(newName);
+        room.setLastUpdated(LocalDateTime.now());
+        roomRepository.save(room);
+
+        return new DTOClass("Room name updated successfully", "SUCCESS", null);
+    }
+
+    @Override
     public DTOClass getParticipants(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found with id " + eventId));
