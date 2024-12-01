@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -37,6 +38,7 @@ public class User implements UserDetails {
     private Role role;
     @JsonIgnore
     private String otp;
+    private LocalDateTime generatedAt;
     private String designation;
     private String organization;
     private boolean verified;
@@ -79,15 +81,19 @@ public class User implements UserDetails {
     }
 
     @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Quiz> hostedQuizzes;
 
     @ManyToMany(mappedBy = "participants")
+    @JsonIgnore
     private List<Quiz> participatedQuizzes;
 
     @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Event> hostedEvents;
 
     @ManyToMany(mappedBy = "participants")
+    @JsonIgnore
     private List<Event> participatedEvents;
 
     @ManyToMany(mappedBy = "administrators")

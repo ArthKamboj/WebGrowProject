@@ -113,7 +113,7 @@ public class EventController {
 
     @PutMapping("/user/updateprofile")
     public ResponseEntity<DTOClass> updateUserDetails(@RequestBody UpdateProfileRequest request) throws MessagingException {
-        DTOClass user=eventService.updateUserDetails(request);
+        DTOClass user = eventService.updateUserDetails(request);
         return ResponseEntity.ok(user);
     }
 
