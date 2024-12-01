@@ -103,6 +103,15 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/events/{eventId}/rooms/{roomId}/delete")
+    public ResponseEntity<DTOClass> deleteRoom(
+            @PathVariable Long eventId,
+            @PathVariable Long roomId) {
+        DTOClass response = eventService.deleteRoom(eventId, roomId);
+        return ResponseEntity.ok(response);
+    }
+
+
 
     @GetMapping("/{id}/participants")
     public ResponseEntity<DTOClass> getParticipantsForEvent(@PathVariable("id") Long id) {
