@@ -27,6 +27,8 @@ public interface ParticipantService {
 
     ApiResponse<EventDTO> getEventDetails(Long eventId, String email);
 
+    ApiResponse<EventDTO> getEventDetails(Long eventId);
+
     public ApiResponse<String> updateParticipantProfile(String email, User updatedProfile);
 
     public ApiResponse<List<NotificationDTO>> getNotifications(String email, int page, int size);

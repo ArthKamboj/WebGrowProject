@@ -191,6 +191,14 @@ public class ParticipantServiceImpl implements ParticipantService {
         return new ApiResponse<>(true,"Event details retrieved successfully", convertToNewDTO(event));
     }
 
+    @Override
+    public ApiResponse<EventDTO> getEventDetails(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + eventId));
+
+        return new ApiResponse<>(true,"Event details retrieved successfully", convertToNewDTO(event));
+    }
+
     private NotificationDTO convertToDTO(Notification notification) {
         NotificationDTO dto = new NotificationDTO();
         dto.setId(String.valueOf(notification.getId()));
