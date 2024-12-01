@@ -3,8 +3,7 @@ package com.example.webgrow.Service.Impl;
 import com.example.webgrow.Service.EventService;
 import com.example.webgrow.models.*;
 import com.example.webgrow.payload.dto.DTOClass;
-import com.example.webgrow.payload.dto.EventDTO;
-import com.example.webgrow.payload.dto.TimelineEntryDto;
+import com.example.webgrow.payload.dto.*;
 import com.example.webgrow.payload.request.BulkTimelineEntryRequest;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.request.UpdateProfileRequest;
@@ -12,7 +11,6 @@ import com.example.webgrow.payload.response.EventResponse;
 import com.example.webgrow.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,8 +38,12 @@ public class EventServiceImpl implements EventService {
     private final FavouriteRepository favouriteRepository;
     private final NotificationRepository notificationRepository;
     private final RoomRepository roomRepository;
-    @Autowired
-    private TimelineEntryRepository timelineEntryRepository;
+    private final TimelineEntryRepository timelineEntryRepository;
+
+    private User getHostByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+    }
 
     @Override
     public DTOClass createEvent(EventRequest eventRequest, String email) {
@@ -314,11 +316,27 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    public List<Notification> getHostNotifications(String email) {
-        User host = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Host not found with email: " + email));
+    public List<NotificationDTO> getHostNotifications(String email, int page, int size) {
+        User user = getHostByEmail(email);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Notification> notificationPage = notificationRepository.findByParticipantId(user.getId(), pageable);
 
-        return notificationRepository.findByParticipantId(host);
+        List<NotificationDTO> notifications = notificationPage.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return notifications;
+    }
+
+    private NotificationDTO convertToDTO(Notification notification) {
+        NotificationDTO dto = new NotificationDTO();
+        dto.setId(String.valueOf(notification.getId()));
+        dto.setParticipant_id(notification.getParticipant().getId());
+        dto.setMessage(notification.getMessage());
+        dto.setTimestamp(notification.getTimestamp());
+        dto.setRead(notification.isRead());
+        notification.setRead(true);
+        notificationRepository.save(notification);
+        return dto;
     }
     @Override
     public DTOClass assignAdministrators(Long eventId, Long hostId, String hostEmail) {

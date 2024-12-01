@@ -15,5 +15,4 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
     Page<Notification> findByParticipantId(Long participantId, Pageable pageable);
 
-    List<Notification> findByParticipantId(User participant);
 }

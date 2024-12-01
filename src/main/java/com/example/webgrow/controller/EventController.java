@@ -1,11 +1,11 @@
 package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.EventService;
-import com.example.webgrow.models.Notification;
 import com.example.webgrow.models.Room;
 import com.example.webgrow.models.TimeLineEntry;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.DTOClass;
+import com.example.webgrow.payload.dto.NotificationDTO;
 import com.example.webgrow.payload.request.BulkTimelineEntryRequest;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.request.UpdateProfileRequest;
@@ -117,12 +117,13 @@ public class EventController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/notifications")
-    public ResponseEntity<List<Notification>> getNotifications() {
+    @GetMapping("/notifications/{page}/{size}")
+    public ResponseEntity<List<NotificationDTO>> getNotifications(@PathVariable Integer page, @PathVariable Integer size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-
-        List<Notification> notifications = eventService.getHostNotifications(email);
+        int defaultPage = (page != null) ? page : 0;
+        int defaultSize = (size != null) ? size : 10;
+        List<NotificationDTO> notifications = eventService.getHostNotifications(email, defaultPage, defaultSize);
         return ResponseEntity.ok(notifications);
     }
 

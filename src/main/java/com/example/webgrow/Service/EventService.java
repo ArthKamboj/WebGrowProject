@@ -1,9 +1,7 @@
 package com.example.webgrow.Service;
 
-import com.example.webgrow.models.Notification;
-import com.example.webgrow.models.Room;
-import com.example.webgrow.models.TimeLineEntry;
-import com.example.webgrow.models.User;
+import com.example.webgrow.models.*;
+import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.dto.*;
 import com.example.webgrow.payload.request.BulkTimelineEntryRequest;
 import com.example.webgrow.payload.request.EventRequest;
@@ -29,6 +27,6 @@ public interface EventService {
     Page<EventDTO> getUnloggedEvents(int page, int size);
     List<TimeLineEntry> addTimelineEntries(Long eventId, BulkTimelineEntryRequest bulkTimelineEntryRequest);
     DTOClass updateUserDetails(UpdateProfileRequest request) throws MessagingException;
-    List<Notification> getHostNotifications(String email);
+    List<NotificationDTO> getHostNotifications(String email, int page, int size);
     DTOClass getUserByEmail(String email) throws MessagingException;
 }
