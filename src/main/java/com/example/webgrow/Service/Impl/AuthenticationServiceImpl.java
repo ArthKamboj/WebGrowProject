@@ -14,6 +14,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
@@ -46,6 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setDesignation(request.getDesignation());
             user.setOrganization(request.getOrganization());
             user.setOtp(otp);
+            user.setGeneratedAt(LocalDateTime.now());
             repository.save(user);
             try {
                 sendVerificationEmail(user.getEmail(), otp);
@@ -62,9 +66,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setVerified(false);
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setRole(Role.valueOf(request.getRole().toUpperCase()));
+            user.setDesignation(request.getDesignation());
+            user.setOrganization(request.getOrganization());
 
             String otp = generateOtp();
             user.setOtp(otp);
+            user.setGeneratedAt(LocalDateTime.now());
             repository.save(user);
             try {
                 sendVerificationEmail(user.getEmail(), otp);
@@ -89,98 +96,98 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String subject = "Verifying your Email address";
         String htmlTemplate = """
     <!DOCTYPE html>
-    <html>
-    <head>
-        <style>
-            body {
-                font-family: 'Arial', sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f7f9fc;
-                color: #333333;
-            }
-            .email-container {
-                max-width: 600px;
-                margin: 20px auto;
-                background-color: #ffffff;
-                border: 1px solid #e0e0e0;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            }
-            .header {
-                background-color: #303f9f;
-                color: #ffffff;
-                text-align: center;
-                padding: 25px 0;
-                font-size: 28px;
-                font-weight: bold;
-                letter-spacing: 1px;
-            }
-            .content {
-                padding: 40px 30px;
-                text-align: center;
-                background-color: #f9f9f9;
-            }
-            .content h1 {
-                font-size: 26px;
-                font-weight: bold;
-                color: #303f9f;
-                margin-bottom: 15px;
-            }
-            .content .otp {
-                font-size: 40px;
-                font-weight: bold;
-                color: #303f9f;
-                margin: 0 0 20px;
-                background-color: #e6f0ff;
-                padding: 15px 30px;
-                border-radius: 8px;
-                display: inline-block;
-                letter-spacing: 2px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            }
-            .content p {
-                font-size: 14px;
-                color: #666666;
-                margin-top: 15px;
-            }
-            .footer {
-                background-color: #f9f9f9;
-                padding: 20px;
-                text-align: center;
-                font-size: 14px;
-                color: #999999;
-                line-height: 1.6;
-                border-top: 1px solid #e0e0e0;
-            }
-            .footer a {
-                color: #303f9f;
-                text-decoration: none;
-            }
-            .footer a:hover {
-                text-decoration: underline;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="email-container">
-            <div class="header">
-                WebGrow
-            </div>
-            <div class="content">
-                <h1>Verification Code</h1>
-                <div class="otp">%s</div>
-                <p>(This code will expire 10 minutes after it was sent.)</p>
-            </div>
-            <div class="footer">
-                Welcome to WebGrow, your trusted platform for managing and discovering events. We’re excited to have you on board! 
-                If you have any questions or need assistance, feel free to reach out to our support team. 
-                Let’s make your event experience truly exceptional. Thank you for choosing WebGrow – where your events come to life!
-            </div>
-        </div>
-    </body>
-    </html>
+                        <html>
+                        <head>
+                            <style>
+                                body {
+                                    font-family: 'Arial', sans-serif;
+                                    margin: 0;
+                                    padding: 0;
+                                    background-color: #f7f9fc;
+                                    color: #333333;
+                                }
+                                .email-container {
+                                    max-width: 660px;
+                                    margin: 20px auto;
+                                    background-color: #ffffff;
+                                    border: 1px solid #e0e0e0;
+                                    border-radius: 8px;
+                                    overflow: hidden;
+                                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+                                }
+                                .header {
+                                    background-color: #303f9f;
+                                    color: #ffffff;
+                                    text-align: center;
+                                    padding: 25px 0;
+                                    font-size: 28px;
+                                    font-weight: bold;
+                                    letter-spacing: 1px;
+                                }
+                                .content {
+                                    padding: 40px 30px;
+                                    text-align: center;
+                                    background-color: #f9f9f9;
+                                }
+                                .content h1 {
+                                    font-size: 26px;
+                                    font-weight: bold;
+                                    color: #303f9f;
+                                    margin-bottom: 15px;
+                                }
+                                .content .otp {
+                                    font-size: 40px;
+                                    font-weight: bold;
+                                    color: #303f9f;
+                                    margin: 0 0 20px;
+                                    background-color: #e6f0ff;
+                                    padding: 15px 30px;
+                                    border-radius: 8px;
+                                    display: inline-block;
+                                    letter-spacing: 2px;
+                                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+                                }
+                                .content p {
+                                    font-size: 14px;
+                                    color: #666666;
+                                    margin-top: 15px;
+                                }
+                                .footer {
+                                    background-color: #f9f9f9;
+                                    padding: 20px;
+                                    text-align: center;
+                                    font-size: 14px;
+                                    color: #999999;
+                                    line-height: 1.6;
+                                    border-top: 1px solid #e0e0e0;
+                                }
+                                .footer a {
+                                    color: #303f9f;
+                                    text-decoration: none;
+                                }
+                                .footer a:hover {
+                                    text-decoration: underline;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="email-container">
+                                <div class="header">
+                                    WebGrow
+                                </div>
+                                <div class="content">
+                                    <h1>Verification Code</h1>
+                                    <div class="otp">%s</div>
+                                    <p>(This code will expire 10 minutes after it was sent.)</p>
+                                </div>
+                                <div class="footer">
+                                    Welcome to WebGrow, your trusted platform for managing and discovering events. We’re excited to have you on board!\s
+                                    If you have any questions or need assistance, feel free to reach out to our support team.\s
+                                    Let’s make your event experience truly exceptional. Thank you for choosing WebGrow – where your events come to life!
+                                </div>
+                            </div>
+                        </body>
+                        </html>
 """;
 
 
@@ -205,9 +212,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new DTOClass("Authentication successful. Role: "+ user.getRole(), "SUCCESS", new AuthenticateResponse(jwtToken));
     }
 
+    private boolean isOtpValid(OtpValidate request ,String inputOtp) {
+        User user = repository.findByEmail(request.getEmail()).orElseThrow();
+        if (!user.getOtp().equals(request.getOtp())) {
+            return false;
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        long minutesElapsed = Duration.between(user.getGeneratedAt(), now).toMinutes();
+
+        return minutesElapsed <= 10;
+    }
     public DTOClass validate(OtpValidate request) {
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
-        if (user.getOtp().equals(request.getOtp())) {
+        User user = repository.findByEmail(request.getEmail()).orElseThrow();
+        if (isOtpValid(request,user.getOtp())) {
             var jwtToken = jwtService.generateToken(user);
             user.setVerified(true);
             repository.save(user);
