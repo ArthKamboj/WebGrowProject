@@ -276,6 +276,32 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public DTOClass renameRoom(Long eventId, Long roomId, String newName) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        Room room = roomRepository.findByIdAndEventId(roomId, eventId)
+                .orElseThrow(() -> new RuntimeException("Room not found for this event"));
+
+        room.setName(newName);
+        room.setLastUpdated(LocalDateTime.now());
+        roomRepository.save(room);
+
+        return new DTOClass("Room name updated successfully", "SUCCESS", null);
+    }
+
+    public DTOClass deleteRoom(Long eventId, Long roomId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        Room room = roomRepository.findByIdAndEventId(roomId, eventId)
+                .orElseThrow(() -> new RuntimeException("Room not found for this event"));
+
+        roomRepository.delete(room);
+
+        return new DTOClass("Room deleted successfully", "SUCCESS", null);
+    }
+
+    @Override
     public DTOClass getParticipants(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found with id " + eventId));
@@ -292,6 +318,7 @@ public class EventServiceImpl implements EventService {
 
         return new DTOClass("Participants retrieved successfully", "SUCCESS", participantDetails);
     }
+
     @Scheduled(fixedRate = 60000) // Runs every 1 minute
     public void sendEventReminders() {
         LocalDateTime now = LocalDateTime.now();

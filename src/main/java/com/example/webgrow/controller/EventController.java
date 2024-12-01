@@ -6,6 +6,7 @@ import com.example.webgrow.models.TimeLineEntry;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.dto.NotificationDTO;
+import com.example.webgrow.payload.dto.RoomRenameDTO;
 import com.example.webgrow.payload.request.BulkTimelineEntryRequest;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.request.UpdateProfileRequest;
@@ -88,6 +89,29 @@ public class EventController {
         List<Room> rooms = eventService.getRoomsForEvent(eventId);
         return ResponseEntity.ok(rooms);
     }
+
+    @PatchMapping("/events/{eventId}/rooms/{roomId}")
+    public ResponseEntity<DTOClass> renameRoom(
+            @PathVariable Long eventId,
+            @PathVariable Long roomId,
+            @RequestBody RoomRenameDTO roomRenameDTO) {
+        if (roomRenameDTO.getName() == null || roomRenameDTO.getName().isBlank()) {
+            throw new IllegalArgumentException("Room name cannot be null or blank");
+        }
+
+        DTOClass response = eventService.renameRoom(eventId, roomId, roomRenameDTO.getName());
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/events/{eventId}/rooms/{roomId}/delete")
+    public ResponseEntity<DTOClass> deleteRoom(
+            @PathVariable Long eventId,
+            @PathVariable Long roomId) {
+        DTOClass response = eventService.deleteRoom(eventId, roomId);
+        return ResponseEntity.ok(response);
+    }
+
+
 
     @GetMapping("/{id}/participants")
     public ResponseEntity<DTOClass> getParticipantsForEvent(@PathVariable("id") Long id) {

@@ -20,6 +20,8 @@ public interface EventService {
     DTOClass getEventDetails(Long eventId);
     List<Room> getRoomsForEvent(Long eventId);
     DTOClass updateRoomStatus(Long roomId, boolean isVacant);
+    DTOClass renameRoom(Long eventId, Long roomId, String newName);
+    DTOClass deleteRoom(Long eventId, Long roomId);
     DTOClass createRooms(Long eventId, int roomCount, List<String> roomNames);
     DTOClass getParticipants(Long eventId);
     DTOClass assignAdministrators(Long eventId, Long adminId, String hostEmail);
