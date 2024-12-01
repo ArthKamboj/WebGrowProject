@@ -462,7 +462,9 @@ public class EventServiceImpl implements EventService {
                 user.getMobile(),
                 user.getRole().name(),
                 user.isVerified(),
-                user.isEnabled()
+                user.isEnabled(),
+                user.getDesignation(),
+                user.getOrganization()
         );
         return new DTOClass("User Fetched Successfully","SUCCESS", hostDTO);
     }

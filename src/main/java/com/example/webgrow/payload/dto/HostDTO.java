@@ -1,4 +1,4 @@
-package com.example.webgrow.models;
+package com.example.webgrow.payload.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,4 +17,6 @@ public class HostDTO {
     private String imageUrl;
     private boolean verified;
     private boolean enabled;
+    private String organization;
+    private String designation;
 }

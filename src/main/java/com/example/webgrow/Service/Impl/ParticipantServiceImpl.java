@@ -237,6 +237,8 @@ public class ParticipantServiceImpl implements ParticipantService {
         host.setLastName(event.getHost().getLastName());
         host.setEmail(event.getHost().getEmail());
         host.setMobile(event.getHost().getMobile());
+        host.setDesignation(event.getHost().getDesignation());
+        host.setOrganization(event.getHost().getOrganization());
         dto.setHost(host);
 
         return dto;
