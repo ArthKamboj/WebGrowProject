@@ -10,6 +10,7 @@ import com.example.webgrow.payload.response.AuthenticateResponse;
 import com.example.webgrow.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -233,6 +235,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } else {
             throw new RuntimeException("Invalid OTP provided");
         }
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void scheduleUserDeletion() {
+        LocalDateTime expiryTime = LocalDateTime.now().minusMinutes(10);
+        List<User> usersToDelete = userRepository.findByVerifiedFalseAndGeneratedAtBefore(expiryTime);
+        userRepository.deleteAll(usersToDelete);
     }
 
     public DTOClass forgotPassword(String email) throws MessagingException {
