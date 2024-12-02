@@ -72,8 +72,28 @@ public class EventServiceImpl implements EventService {
         if (event.isTeamCreationAllowed()) {
             event.setMinTeamSize(eventRequest.getMinTeamSize());
             event.setMaxTeamSize(eventRequest.getMaxTeamSize());
+            if(eventRequest.getMinTeamSize() > eventRequest.getMaxTeamSize())
+            {
+                throw new RuntimeException("Maximum team size cannot be less that minimum team size");
+            }
         }
         event.setLastUpdate(LocalDateTime.now());
+        if(eventRequest.getRegisterEnd().isBefore(eventRequest.getRegisterStart()))
+        {
+            throw new RuntimeException("Registration cannot end before starting");
+        }
+        if(eventRequest.getCapacityMax() < eventRequest.getCapacityMin())
+        {
+            throw new RuntimeException("Maximum capacity cannot be less than minimum capacity");
+        }
+        if(eventRequest.getEndTime().isBefore(eventRequest.getStartTime()))
+        {
+            throw new RuntimeException("End time cannot be before start time");
+        }
+        if(eventRequest.getStartTime().isBefore(eventRequest.getRegisterStart()))
+        {
+            throw new RuntimeException("Registrations must start before event");
+        }
         eventRepository.save(event);
 
         if (eventRequest.getCategory().toLowerCase().contains("quiz")) {

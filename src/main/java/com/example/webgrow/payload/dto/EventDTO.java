@@ -36,6 +36,8 @@ public class EventDTO {
 
     private boolean isActive;
     private boolean teamCreationAllowed;
+    private int minTeamSize;
+    private int maxTeamSize;
     private String url;
     private List<TimelineEntryDto> timelineEntries;
     private List<User> administrators = new ArrayList<>();
