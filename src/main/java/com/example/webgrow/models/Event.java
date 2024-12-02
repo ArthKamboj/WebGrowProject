@@ -27,19 +27,26 @@ public class Event {
     private Long capacityMin;
     private Long capacityMax;
     private String eventType;
+    @Column(nullable = false)
     private LocalDateTime registerStart;
+    @Column(nullable = false)
     private LocalDateTime registerEnd;
     private String festival;
     private boolean teamCreationAllowed;
     private int minTeamSize;
     private int maxTeamSize;
+    @Column(nullable = false)
     private LocalDateTime startTime;
+    @Column(nullable = false)
     private LocalDateTime endTime;
     private LocalDateTime lastUpdate;
     private String organization;
 
     private String mode;
     private String imageUrl;
+
+    @Column(name = "start_notification_sent")
+    private boolean startNotificationSent = false;
 
     @ManyToOne
     @JoinColumn(name = "host_id", nullable = false)

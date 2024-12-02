@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -117,6 +118,16 @@ public class ParticipantServiceImpl implements ParticipantService {
                 .findByParticipantIdAndEventId(user.getId(), eventId)
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
 
+        Optional<Event> event = eventRepository.findById(eventId);
+        if (event.isPresent()) {
+            Event thisEvent = event.get();
+            if (thisEvent.getRegisterEnd().isBefore(LocalDateTime.now())) {
+                throw new RuntimeException("Event registration period has ended");
+            }
+        }
+        else {
+            throw new RuntimeException("Event not found");
+        }
         registrationRepository.delete(registration);
 
         return new ApiResponse<>(true,"Successfully unregistered from the event", null);
@@ -239,6 +250,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         host.setMobile(event.getHost().getMobile());
         host.setDesignation(event.getHost().getDesignation());
         host.setOrganization(event.getHost().getOrganization());
+        host.setImageUrl(event.getHost().getImageUrl());
         dto.setHost(host);
 
         return dto;

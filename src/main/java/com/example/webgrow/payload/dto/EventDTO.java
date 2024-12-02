@@ -46,5 +46,6 @@ public class EventDTO {
         private String mobile;
         private String organization;
         private String designation;
+        private String imageUrl;
     }
 }

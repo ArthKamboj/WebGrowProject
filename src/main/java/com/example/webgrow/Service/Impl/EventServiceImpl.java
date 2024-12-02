@@ -162,13 +162,40 @@ public class EventServiceImpl implements EventService {
         List<User> favoriteUsers = favouriteRepository.findByEventId(event.getId());
 
         for (User user : registeredUsers) {
-            createNotification(user, event, "The event you registered for has been updated.");
+            createNotification(user, event, "The event "+ event.getTitle() +" that you registered for has been updated.");
         }
 
         for (User user : favoriteUsers) {
-            createNotification(user, event, "The event you marked favourite has been updated.");
+            createNotification(user, event, "The event "+ event.getTitle() +" you marked favourite has been updated.");
         }
     }
+
+    @Scheduled(fixedRate = 60000)
+    public void notifyEventStart() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime notificationWindow = now.plusMinutes(30);
+
+        List<Event> upcomingEvents = eventRepository.findByStartTimeBetweenAndStartNotificationSentFalse(now, notificationWindow);
+
+        for (Event event : upcomingEvents) {
+            List<User> registeredUsers = registrationRepository.findByEventId(event.getId());
+            List<User> favoriteUsers = favouriteRepository.findByEventId(event.getId());
+
+            String message = "The event " + event.getTitle() + " is starting in 30 minutes!";
+
+            for (User user : registeredUsers) {
+                createNotification(user, event, message);
+            }
+
+            for (User user : favoriteUsers) {
+                createNotification(user, event, message);
+            }
+
+            event.setStartNotificationSent(true);
+            eventRepository.save(event);
+        }
+    }
+
 
     private void createNotification(User user, Event event, String message) {
         Notification notification = Notification.builder()

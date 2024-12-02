@@ -11,6 +11,7 @@ import com.example.webgrow.models.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -28,4 +29,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e WHERE e.startTime > :currentTime")
     List<Event> findUpcomingEvents(@Param("currentTime") LocalDateTime currentTime);
+
+    @Query("SELECT e FROM Event e WHERE e.startTime BETWEEN :startTime AND :endTime AND e.startNotificationSent = false")
+    List<Event> findByStartTimeBetweenAndStartNotificationSentFalse(
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime);
+
 }
