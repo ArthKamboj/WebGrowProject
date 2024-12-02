@@ -240,7 +240,10 @@ public class ParticipantServiceImpl implements ParticipantService {
         dto.setImageUrl(event.getImageUrl());
         dto.setTeamCreationAllowed(event.isTeamCreationAllowed());
         dto.setActive(event.isActive());
-
+        List<TimelineEntryDto> timelineDtos = event.getTimelineEntries().stream()
+                .map(entry -> new TimelineEntryDto(entry.getDay(), entry.getDescription()))
+                .toList();
+        dto.setTimelineEntries(timelineDtos);
         // Map host details
         EventDTO.HostDTO host = new EventDTO.HostDTO();
         host.setId(String.valueOf(event.getHost().getId()));

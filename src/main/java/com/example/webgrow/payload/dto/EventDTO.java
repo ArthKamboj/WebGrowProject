@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -34,7 +35,7 @@ public class EventDTO {
     private boolean isActive;
     private boolean teamCreationAllowed;
     private String url;
-
+    private List<TimelineEntryDto> timelineEntries;
     private HostDTO host;
 
     @Data
