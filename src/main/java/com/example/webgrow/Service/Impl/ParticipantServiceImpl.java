@@ -244,7 +244,8 @@ public class ParticipantServiceImpl implements ParticipantService {
                 .map(entry -> new TimelineEntryDto(entry.getDay(), entry.getDescription()))
                 .toList();
         dto.setTimelineEntries(timelineDtos);
-        // Map host details
+        dto.setAdministrators(event.getAdministrators());
+
         EventDTO.HostDTO host = new EventDTO.HostDTO();
         host.setId(String.valueOf(event.getHost().getId()));
         host.setFirstName(event.getHost().getFirstName());

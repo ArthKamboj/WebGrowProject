@@ -9,37 +9,37 @@ import java.util.List;
 
 public interface ParticipantService {
 
-    public ApiResponse<List<EventDTO>> getAllEvents();
+    ApiResponse<List<EventDTO>> getAllEvents();
 
-    public ApiResponse<String> registerForEvent(String email, Long eventId);
+    ApiResponse<String> registerForEvent(String email, Long eventId);
 
-    public ApiResponse<List<EventDTO>> getRegisteredEvents(String email);
+    ApiResponse<List<EventDTO>> getRegisteredEvents(String email);
 
-    public ApiResponse<String> addToFavourites(String email, Long eventId);
+    ApiResponse<String> addToFavourites(String email, Long eventId);
 
-    public ApiResponse<List<EventDTO>> getFavouriteEvents(String email);
+    ApiResponse<List<EventDTO>> getFavouriteEvents(String email);
 
-    public ApiResponse<String> unregisterFromEvent(String email, Long eventId);
+    ApiResponse<String> unregisterFromEvent(String email, Long eventId);
 
-    public ApiResponse<String> unmarkAsFavourite(String email, Long eventId);
+    ApiResponse<String> unmarkAsFavourite(String email, Long eventId);
 
-    public ApiResponse<UserDTO> getParticipantProfile(String email);
+    ApiResponse<UserDTO> getParticipantProfile(String email);
 
     ApiResponse<EventDTO> getEventDetails(Long eventId, String email);
 
     ApiResponse<EventDTO> getEventDetails(Long eventId);
 
-    public ApiResponse<String> updateParticipantProfile(String email, User updatedProfile);
+    ApiResponse<String> updateParticipantProfile(String email, User updatedProfile);
 
-    public ApiResponse<List<NotificationDTO>> getNotifications(String email, int page, int size);
+    ApiResponse<List<NotificationDTO>> getNotifications(String email, int page, int size);
 
-    public ApiResponse<String> createTeam(String email, Long eventId, TeamRequest teamRequest);
+    ApiResponse<String> createTeam(String email, Long eventId, TeamRequest teamRequest);
 
-    public ApiResponse<List<TeamResponse>> searchTeams(Long eventId, String teamName);
+    ApiResponse<List<TeamResponse>> searchTeams(Long eventId, String teamName);
 
-    public ApiResponse<String> requestToJoinTeam(String email, Long teamId);
+    ApiResponse<String> requestToJoinTeam(String email, Long teamId);
 
-    public ApiResponse<String> respondToJoinRequest(Long requestId, String response);
+    ApiResponse<String> respondToJoinRequest(Long requestId, String response);
 
     Page<EventDTO> getRecentlyViewedEvents(String email, int page, int size);
 

@@ -1,11 +1,13 @@
 package com.example.webgrow.payload.dto;
 
+import com.example.webgrow.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -36,6 +38,7 @@ public class EventDTO {
     private boolean teamCreationAllowed;
     private String url;
     private List<TimelineEntryDto> timelineEntries;
+    private List<User> administrators = new ArrayList<>();
     private HostDTO host;
 
     @Data

@@ -44,6 +44,7 @@ public class User implements UserDetails {
     private boolean verified;
     private boolean enabled;
     private String imageUrl;
+    private Long coins = 0L;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -19,6 +19,7 @@ public class UserDTO {
     private String email;
     private String mobile;
     private String imageUrl;
+    private Long coins;
 
     public static UserDTO from(User user) {
         UserDTO userDTO = new UserDTO();
@@ -27,6 +28,7 @@ public class UserDTO {
         userDTO.setEmail(user.getEmail());
         userDTO.setMobile(user.getMobile());
         userDTO.setImageUrl(user.getImageUrl());
+        userDTO.setCoins(user.getCoins());
         return userDTO;
     }
 }
