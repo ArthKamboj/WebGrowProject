@@ -59,6 +59,9 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.verifyForgotPassword(request));
     }
 
-
+    @GetMapping("/testing")
+    public DTOClass testing() {
+        return new DTOClass("Hello ","SAHI CHAL RHA HAI",null);
+    }
 
 }
