@@ -23,7 +23,6 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
     private final QuizAttemptRepository quizAttemptRepository;
     private final QuizAnswerRepository quizAnswerRepository;
     private final UserRepository userRepository;
-    private final EventRepository eventRepository;
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)

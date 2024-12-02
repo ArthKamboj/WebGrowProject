@@ -239,6 +239,11 @@ public class ParticipantServiceImpl implements ParticipantService {
         dto.setLastUpdate(event.getLastUpdate());
         dto.setImageUrl(event.getImageUrl());
         dto.setTeamCreationAllowed(event.isTeamCreationAllowed());
+        if(event.isTeamCreationAllowed())
+        {
+            dto.setMaxTeamSize(event.getMaxTeamSize());
+            dto.setMinTeamSize(event.getMinTeamSize());
+        }
         dto.setActive(event.isActive());
         List<TimelineEntryDto> timelineDtos = event.getTimelineEntries().stream()
                 .map(entry -> new TimelineEntryDto(entry.getDay(), entry.getDescription()))
