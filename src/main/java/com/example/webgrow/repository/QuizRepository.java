@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -19,5 +20,7 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
     List<QuizAttemptDTO> getQuizAttempts(@Param("quizId") Long quizId);
 
     List<Quiz> findByCategory(String category);
+
+    List<Quiz> findByEndTimeBeforeAndCompletedFalse(LocalDateTime now);
 
 }

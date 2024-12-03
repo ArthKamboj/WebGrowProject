@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -52,7 +53,6 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         }
         long totalQuestions = questionRepository.countByQuiz(quiz);
 
-        // Validate page number
         if (page < 1 || page > totalQuestions) {
             throw new RuntimeException("Invalid page number. Must be between 1 and " + totalQuestions);
         }
@@ -111,6 +111,8 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         return progressDTO;
     }
 
+
+
     @Override
     public void submitQuiz(Long quizId, String email) {
         User user = getUserByEmail(email);
@@ -140,8 +142,22 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         attempt.setCompleted(true);
 
         quizAttemptRepository.save(attempt);
+
+        quiz.setCompleted(true);
+        quizRepository.save(quiz);
     }
 
+
+
+@Scheduled(fixedRate = 30000)
+private void submitExpiredQuizzes() {
+    List<Quiz> expiredQuizzes = quizRepository.findByEndTimeBeforeAndCompletedFalse(LocalDateTime.now());
+    for (Quiz quiz : expiredQuizzes) {
+        for (User participant : quiz.getParticipants()) {
+            submitQuiz(quiz.getId(), participant.getEmail());
+        }
+    }
+}
 
     @Override
     public QuizAttemptDTO getQuizResults(String email, Long quizId) {

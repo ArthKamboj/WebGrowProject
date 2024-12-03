@@ -214,7 +214,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new DTOClass("Authentication successful. Role: "+ user.getRole(), "SUCCESS", new AuthenticateResponse(jwtToken));
     }
 
-    private boolean isOtpValid(OtpValidate request ,String inputOtp) {
+    private boolean isOtpValid(OtpValidate request) {
         User user = repository.findByEmail(request.getEmail()).orElseThrow();
         if (!user.getOtp().equals(request.getOtp())) {
             return false;
@@ -227,7 +227,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
     public DTOClass validate(OtpValidate request) {
         User user = repository.findByEmail(request.getEmail()).orElseThrow();
-        if (isOtpValid(request,user.getOtp())) {
+        if (isOtpValid(request)) {
             var jwtToken = jwtService.generateToken(user);
             user.setVerified(true);
             repository.save(user);
