@@ -35,8 +35,7 @@ public class Quiz {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime lastUpdate;
-    @Column(nullable = true)
-    private boolean completed;
+    private boolean completed = false;
 
     private String mode;
     private String imageUrl;
