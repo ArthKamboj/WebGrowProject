@@ -36,5 +36,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime);
 
+    @Query("SELECT e FROM Event e WHERE e.startTime <= CURRENT_TIMESTAMP AND e.registerEnd >= CURRENT_TIMESTAMP ORDER BY e.lastUpdate DESC")
     List<Event> findOngoingOrUpcomingRegistrations(Sort sort);
 }
