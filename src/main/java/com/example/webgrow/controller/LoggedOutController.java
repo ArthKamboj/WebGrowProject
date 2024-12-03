@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/v1/public/homepage")
@@ -20,11 +22,10 @@ public class LoggedOutController {
     private final EventService eventService;
     private final ParticipantService participantService;
 
-    @GetMapping("/{page}/{size}")
-    public Page<EventDTO> getPaginatedEvents(
-            @PathVariable int page,
-            @PathVariable int size) {
-        return eventService.getUnloggedEvents(page, size);
+    @GetMapping("/events")
+    public ResponseEntity<List<EventDTO>> getAllEvents() {
+        List<EventDTO> eventList = eventService.getUnloggedEvents();
+        return ResponseEntity.ok(eventList);
     }
 
     @GetMapping("/events/details/{eventId}")

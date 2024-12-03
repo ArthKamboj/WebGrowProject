@@ -440,7 +440,7 @@ public class EventServiceImpl implements EventService {
         return event.getAdministrators();
     }
 
-    // Method to update room status
+    @Override
     public DTOClass updateRoomStatus(Long roomId, boolean isVacant) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Room not found"));
@@ -450,15 +450,17 @@ public class EventServiceImpl implements EventService {
         return new DTOClass("Room updated successfully", "SUCCESS", null);
     }
 
-    // Method to fetch rooms for an event
+    @Override
     public List<Room> getRoomsForEvent(Long eventId) {
         return roomRepository.findByEventId(eventId);
     }
 
-    public Page<EventDTO> getUnloggedEvents(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "lastUpdate"));
-        Page<Event> events = eventRepository.findOngoingOrUpcomingRegistrations(pageable);
-        return events.map(this::convertToEventDTO);
+    @Override
+    public List<EventDTO> getUnloggedEvents() {
+        List<Event> events = eventRepository.findOngoingOrUpcomingRegistrations(Sort.by(Sort.Direction.DESC, "lastUpdate"));
+        return events.stream()
+                .map(this::convertToEventDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

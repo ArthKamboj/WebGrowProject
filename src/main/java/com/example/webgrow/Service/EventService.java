@@ -26,7 +26,7 @@ public interface EventService {
     DTOClass getParticipants(Long eventId);
     DTOClass assignAdministrators(Long eventId, Long adminId, String hostEmail);
     List<User> getAdministrators(Long eventId);
-    Page<EventDTO> getUnloggedEvents(int page, int size);
+    List<EventDTO> getUnloggedEvents();
     List<TimeLineEntry> addTimelineEntries(Long eventId, BulkTimelineEntryRequest bulkTimelineEntryRequest);
     DTOClass updateUserDetails(UpdateProfileRequest request) throws MessagingException;
     List<NotificationDTO> getHostNotifications(String email, int page, int size);

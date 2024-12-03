@@ -3,6 +3,7 @@ package com.example.webgrow.repository;
 import com.example.webgrow.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -35,4 +36,5 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime);
 
+    List<Event> findOngoingOrUpcomingRegistrations(Sort sort);
 }
