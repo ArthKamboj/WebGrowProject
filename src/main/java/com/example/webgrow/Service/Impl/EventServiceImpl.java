@@ -270,7 +270,7 @@ public class EventServiceImpl implements EventService {
             eventResponse.setRegisterEnd(event.getRegisterEnd());
             eventResponse.setImageUrl(event.getImageUrl());
             eventResponse.setHostEmail(event.getHost().getEmail());
-            eventResponse.setLastUpdate(LocalDateTime.now());
+            eventResponse.setLastUpdate(event.getLastUpdate());
 
             return new DTOClass("Event Retrieved Successfully", "SUCCESS", eventResponse);
         });
