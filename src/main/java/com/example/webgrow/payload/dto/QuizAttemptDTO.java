@@ -20,4 +20,5 @@ public class QuizAttemptDTO {
     private int correctAnswers;
     private LocalDateTime attemptTime;
     private String status;
+    private int rank;
 }
