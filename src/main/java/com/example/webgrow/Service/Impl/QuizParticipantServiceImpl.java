@@ -150,7 +150,8 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
 
 
 @Scheduled(fixedRate = 30000)
-private void submitExpiredQuizzes() {
+//@Transactional
+public void submitExpiredQuizzes() {
     List<Quiz> expiredQuizzes = quizRepository.findByEndTimeBeforeAndCompletedFalse(LocalDateTime.now());
     for (Quiz quiz : expiredQuizzes) {
         for (User participant : quiz.getParticipants()) {
@@ -165,10 +166,27 @@ private void submitExpiredQuizzes() {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
+
         QuizAttempt attempt = quizAttemptRepository.findByParticipantAndQuiz(user, quiz)
                 .orElseThrow(() -> new RuntimeException("No quiz attempt found for this quiz and participant"));
 
-        return convertToQuizAttemptDTO(attempt);
+        int rank = calculateRank(quizId, attempt.getCorrectAnswers(), attempt.getAttemptTime());
+
+        QuizAttemptDTO dto = convertToQuizAttemptDTO(attempt);
+        dto.setRank(rank);
+
+        return dto;
+    }
+
+    private int calculateRank(Long quizId, int correctAnswers, LocalDateTime attemptTime) {
+        List<QuizAttempt> attempts = quizAttemptRepository.findByQuizIdOrderByCorrectAnswersDescAttemptTimeAsc(quizId);
+        int rank = 1; for (QuizAttempt attempt : attempts) {
+            if (attempt.getCorrectAnswers() > correctAnswers ||
+                    (attempt.getCorrectAnswers() == correctAnswers && attempt.getAttemptTime().isBefore(attemptTime))) {
+                rank++;
+            }
+        }
+        return rank;
     }
 
     @Override
@@ -258,6 +276,7 @@ private void submitExpiredQuizzes() {
         attemptDTO.setTotalQuestions(attempt.getTotalQuestions());
         attemptDTO.setCorrectAnswers(attempt.getCorrectAnswers());
         attemptDTO.setAttemptTime(attempt.getAttemptTime());
+//        attemptDTO.setRank(attempt.getRank());
         return attemptDTO;
     }
 }

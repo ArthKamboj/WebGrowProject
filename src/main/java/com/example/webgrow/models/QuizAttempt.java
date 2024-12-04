@@ -35,4 +35,6 @@ public class QuizAttempt {
     private LocalDateTime attemptTime;
 
     private boolean isCompleted;
+
+    private int rank;
 }
