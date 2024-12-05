@@ -145,11 +145,15 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
 
         quiz.setCompleted(true);
         quizRepository.save(quiz);
+
+        long coins = user.getCoins();
+        coins += 10L;
+        user.setCoins(coins);
     }
 
 
 
-@Scheduled(fixedRate = 30000)
+//@Scheduled(fixedRate = 30000)
 //@Transactional
 public void submitExpiredQuizzes() {
     List<Quiz> expiredQuizzes = quizRepository.findByEndTimeBeforeAndCompletedFalse(LocalDateTime.now());
