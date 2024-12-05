@@ -48,10 +48,8 @@ public class QuizHostServiceImpl implements QuizHostService {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new RuntimeException("Quiz not found!"));
 
-        // Fetch all quiz attempts for the given quiz
         List<QuizAttempt> attempts = quizAttemptRepository.findByQuiz(quiz);
 
-        // Map to DTO
         return attempts.stream().map(attempt -> {
             QuizAttemptDTO dto = new QuizAttemptDTO();
             User participant = attempt.getParticipant();

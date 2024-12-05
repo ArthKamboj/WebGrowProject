@@ -15,6 +15,7 @@ public class NotificationDTO {
 
     private String id;
     private Long participant_id;
+    private String title;
     private String message;
     private LocalDateTime timestamp;
     private boolean read;

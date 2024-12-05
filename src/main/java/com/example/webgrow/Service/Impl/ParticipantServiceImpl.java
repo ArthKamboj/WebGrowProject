@@ -154,31 +154,6 @@ public class ParticipantServiceImpl implements ParticipantService {
         return new ApiResponse<>(true,"Participant profile retrieved successfully", UserDTO.from(user));
     }
 
-    // 9. Update Participant Profile
-    @Override
-    @Transactional
-    public ApiResponse<String> updateParticipantProfile(String email, User updatedProfile) {
-        User user = getUserByEmail(email);
-
-        if (updatedProfile.getFirstName() != null) {
-            user.setFirstName(updatedProfile.getFirstName());
-        }
-        if (updatedProfile.getLastName() != null) {
-            user.setLastName(updatedProfile.getLastName());
-        }
-        if (updatedProfile.getMobile() != null) {
-            user.setMobile(updatedProfile.getMobile());
-        }
-        if (updatedProfile.getImageUrl() != null) {
-            user.setImageUrl(updatedProfile.getImageUrl());
-        }
-        userRepository.save(user);
-        User updatedUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new RuntimeException("User not found after save"));
-
-        return new ApiResponse<>(true, "Profile updated successfully", null);
-    }
-
     // 10. Get Notifications
     @Override
     public ApiResponse<List<NotificationDTO>> getNotifications(String email, int page, int size) {
@@ -214,6 +189,7 @@ public class ParticipantServiceImpl implements ParticipantService {
         NotificationDTO dto = new NotificationDTO();
         dto.setId(String.valueOf(notification.getId()));
         dto.setParticipant_id(notification.getParticipant().getId());
+        dto.setTitle(notification.getTitle());
         dto.setMessage(notification.getMessage());
         dto.setTimestamp(notification.getTimestamp());
         dto.setRead(notification.isRead());
@@ -357,6 +333,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         Notification notification = new Notification();
         notification.setParticipant(team.getLeader());
+        notification.setTitle(team.getName());
         notification.setMessage("A participant has requested to join your team: " + team.getName() + " with request id: " + joinRequest.getId());
         notification.setTimestamp(LocalDateTime.now());
         notification.setRead(false);
@@ -387,6 +364,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         Notification notification = new Notification();
                 notification.setParticipant(joinRequest.getParticipant());
+                notification.setTitle(response.toUpperCase());
                 notification.setMessage("Your request to join the team: " + joinRequest.getTeam().getName() + " has been " + response.toLowerCase() + ".");
                 notification.setTimestamp(LocalDateTime.now());
                 notification.setRead(false);
@@ -394,6 +372,24 @@ public class ParticipantServiceImpl implements ParticipantService {
 
         notificationRepository.save(notification);
         return new ApiResponse<>(true, "Request " + response.toLowerCase(), null);
+    }
+
+    @Override
+    public ApiResponse<TeamDTO> getTeam(Long teamId) {
+
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() ->new RuntimeException("Team does not exist"));
+
+        return new ApiResponse<>(true, "Team details retrieved successfully", convertToDTO(team));
+    }
+
+    private TeamDTO convertToDTO(Team team) {
+        TeamDTO dto = new TeamDTO();
+        dto.setTeamName(team.getName());
+        dto.setEvent(team.getEvent());
+        dto.setLeader(team.getLeader());
+        dto.setMembers(team.getMembers());
+        return dto;
     }
 
     @Override

@@ -182,11 +182,11 @@ public class EventServiceImpl implements EventService {
         List<User> favoriteUsers = favouriteRepository.findByEventId(event.getId());
 
         for (User user : registeredUsers) {
-            createNotification(user, event, "The event "+ event.getTitle() +" that you registered for has been updated.");
+            createNotification(user, event, ""+event.getTitle(), "The event "+ event.getTitle() +" that you registered for has been updated.");
         }
 
         for (User user : favoriteUsers) {
-            createNotification(user, event, "The event "+ event.getTitle() +" you marked favourite has been updated.");
+            createNotification(user, event, ""+event.getTitle(), "The event "+ event.getTitle() +" you marked favourite has been updated.");
         }
     }
 
@@ -201,14 +201,15 @@ public class EventServiceImpl implements EventService {
             List<User> registeredUsers = registrationRepository.findByEventId(event.getId());
             List<User> favoriteUsers = favouriteRepository.findByEventId(event.getId());
 
+            String title = event.getTitle();
             String message = "The event " + event.getTitle() + " is starting in 30 minutes!";
 
             for (User user : registeredUsers) {
-                createNotification(user, event, message);
+                createNotification(user, event, title, message);
             }
 
             for (User user : favoriteUsers) {
-                createNotification(user, event, message);
+                createNotification(user, event, title, message);
             }
 
             event.setStartNotificationSent(true);
@@ -217,9 +218,10 @@ public class EventServiceImpl implements EventService {
     }
 
 
-    private void createNotification(User user, Event event, String message) {
+    private void createNotification(User user, Event event, String title, String message) {
         Notification notification = Notification.builder()
                 .participant(user)
+                .title(title)
                 .message(message)
                 .timestamp(LocalDateTime.now())
                 .read(false)
@@ -324,7 +326,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public DTOClass renameRoom(Long eventId, Long roomId, String newName) {
-        Event event = eventRepository.findById(eventId)
+        eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
         Room room = roomRepository.findByIdAndEventId(roomId, eventId)
                 .orElseThrow(() -> new RuntimeException("Room not found for this event"));
@@ -337,7 +339,7 @@ public class EventServiceImpl implements EventService {
     }
 
     public DTOClass deleteRoom(Long eventId, Long roomId) {
-        Event event = eventRepository.findById(eventId)
+        eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
 
         Room room = roomRepository.findByIdAndEventId(roomId, eventId)
@@ -350,7 +352,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public DTOClass getParticipants(Long eventId) {
-        Event event = eventRepository.findById(eventId)
+        eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found with id " + eventId));
 
         List<User> participants = registrationRepository.findByEventId(eventId);
@@ -381,11 +383,11 @@ public class EventServiceImpl implements EventService {
                 long minutesDifference = ChronoUnit.MINUTES.between(now, startTime);
 
                 if (minutesDifference == 1440) { // 24 hours
-                    createNotification(host, event, "Reminder: Your event \"" + event.getTitle() + "\" starts in 24 hours.");
+                    createNotification(host, event, ""+event.getTitle(), "Reminder: Your event \"" + event.getTitle() + "\" starts in 24 hours.");
                 } else if (minutesDifference == 60) { // 1 hour
-                    createNotification(host, event, "Reminder: Your event \"" + event.getTitle() + "\" starts in 1 hour.");
+                    createNotification(host, event, ""+event.getTitle(), "Reminder: Your event \"" + event.getTitle() + "\" starts in 1 hour.");
                 } else if (minutesDifference == 10) { // 10 minutes
-                    createNotification(host, event, "Reminder: Your event \"" + event.getTitle() + "\" starts in 10 minutes.");
+                    createNotification(host, event, ""+event.getTitle(), "Reminder: Your event \"" + event.getTitle() + "\" starts in 10 minutes.");
                 }
             } catch (Exception e) {
                 log.error("Error sending reminder for event ID {}: {}", event.getId(), e.getMessage());

@@ -136,6 +136,12 @@ public class ParticipantController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/teams/detail/{teamId}")
+    public ResponseEntity<ApiResponse<TeamDTO>> getTeamDetails(@PathVariable Long teamId) {
+        ApiResponse<TeamDTO> response = participantService.getTeam(teamId);
+                return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/viewed")
     public ResponseEntity<Page<EventDTO>> getRecentlyViewedEvents(
             @AuthenticationPrincipal String email,

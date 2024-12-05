@@ -29,6 +29,7 @@ public class UserDTO {
         userDTO.setMobile(user.getMobile());
         userDTO.setImageUrl(user.getImageUrl());
         userDTO.setCoins(user.getCoins());
+
         return userDTO;
     }
 }

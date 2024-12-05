@@ -36,5 +36,5 @@ public class Team {
     )
     private List<User> members = new ArrayList<>();
 
-    private boolean isPublic; // Indicates if the team is searchable.
+    private boolean isPublic;
 }

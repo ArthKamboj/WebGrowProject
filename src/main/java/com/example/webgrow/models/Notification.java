@@ -23,6 +23,7 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "participant_id", nullable = false)
     private User participant;
+    private String title;
     private String message;
     private LocalDateTime timestamp;
     private boolean read;

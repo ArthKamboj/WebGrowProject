@@ -152,18 +152,6 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
     }
 
 
-
-//@Scheduled(fixedRate = 30000)
-//@Transactional
-public void submitExpiredQuizzes() {
-    List<Quiz> expiredQuizzes = quizRepository.findByEndTimeBeforeAndCompletedFalse(LocalDateTime.now());
-    for (Quiz quiz : expiredQuizzes) {
-        for (User participant : quiz.getParticipants()) {
-            submitQuiz(quiz.getId(), participant.getEmail());
-        }
-    }
-}
-
     @Override
     public QuizAttemptDTO getQuizResults(String email, Long quizId) {
         User user = getUserByEmail(email);
@@ -280,7 +268,6 @@ public void submitExpiredQuizzes() {
         attemptDTO.setTotalQuestions(attempt.getTotalQuestions());
         attemptDTO.setCorrectAnswers(attempt.getCorrectAnswers());
         attemptDTO.setAttemptTime(attempt.getAttemptTime());
-//        attemptDTO.setRank(attempt.getRank());
         return attemptDTO;
     }
 }
