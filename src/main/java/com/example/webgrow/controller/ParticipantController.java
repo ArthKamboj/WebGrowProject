@@ -1,8 +1,11 @@
 package com.example.webgrow.controller;
 
+import com.example.webgrow.Service.EventService;
 import com.example.webgrow.Service.ParticipantService;
 import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.*;
+import com.example.webgrow.payload.request.UpdateProfileRequest;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +22,7 @@ import java.util.List;
 public class ParticipantController {
 
     private final ParticipantService participantService;
+    private final EventService eventService;
 
     // 1. Get All Events
     @GetMapping("/events")
@@ -79,9 +83,9 @@ public class ParticipantController {
 
     // 9. Update Participant Profile
     @PutMapping("/profile")
-    public ResponseEntity<ApiResponse<String>> updateProfile(@AuthenticationPrincipal String email,@Valid @RequestBody User updatedProfile) {
-        ApiResponse<String> message = participantService.updateParticipantProfile(email, updatedProfile);
-        return ResponseEntity.ok(message);
+    public ResponseEntity<DTOClass> updateProfile(@RequestBody UpdateProfileRequest request)throws MessagingException {
+        DTOClass user= eventService.updateUserDetails(request);
+        return ResponseEntity.ok(user);
     }
 
     // 10. Get Notifications
