@@ -1,6 +1,7 @@
 package com.example.webgrow.controller;
 
 import com.example.webgrow.Service.EventService;
+import com.example.webgrow.models.Role;
 import com.example.webgrow.models.Room;
 import com.example.webgrow.models.TimeLineEntry;
 import com.example.webgrow.models.User;
@@ -164,6 +165,11 @@ public class EventController {
     ) {
         List<TimeLineEntry> newEntries = eventService.addTimelineEntries(eventId, bulkTimelineEntryRequest);
         return ResponseEntity.ok(newEntries);
+    }
+    @GetMapping("/role/{role}")
+    public ResponseEntity<List<User>> getUsersByRole(@PathVariable Role role) {
+        List<User> users = eventService.getUsersByRole(role);
+        return ResponseEntity.ok(users);
     }
 
 }

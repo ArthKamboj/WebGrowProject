@@ -517,4 +517,8 @@ public class EventServiceImpl implements EventService {
         );
         return new DTOClass("User Fetched Successfully","SUCCESS", hostDTO);
     }
+    @Override
+    public List<User> getUsersByRole(Role role) {
+        return userRepository.findByRole(role);
+    }
 }

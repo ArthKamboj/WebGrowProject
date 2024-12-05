@@ -1,5 +1,6 @@
 package com.example.webgrow.repository;
 
+import com.example.webgrow.models.Role;
 import com.example.webgrow.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,5 +13,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
     List<User> findByVerifiedFalseAndGeneratedAtBefore(LocalDateTime expiryTime);
-
+    List<User> findByRole(Role role);
 }
