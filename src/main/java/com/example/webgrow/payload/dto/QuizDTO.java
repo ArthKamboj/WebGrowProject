@@ -17,5 +17,5 @@ public class QuizDTO {
     private String description;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private boolean isActive; // Indicates if the quiz is currently active
+    private boolean isActive;
 }
