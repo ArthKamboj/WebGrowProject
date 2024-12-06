@@ -29,7 +29,7 @@ public interface ParticipantService {
 
     ApiResponse<EventDTO> getEventDetails(Long eventId);
 
-    ApiResponse<TeamDTO> getTeam(Long eventId, Long teamId);
+    ApiResponse<TeamDTO> getTeam(String email, Long eventId);
 
     ApiResponse<List<NotificationDTO>> getNotifications(String email, int page, int size);
 

@@ -375,9 +375,10 @@ public class ParticipantServiceImpl implements ParticipantService {
     }
 
     @Override
-    public ApiResponse<TeamDTO> getTeam(Long eventId, Long teamId) {
+    public ApiResponse<TeamDTO> getTeam(String email, Long eventId) {
 
-        Team team = teamRepository.findById(teamId)
+        User user = getUserByEmail(email);
+        Team team = teamRepository.findTeamByEventIdAndMembers_Id(eventId, user.getId())
                 .orElseThrow(() ->new RuntimeException("Team does not exist"));
 
         return new ApiResponse<>(true, "Team details retrieved successfully", convertToDTO(team));

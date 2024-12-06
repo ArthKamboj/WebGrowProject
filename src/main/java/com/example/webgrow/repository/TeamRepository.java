@@ -10,5 +10,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     List<Team> findByEventIdAndIsPublicTrue(Long eventId);
     List<Team> findByEventIdAndIsPublicTrueAndNameContainingIgnoreCase(Long eventId, String name);
     List<Team> findByEventIdAndMembers_Id(Long eventId, Long memberId);
-//    Team findById(Long teamId);
+    Optional<Team> findTeamByEventIdAndMembers_Id(Long eventId, Long memberId);
 }
