@@ -10,6 +10,7 @@ import com.example.webgrow.payload.dto.QuizAttemptDTO;
 import com.example.webgrow.repository.QuestionRepository;
 import com.example.webgrow.repository.QuizAttemptRepository;
 import com.example.webgrow.repository.QuizRepository;
+import com.example.webgrow.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class QuizHostServiceImpl implements QuizHostService {
     private final QuizRepository quizRepository;
     private final QuestionRepository questionRepository;
     private final QuizAttemptRepository quizAttemptRepository;
+    private final UserRepository userRepository;
 
     @Override
     public void addQuestionsToQuiz(Long quizId, List<QuestionDTO> questionDTOList) {
