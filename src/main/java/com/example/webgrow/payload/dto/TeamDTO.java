@@ -1,7 +1,6 @@
 package com.example.webgrow.payload.dto;
 
-import com.example.webgrow.models.Event;
-import com.example.webgrow.models.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class TeamDTO {
     private String teamName;
-    private Event event;
-    private User leader;
-    private List<User> members;
+    private EventDTO event;
+    private UserDTO leader;
+    private List<UserDTO> members;
 }

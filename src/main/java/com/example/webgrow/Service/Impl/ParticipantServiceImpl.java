@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -387,10 +388,35 @@ public class ParticipantServiceImpl implements ParticipantService {
     private TeamDTO convertToDTO(Team team) {
         TeamDTO dto = new TeamDTO();
         dto.setTeamName(team.getName());
-        dto.setEvent(team.getEvent());
-        dto.setLeader(team.getLeader());
-        dto.setMembers(team.getMembers());
+        dto.setEvent(convertToEventDTO(team.getEvent()));
+        dto.setLeader(convertToUserDTO(team.getLeader()));
+        dto.setMembers(convertToUserDTOList(team.getMembers()));
         return dto;
+    }
+
+    private EventDTO convertToEventDTO(Event event) {
+        EventDTO dto = new EventDTO();
+        dto.setId(String.valueOf(event.getId()));
+        dto.setTitle(event.getTitle());
+        dto.setDescription(event.getDescription());
+        return dto;
+    }
+
+    private UserDTO convertToUserDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(String.valueOf(user.getId()));
+        dto.setFirstname(user.getFirstName());
+        dto.setLastname(user.getLastName());
+        dto.setEmail(user.getEmail());
+        return dto;
+    }
+
+    private List<UserDTO> convertToUserDTOList(List<User> users) {
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDTOs.add(convertToUserDTO(user));
+        }
+        return userDTOs;
     }
 
     @Override
