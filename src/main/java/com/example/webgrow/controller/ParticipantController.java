@@ -129,6 +129,7 @@ public class ParticipantController {
         return ResponseEntity.ok(response);
     }
 
+    
     @PostMapping("/teams/join/request/{requestId}")
     public ResponseEntity<ApiResponse<String>> respondToJoinRequest(@RequestParam String response,
                                                        @PathVariable Long requestId) {
@@ -136,9 +137,9 @@ public class ParticipantController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/teams/detail/{eventId}/{teamId}")
-    public ResponseEntity<ApiResponse<TeamDTO>> getTeamDetails(@PathVariable Long eventId, @PathVariable Long teamId) {
-        ApiResponse<TeamDTO> response = participantService.getTeam(eventId, teamId);
+    @GetMapping("/teams/detail/{eventId}")
+    public ResponseEntity<ApiResponse<TeamDTO>> getTeamDetails(@AuthenticationPrincipal String email, @PathVariable Long eventId) {
+        ApiResponse<TeamDTO> response = participantService.getTeam(email, eventId);
                 return ResponseEntity.ok(response);
     }
 
