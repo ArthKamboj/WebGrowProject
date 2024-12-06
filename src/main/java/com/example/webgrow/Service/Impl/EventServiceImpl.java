@@ -508,7 +508,7 @@ public class EventServiceImpl implements EventService {
         var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
         HostDTO hostDTO = new HostDTO(
-                user.getId(),
+                String.valueOf(user.getId()),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
