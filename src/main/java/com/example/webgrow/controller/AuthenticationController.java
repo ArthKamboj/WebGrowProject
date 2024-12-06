@@ -56,7 +56,9 @@ public class AuthenticationController {
     public ResponseEntity<DTOClass> changePassword(
             @Valid @RequestBody ValidatePasswordRequest request
     ) {
-        return ResponseEntity.ok(service.verifyForgotPassword(request));
+        DTOClass response = service.verifyForgotPassword(request);
+        service.updateTokenInvalidationTime(request.getEmail());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/testing")

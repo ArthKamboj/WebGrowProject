@@ -45,6 +45,8 @@ public class User implements UserDetails {
     private boolean enabled;
     private String imageUrl;
     private Long coins = 0L;
+    private LocalDateTime tokenInvalidationTime;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -285,6 +286,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         else {
             throw new RuntimeException("Invalid email provided");
         }
+    }
+
+    @Override
+    public void updateTokenInvalidationTime(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        user.setTokenInvalidationTime(LocalDateTime.now()); // Current time as invalidation time
+        userRepository.save(user);
     }
 
 }

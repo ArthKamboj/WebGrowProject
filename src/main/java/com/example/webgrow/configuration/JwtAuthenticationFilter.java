@@ -43,7 +43,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String jwt;
         final String userEmail;
 
-
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -61,10 +60,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 userDetails = this.userDetailsService.loadUserByUsername(userEmail);
             }
 
-            if(jwtService.isTokenValid(jwt, userDetails)) {
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                Optional<User> userOptional = userRepository.findByEmail(userEmail);
 
-                Optional<User> userOptional=userRepository.findByEmail(userEmail);
-                if(userOptional.isPresent()) {
+                if (userOptional.isPresent()) {
+                    User user = userOptional.get();
+
+
+                    if (user.getTokenInvalidationTime() != null) {
+
+                        var tokenIssuedAt = jwtService.extractClaim(jwt, claims -> claims.getIssuedAt().toInstant());
+
+                        if (tokenIssuedAt.isBefore(user.getTokenInvalidationTime().toInstant())) {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("{\"error\": \"Token is invalid due to password change.\"}");
+                            response.getWriter().flush();
+                            return;
+                        }
+                    }
+
+
                     String role = jwtService.extractClaim(jwt, claims -> claims.get("role", String.class));
                     if (role == null) {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -74,46 +89,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     }
                     if (request.getServletPath().startsWith("/api/events") && !role.equals("HOST")) {
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        response.setContentType("application/json");
                         response.getWriter().write("Access Denied: Only HOSTs are allowed to access this endpoint.");
-                        response.getWriter().flush(); // Ensure the message is flushed to the response
-                        response.getWriter().close();
+                        response.getWriter().flush();
                         return;
                     }
-                    if (request.getServletPath().startsWith("api/host/quiz") && !role.equals("HOST")) {
+                    if (request.getServletPath().startsWith("/api/host/quiz") && !role.equals("HOST")) {
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        response.setContentType("application/json");
                         response.getWriter().write("Access Denied: Only HOSTs are allowed to access this endpoint.");
-                        response.getWriter().flush(); // Ensure the message is flushed to the response
-                        response.getWriter().close();
+                        response.getWriter().flush();
                         return;
                     }
                     if (request.getServletPath().startsWith("/api/participant/quiz") && !role.equals("USER")) {
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        response.setContentType("application/json");
                         response.getWriter().write("Access Denied: Only Participants are allowed to access this endpoint.");
-                        response.getWriter().flush(); // Ensure the message is flushed to the response
-                        response.getWriter().close();
+                        response.getWriter().flush();
                         return;
                     }
-                    if (request.getServletPath().startsWith("api/v1/participant") && !role.equals("USER")) {
+                    if (request.getServletPath().startsWith("/api/v1/participant") && !role.equals("USER")) {
                         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                        response.setContentType("application/json");
                         response.getWriter().write("Access Denied: Only Participants are allowed to access this endpoint.");
-                        response.getWriter().flush(); // Ensure the message is flushed to the response
-                        response.getWriter().close();
+                        response.getWriter().flush();
                         return;
                     }
-
                 }
-                UsernamePasswordAuthenticationToken authToken  = new UsernamePasswordAuthenticationToken(
+
+
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userEmail,
                         null,
                         userDetails.getAuthorities()
                 );
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }

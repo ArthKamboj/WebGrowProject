@@ -16,4 +16,5 @@ public interface AuthenticationService {
     DTOClass forgotPassword(String email) throws MessagingException;
     DTOClass verifyForgotPasswordOtp(ForgotPasswordOtpRequest request) throws MessagingException;
     DTOClass verifyForgotPassword(ValidatePasswordRequest request);
+    public void updateTokenInvalidationTime(String email);
 }
