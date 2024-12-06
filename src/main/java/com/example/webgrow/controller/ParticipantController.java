@@ -136,9 +136,9 @@ public class ParticipantController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/teams/detail/{teamId}")
-    public ResponseEntity<ApiResponse<TeamDTO>> getTeamDetails(@PathVariable Long teamId) {
-        ApiResponse<TeamDTO> response = participantService.getTeam(teamId);
+    @GetMapping("/teams/detail/{eventId}/{teamId}")
+    public ResponseEntity<ApiResponse<TeamDTO>> getTeamDetails(@PathVariable Long eventId, @PathVariable Long teamId) {
+        ApiResponse<TeamDTO> response = participantService.getTeam(eventId, teamId);
                 return ResponseEntity.ok(response);
     }
 

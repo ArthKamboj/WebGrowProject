@@ -98,6 +98,10 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
 
+        if (quizAttemptRepository.findByParticipantAndQuiz(user, quiz).isPresent()) {
+            throw new RuntimeException("Quiz has already been submitted by this participant!");
+        }
+
         long totalQuestions = questionRepository.countByQuiz(quiz);
 
 
@@ -149,6 +153,8 @@ public class QuizParticipantServiceImpl implements QuizParticipantService {
         long coins = user.getCoins();
         coins += 10L;
         user.setCoins(coins);
+
+        userRepository.save(user);
     }
 
 
