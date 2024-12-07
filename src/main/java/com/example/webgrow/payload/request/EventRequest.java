@@ -1,5 +1,6 @@
 package com.example.webgrow.payload.request;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,10 @@ public class EventRequest {
     private boolean teamCreationAllowed;
     private int minTeamSize;
     private int maxTeamSize;
+    @Pattern(
+            regexp = "^(https?://)?[a-zA-Z0-9-._~:/?#@!$&'()*+,;=]+$",
+            message = "Invalid URL format"
+    )
     private String url;
     private String organization;
 }

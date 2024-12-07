@@ -31,6 +31,7 @@ public class ParticipantServiceImpl implements ParticipantService {
     private final TeamJoinRequestRepository teamJoinRequestRepository;
     private final UserEventViewRepository userEventViewRepository;
     private final QuizRepository quizRepository;
+    private final EventServiceImpl eventServiceImpl;
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
@@ -62,9 +63,20 @@ public class ParticipantServiceImpl implements ParticipantService {
     @Override
     @Transactional
     public ApiResponse<String> registerForEvent(String email, Long eventId) {
+
+        DTOClass participants = eventServiceImpl.getParticipants(eventId);
+
+        List<String> participantDetails = (List<String>) participants.getData();
+        int participantCount = (participantDetails != null) ? participantDetails.size() : 0;
+
         User user = getUserByEmail(email);
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        if(participantCount >= event.getCapacityMax())
+        {
+            throw new RuntimeException("Registration failed. Max Capacity has been reached");
+        }
 
         boolean alreadyRegistered = registrationRepository.existsByParticipantAndEvent(user, event);
         if (alreadyRegistered) {
