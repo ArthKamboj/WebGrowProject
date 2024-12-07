@@ -67,16 +67,9 @@ This project is built using **Spring Boot** and adheres to modern development pr
 
 ---
 
-## Installation and Setup
-
-### Prerequisites
+## Prerequisites
 - Java 17+
 - Maven
 - CockroachDB setup
 - IntelliJ IDEA or any IDE of your choice
 
-### Steps to Run Locally
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name

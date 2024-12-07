@@ -369,7 +369,7 @@ public class EventServiceImpl implements EventService {
         }
 
         List<String> participantDetails = participants.stream()
-                .map(user -> "Name: " + user.getFirstName() + ", Email: " + user.getEmail())
+                .map(user -> "Name: " + user.getFirstName() + ", Email: " + user.getEmail() +",ImageUrl: " + user.getImageUrl())
                 .collect(Collectors.toList());
 
         return new DTOClass("Participants retrieved successfully", "SUCCESS", participantDetails);
