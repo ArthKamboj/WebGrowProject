@@ -18,6 +18,8 @@ public class UserDTO {
     private String lastname;
     private String email;
     private String mobile;
+    private String designation;
+    private String organization;
     private String imageUrl;
     private Long coins;
 

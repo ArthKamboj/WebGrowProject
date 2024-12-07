@@ -8,6 +8,7 @@ import com.example.webgrow.models.User;
 import com.example.webgrow.payload.dto.DTOClass;
 import com.example.webgrow.payload.dto.NotificationDTO;
 import com.example.webgrow.payload.dto.RoomRenameDTO;
+import com.example.webgrow.payload.dto.UserDTO;
 import com.example.webgrow.payload.request.BulkTimelineEntryRequest;
 import com.example.webgrow.payload.request.EventRequest;
 import com.example.webgrow.payload.request.UpdateProfileRequest;
@@ -167,8 +168,8 @@ public class EventController {
         return ResponseEntity.ok(newEntries);
     }
     @GetMapping("/role/{role}")
-    public ResponseEntity<List<User>> getUsersByRole(@PathVariable Role role) {
-        List<User> users = eventService.getUsersByRole(role);
+    public ResponseEntity<List<UserDTO>> getUsersByRole(@PathVariable Role role) {
+        List<UserDTO> users = eventService.getUsersByRole(role);
         return ResponseEntity.ok(users);
     }
 

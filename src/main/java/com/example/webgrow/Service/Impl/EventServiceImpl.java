@@ -523,7 +523,26 @@ public class EventServiceImpl implements EventService {
         return new DTOClass("User Fetched Successfully","SUCCESS", hostDTO);
     }
     @Override
-    public List<User> getUsersByRole(Role role) {
-        return userRepository.findByRole(role);
+    public List<UserDTO> getUsersByRole(Role role) {
+        return userRepository.findByRole(role)
+                .stream()
+                .map(this::convertToUserDTO) // Convert each User to UserDTO
+                .collect(Collectors.toList());
     }
+
+    // Method to map User to UserDTO
+    private UserDTO convertToUserDTO(User user) {
+        return new UserDTO(
+                user.getId().toString(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getMobile(),
+                user.getDesignation(),
+                user.getOrganization(),
+                user.getImageUrl(),
+                user.getCoins()
+        );
+    }
+
 }

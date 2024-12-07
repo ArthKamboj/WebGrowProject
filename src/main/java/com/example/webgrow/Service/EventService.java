@@ -31,5 +31,5 @@ public interface EventService {
     DTOClass updateUserDetails(UpdateProfileRequest request) throws MessagingException;
     List<NotificationDTO> getHostNotifications(String email, int page, int size);
     DTOClass getUserByEmail(String email) throws MessagingException;
-    List<User> getUsersByRole(Role role);
+    List<UserDTO> getUsersByRole(Role role);
 }
