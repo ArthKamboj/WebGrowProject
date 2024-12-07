@@ -271,6 +271,7 @@ public class EventServiceImpl implements EventService {
             eventResponse.setRegisterStart(event.getRegisterStart());
             eventResponse.setRegisterEnd(event.getRegisterEnd());
             eventResponse.setImageUrl(event.getImageUrl());
+            eventResponse.setUrl(event.getUrl());
             eventResponse.setHostEmail(event.getHost().getEmail());
             eventResponse.setLastUpdate(event.getLastUpdate());
 
@@ -297,6 +298,7 @@ public class EventServiceImpl implements EventService {
         response.setRegisterStart(event.getRegisterStart());
         response.setRegisterEnd(event.getRegisterEnd());
         response.setImageUrl(event.getImageUrl());
+        response.setUrl(event.getUrl());
         response.setLastUpdate(event.getLastUpdate());
         response.setCategory(event.getCategory());
         response.setCapacityMin(event.getCapacityMin());
