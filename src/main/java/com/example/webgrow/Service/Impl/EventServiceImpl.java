@@ -65,8 +65,12 @@ public class EventServiceImpl implements EventService {
         event.setRegisterStart(eventRequest.getRegisterStart());
         event.setRegisterEnd(eventRequest.getRegisterEnd());
         event.setFestival(eventRequest.getFestival());
-        event.setCapacityMin(eventRequest.getCapacityMin());
-        event.setCapacityMax(eventRequest.getCapacityMax());
+        if(eventRequest.getCapacityMin() != null) {
+            event.setCapacityMin(eventRequest.getCapacityMin());
+        }
+        if(eventRequest.getCapacityMax() != null) {
+            event.setCapacityMax(eventRequest.getCapacityMax());
+        }
         event.setUrl(eventRequest.getUrl());
         event.setTeamCreationAllowed(eventRequest.isTeamCreationAllowed());
         if (event.isTeamCreationAllowed()) {
