@@ -40,4 +40,8 @@ public class RegisterRequest {
 
     private String designation;
     private String organization;
+
+    public void setEmail(String email) {
+        this.email = email != null ? email.trim().toLowerCase() : null;
+    }
 }

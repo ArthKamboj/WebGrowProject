@@ -1,5 +1,6 @@
 package com.example.webgrow.payload.request;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -30,4 +31,8 @@ public class EventRequest {
     )
     private String url;
     private String organization;
+    @JsonSetter("description")
+    public void setDescription(String description) {
+        this.description = description != null ? description.trim() : null;
+    }
 }
